@@ -1,7 +1,6 @@
-// components/MobileSearchModal.tsx
 import SearchForm from '@/components/search-form';
 import { Role, SearchData } from '@/types';
-import { X } from 'lucide-react';
+import { SlidersHorizontal, X } from 'lucide-react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,24 +18,38 @@ const MobileSearchModal = ({ data, setData, handleSubmit, roles }: Props) => {
     return (
         <>
             {/* Button to open modal - only visible on mobile */}
-            <button onClick={() => setIsOpen(true)} className="rounded-md bg-blue-600 px-4 py-1 text-white lg:hidden">
-                {t('mobile_search.open_button')}
+            <button
+                type="button"
+                onClick={() => setIsOpen(true)}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200/80 bg-indigo-50/80 px-3 py-1.5 text-xs font-bold text-indigo-600 shadow-xs backdrop-blur-xs transition-all active:scale-95 hover:bg-indigo-100/80 dark:border-indigo-800/40 dark:bg-indigo-950/40 dark:text-indigo-400 dark:hover:bg-indigo-900/40 lg:hidden"
+            >
+                <SlidersHorizontal className="h-3.5 w-3.5" />
+                <span>{t('mobile_search.open_button') || 'Filter'}</span>
             </button>
 
             {/* Modal Overlay */}
             {isOpen && (
-                <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black lg:hidden">
-                    <div className="relative max-h-[90vh] w-11/12 overflow-y-auto rounded-lg bg-white p-4 shadow-lg dark:bg-gray-800">
-                        {/* Close Button */}
-                        <button
-                            onClick={() => setIsOpen(false)}
-                            className="absolute top-2 right-2 text-gray-700 hover:text-red-600 dark:text-white"
-                            aria-label={t('navigation.close')}
-                        >
-                            <X size={24} />
-                        </button>
-
-                        <h1 className={'mb-3 text-center text-2xl font-bold dark:text-white'}>{t('mobile_search.filter_title')}</h1>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm lg:hidden animate-in fade-in duration-200">
+                    <div className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl border border-slate-200/80 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 animate-in zoom-in-95 duration-200">
+                        {/* Header */}
+                        <div className="flex items-center justify-between mb-5 border-b border-slate-100 pb-3 dark:border-slate-800">
+                            <div className="flex items-center gap-2">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
+                                    <SlidersHorizontal className="h-4 w-4" />
+                                </div>
+                                <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                                    {t('mobile_search.filter_title') || 'Filtrlar'}
+                                </h3>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setIsOpen(false)}
+                                className="flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                                aria-label={t('navigation.close')}
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
 
                         {/* Search form instance */}
                         <SearchForm
@@ -56,3 +69,4 @@ const MobileSearchModal = ({ data, setData, handleSubmit, roles }: Props) => {
 };
 
 export default MobileSearchModal;
+
