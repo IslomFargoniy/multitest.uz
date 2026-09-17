@@ -43,7 +43,7 @@ export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWi
                     <AppSidebarHeader breadcrumbs={breadcrumbs} />
                 </div>
 
-                <div className="px-3 sm:px-4 md:px-0">
+                <div className="px-1.5 sm:px-4 md:px-0">
                     {children}
                 </div>
             </AppContent>

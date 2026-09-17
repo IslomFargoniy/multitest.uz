@@ -55,41 +55,41 @@ const QuestionTable = ({ part }: QuestionTableProps) => {
             </div>
 
             {/* Questions Grid */}
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-2.5 sm:gap-4 lg:grid-cols-2">
                 {part.questions?.map((item, index) => {
                     const globalIndex = index + 1;
 
                     return (
                         <div
                             key={item.id}
-                            className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs transition-all duration-200 hover:border-indigo-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/90 dark:hover:border-indigo-500/30"
+                            className="group flex flex-col justify-between overflow-hidden rounded-xl sm:rounded-2xl border border-slate-200/80 bg-white shadow-xs transition-all duration-200 hover:border-indigo-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/90 dark:hover:border-indigo-500/30"
                         >
-                            <div className="p-4 sm:p-5">
+                            <div className="p-3 sm:p-5">
                                 {/* Top Badge & Index */}
-                                <div className="mb-3 flex items-center justify-between">
-                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-black text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                                <div className="mb-2 sm:mb-3 flex items-center justify-between">
+                                    <span className="flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full bg-slate-100 text-[11px] sm:text-xs font-black text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                                         {globalIndex}
                                     </span>
-                                    <span className="rounded-md bg-indigo-50 px-2.5 py-0.5 text-[10px] font-black tracking-wider text-indigo-600 uppercase dark:bg-indigo-950/60 dark:text-indigo-300">
+                                    <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-[9px] sm:text-[10px] font-black tracking-wider text-indigo-600 uppercase dark:bg-indigo-950/60 dark:text-indigo-300">
                                         ID: {item.id}
                                     </span>
                                 </div>
 
                                 {/* Content Area */}
                                 <div
-                                    className="prose prose-slate dark:prose-invert prose-p:text-slate-700 dark:prose-p:text-slate-200 prose-img:rounded-xl prose-strong:text-indigo-600 max-w-none flex-1 text-sm sm:text-base leading-relaxed font-medium"
+                                    className="prose prose-slate dark:prose-invert prose-p:text-slate-700 dark:prose-p:text-slate-200 prose-img:rounded-lg prose-strong:text-indigo-600 max-w-none flex-1 text-xs sm:text-sm md:text-base leading-relaxed font-medium"
                                     dangerouslySetInnerHTML={{ __html: item?.textarea }}
                                 />
 
                                 {/* Audio Player Section */}
                                 {item.audio_path && (
-                                    <div className="mt-4 space-y-1.5">
-                                        <div className="flex items-center gap-1.5 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                                    <div className="mt-3 space-y-1">
+                                        <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-bold tracking-wider text-slate-400 uppercase">
                                             <Headphones className="h-3 w-3 text-indigo-500" />
                                             {t('test_show.audio_prompt')}
                                         </div>
-                                        <div className="rounded-xl bg-slate-50/80 p-1.5 border border-slate-100 dark:bg-slate-950/40 dark:border-slate-800/60">
-                                            <audio preload="none" controls className="h-8 w-full">
+                                        <div className="rounded-lg sm:rounded-xl bg-slate-50/80 p-1 sm:p-1.5 border border-slate-100 dark:bg-slate-950/40 dark:border-slate-800/60">
+                                            <audio preload="none" controls className="h-7 sm:h-8 w-full">
                                                 <source src={item.audio_path} />
                                                 {t('error.browser_audio_unsupported')}
                                             </audio>
@@ -99,21 +99,21 @@ const QuestionTable = ({ part }: QuestionTableProps) => {
                             </div>
 
                             {/* Meta & Actions Bar */}
-                            <div className="mt-auto flex items-center justify-between border-t border-slate-100 bg-slate-50/60 px-4 py-2.5 sm:px-5 sm:py-3 dark:border-slate-800/80 dark:bg-slate-950/40">
-                                <div className="flex items-center gap-3">
+                            <div className="mt-auto flex items-center justify-between border-t border-slate-100 bg-slate-50/60 px-3 py-2 sm:px-5 sm:py-3 dark:border-slate-800/80 dark:bg-slate-950/40">
+                                <div className="flex items-center gap-2.5 sm:gap-3">
                                     <div className="flex items-center gap-1" title={t('test_show.preparation_time')}>
-                                        <Timer className="h-3.5 w-3.5 text-amber-500" />
-                                        <span className="text-xs font-bold text-slate-600 dark:text-slate-300">{item.ready_second}s</span>
+                                        <Timer className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-amber-500" />
+                                        <span className="text-[11px] sm:text-xs font-bold text-slate-600 dark:text-slate-300">{item.ready_second}s</span>
                                     </div>
                                     <div className="flex items-center gap-1" title={t('test_show.answering_time')}>
-                                        <Timer className="h-3.5 w-3.5 text-emerald-500" />
-                                        <span className="text-xs font-bold text-slate-600 dark:text-slate-300">{item.answer_second}s</span>
+                                        <Timer className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-emerald-500" />
+                                        <span className="text-[11px] sm:text-xs font-bold text-slate-600 dark:text-slate-300">{item.answer_second}s</span>
                                     </div>
                                 </div>
 
                                 {/* Actions */}
                                 {(isAdmin || isTeacher) && (
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1.5">
                                         <UpdateQuestionModal question={item} />
                                         <DeleteItemModal item={item} onDelete={handleDelete} />
                                     </div>

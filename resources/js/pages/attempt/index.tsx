@@ -69,13 +69,13 @@ export default function Attempt() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={t('exam_attempts.title') || 'Imtihon Urinishlari'} />
 
-            <div className="flex h-full flex-1 flex-col gap-5 rounded-xl p-4 max-w-7xl mx-auto w-full">
+            <div className="flex h-full flex-1 flex-col gap-3 sm:gap-5 rounded-xl p-1.5 sm:p-4 max-w-7xl mx-auto w-full">
                 {/* Header Section */}
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+                <div className="px-0.5">
+                    <h1 className="text-xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
                         {t('exam_attempts.title') || 'Imtihon Urinishlari'}
                     </h1>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
                         {t('exam_attempts.subtitle') || "Barcha topshirilgan imtihonlar, baholar va natijalar tahlili"}
                     </p>
                 </div>
@@ -93,7 +93,7 @@ export default function Attempt() {
                 </div>
 
                 {/* Results Table */}
-                <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900 shadow-xs">
+                <div className="overflow-hidden rounded-xl sm:rounded-2xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900 shadow-xs">
                     <AttemptTable {...attempt} searchData={data} />
                 </div>
             </div>
