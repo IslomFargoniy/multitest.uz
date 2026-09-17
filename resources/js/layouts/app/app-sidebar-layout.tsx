@@ -33,17 +33,15 @@ export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWi
             <AppSidebar />
             <AppContent
                 variant="sidebar"
-                className={`w-full overflow-x-hidden pt-14 md:pt-0 ${
+                className={`w-full overflow-x-hidden ${
                     showBottomNav
                         ? 'pb-[calc(6.5rem+env(safe-area-inset-bottom))] md:pb-0'
                         : 'pb-[calc(2rem+env(safe-area-inset-bottom))] md:pb-0'
                 }`}
             >
-                <div className="md:mb-14">
-                    <AppSidebarHeader breadcrumbs={breadcrumbs} />
-                </div>
+                <AppSidebarHeader breadcrumbs={breadcrumbs} />
 
-                <div className="px-1.5 sm:px-4 md:px-0">
+                <div className="flex-1 px-1.5 sm:px-4 md:px-0">
                     {children}
                 </div>
             </AppContent>
