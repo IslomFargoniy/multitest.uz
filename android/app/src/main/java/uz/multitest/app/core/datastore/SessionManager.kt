@@ -29,6 +29,10 @@ class SessionManager @Inject constructor(
         preferences[tokenKey]
     }
 
+    val isLoggedIn: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        !preferences[tokenKey].isNullOrBlank()
+    }
+
     val userFlow: Flow<UserDto?> = context.dataStore.data.map { preferences ->
         preferences[userKey]?.let { json ->
             try {
@@ -36,6 +40,18 @@ class SessionManager @Inject constructor(
             } catch (e: Exception) {
                 null
             }
+        }
+    }
+
+    suspend fun saveAuthToken(token: String) {
+        context.dataStore.edit { preferences ->
+            preferences[tokenKey] = token
+        }
+    }
+
+    suspend fun saveUser(user: UserDto) {
+        context.dataStore.edit { preferences ->
+            preferences[userKey] = Json.encodeToString(user)
         }
     }
 

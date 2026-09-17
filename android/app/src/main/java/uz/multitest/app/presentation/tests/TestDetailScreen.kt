@@ -28,6 +28,7 @@ import uz.multitest.app.presentation.components.GradientButton
 import uz.multitest.app.presentation.components.LoadingStateView
 import uz.multitest.app.presentation.components.MultiTestCard
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TestDetailScreen(
     testId: Long,

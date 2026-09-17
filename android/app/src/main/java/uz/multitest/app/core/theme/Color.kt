@@ -2,10 +2,16 @@ package uz.multitest.app.core.theme
 
 import androidx.compose.ui.graphics.Color
 
-// 🏛️ Clean Slate & Electric Indigo Palette
+// 🏛️ Electric Indigo & Modern Aesthetic Palette
 val ElectricIndigo = Color(0xFF4F46E5)
 val ElectricIndigoDark = Color(0xFF6366F1)
 val ElectricIndigoLight = Color(0xFFEEF2FF)
+
+val IndigoPrimary = Color(0xFF4F46E5)
+val IndigoAccent = Color(0xFF6366F1)
+val RosePink = Color(0xFFEC4899)
+val CoralOrange = Color(0xFFF97316)
+val EmeraldGreen = Color(0xFF10B981)
 
 val SlateBackgroundLight = Color(0xFFF8FAFC)
 val SlateBackgroundDark = Color(0xFF0B0F19)
