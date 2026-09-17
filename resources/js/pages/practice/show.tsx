@@ -14,7 +14,28 @@ export default function PracticeShow() {
     const { t } = useTranslation();
     const { notification } = useHaptic();
 
+    // Prevent screen timeout (Wake Lock) and Telegram swipe-to-close during speaking exam
     useEffect(() => {
+        let wakeLock: any = null;
+
+        const requestWakeLock = async () => {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await (navigator as any).wakeLock.request('screen');
+                }
+            } catch (err) {
+                // WakeLock not supported or denied
+            }
+        };
+
+        requestWakeLock();
+
+        // Disable vertical swipes on Telegram Mini App to prevent accidental closing
+        const tg = (window as any).Telegram?.WebApp;
+        if (tg?.disableVerticalSwipes) {
+            tg.disableVerticalSwipes();
+        }
+
         const handleVisibilityChange = () => {
             if (document.hidden) {
                 notification('warning');
@@ -22,11 +43,21 @@ export default function PracticeShow() {
                     description: t('practice_show.anti_cheat_warning_desc'),
                     duration: 5000,
                 });
+            } else if (wakeLock !== null && document.visibilityState === 'visible') {
+                requestWakeLock();
             }
         };
 
         document.addEventListener('visibilitychange', handleVisibilityChange);
-        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            if (wakeLock) {
+                wakeLock.release().catch(() => {});
+            }
+            if (tg?.enableVerticalSwipes) {
+                tg.enableVerticalSwipes();
+            }
+        };
     }, [t]);
 
     return (
