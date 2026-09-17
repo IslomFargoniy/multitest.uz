@@ -75,7 +75,8 @@
         "typescript": "^5.7.2",
         "vite": "^6.0",
         "wavesurfer.js": "^7.12.2",
-        "xlsx": "^0.18.5"
+        "xlsx": "^0.18.5",
+        "ziggy-js": "^2.6.4"
     },
     "optionalDependencies": {
         "@rollup/rollup-linux-x64-gnu": "4.9.5",
