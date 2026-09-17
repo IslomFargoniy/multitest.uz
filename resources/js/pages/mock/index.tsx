@@ -49,19 +49,19 @@ export default function Mock() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={t('mock') || 'Mock Testlar'} />
 
-            <div className="flex h-full flex-1 flex-col gap-5 rounded-xl p-4 max-w-7xl mx-auto w-full">
+            <div className="flex h-full flex-1 flex-col gap-3 sm:gap-5 rounded-xl p-1.5 sm:p-4 max-w-7xl mx-auto w-full">
                 {/* Header with Title and Find Mock Modal */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 px-0.5">
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+                        <h1 className="text-xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
                             {t('mock') || 'Mock Testlar'}
                         </h1>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
                             {t('mock_exam.subtitle') || "Mock imtihonlarni tashkil qilish, o'quvchilarga kod berish va natijalarni nazorat qilish"}
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 self-end sm:self-auto">
                         <FindMockModal />
                         {(isAdmin || isTeacher) && (
                             <CreateMockModal tests={tests} />
@@ -83,7 +83,7 @@ export default function Mock() {
                 </div>
 
                 {/* Cards / Table */}
-                <div className="mt-2">
+                <div className="mt-1 sm:mt-2">
                     <MockTable
                         {...mock}
                         searchData={data}
