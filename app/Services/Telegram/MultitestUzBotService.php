@@ -27,11 +27,89 @@ class MultitestUzBotService
 
         match ($command) {
             '/start' => $this->sendWelcomeMessage($update, $chatId),
+            '/code', '/login', '/otp' => $this->handleOtpRequest($update, $chatId),
             '/help' => $this->sendHelpMessage($chatId),
             '/mocks' => $this->sendMockMessage($chatId),
             '/ref' => $this->sendRefMessage($chatId),
             default => $this->sendUnknownCommand($chatId),
         };
+    }
+
+    /**
+     * Handle OTP request from user for Android / Mobile login
+     */
+    public function handleOtpRequest(array $update, int|string $chatId): void
+    {
+        $from = $update['message']['from'] ?? [];
+        $user = User::query()->updateOrCreate(
+            ['telegram_id' => $chatId],
+            [
+                'name' => trim(($from['first_name'] ?? '') . ' ' . ($from['last_name'] ?? '')) ?: 'User',
+                'username' => $from['username'] ?? null,
+                'avatar' => $from['photo_url'] ?? null,
+            ]
+        );
+
+        if ($user->wasRecentlyCreated) {
+            $user->assignRole('Student');
+        }
+
+        $this->createAndSendOtp($user, $chatId, ['android' => true]);
+    }
+
+    /**
+     * Generate and send 6-digit OTP code to user
+     */
+    public function createAndSendOtp(User $user, int|string $chatId, array $flags = []): string
+    {
+        // 1. Check existing active 6-digit OTP
+        $otp = \App\Models\Otp::query()
+            ->where('user_id', $user->id)
+            ->where('expired', false)
+            ->where('expired_at', '>', now())
+            ->latest()
+            ->first();
+
+        if ($otp && strlen((string)$otp->code) === 6) {
+            $code = (string) $otp->code;
+        } else {
+            \App\Models\Otp::query()
+                ->where('user_id', $user->id)
+                ->where('expired', false)
+                ->update(['expired' => true]);
+
+            do {
+                $code = (string) random_int(100000, 999999);
+            } while (\App\Models\Otp::query()->where('code', $code)->where('expired', false)->where('expired_at', '>', now())->exists());
+
+            \App\Models\Otp::query()->create([
+                'user_id' => $user->id,
+                'code' => $code,
+                'expired_at' => now()->addMinutes(2),
+                'expired' => false,
+                'is_android' => $flags['android'] ?? true,
+                'is_ios' => $flags['ios'] ?? false,
+                'is_mobile' => true,
+                'is_email' => $flags['email'] ?? false,
+            ]);
+        }
+
+        $platform = ($flags['ios'] ?? false) ? "iOS" : "Android";
+
+        try {
+            $this->telegram->sendMessage([
+                'chat_id' => $chatId,
+                'text' => "🔐 *{$platform} Tasdiqlash kodi*\n\n" .
+                          "👉 `{$code}`\n\n" .
+                          "⏳ Ushbu kod 2 daqiqa davomida amal qiladi.\n" .
+                          "MultiTest ilovasiga qaytib kodni kiriting.",
+                'parse_mode' => 'Markdown',
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Telegram OTP send error: ' . $e->getMessage());
+        }
+
+        return $code;
     }
 
     /**
@@ -41,7 +119,7 @@ class MultitestUzBotService
     {
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
-            'text' => "📘 Available commands:\n/start - Open Multitest\n/help - Show help\n/mocks - Open Mock App\n/ref -  Get your referral link",
+            'text' => "📘 Mavjud buyruqlar:\n/start - MultiTestni ochish\n/code - Android ilova uchun kirish kodi olish\n/mocks - Mock imtihonlar\n/ref - Referral havolangiz",
         ]);
     }
 
