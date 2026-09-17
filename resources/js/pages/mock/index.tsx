@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { Head, usePage, useForm, router } from '@inertiajs/react';
-import { type BreadcrumbItem, type MockPaginate, SearchData, Test, User } from '@/types';
+import { type BreadcrumbItem, type MockPaginate, SearchData, Test, User, Auth, Role } from '@/types';
 import MockTable from '@/components/mock/mock-table';
 import FindMockModal from '@/components/mock/find-mock-modal';
 import CreateMockModal from '@/components/mock/create-mock-modal';
@@ -13,12 +13,12 @@ export default function Mock() {
         tests: Test[];
         users: User[];
         teachers?: User[];
-        filters: any;
+        filters?: SearchData;
         isAdmin: boolean;
-        auth?: any;
+        auth?: Auth;
     }>().props;
 
-    const isTeacher = auth?.user?.roles?.some((role: any) => role.name === 'Teacher');
+    const isTeacher = auth?.user?.roles?.some((role: Role) => role.name === 'Teacher');
     const { t } = useTranslation();
 
     const breadcrumbs: BreadcrumbItem[] = [

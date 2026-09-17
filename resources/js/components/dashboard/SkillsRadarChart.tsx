@@ -1,5 +1,6 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
+import type { ApexOptions } from 'apexcharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
 import { useIsDarkMode } from '@/hooks/use-is-dark-mode';
@@ -29,7 +30,7 @@ export default function SkillsRadarChart({ skills, className }: SkillsRadarChart
         pronunciation: 75,
     };
 
-    const options: any = {
+    const options: ApexOptions = {
         chart: {
             toolbar: { show: false },
             background: 'transparent',
@@ -56,7 +57,7 @@ export default function SkillsRadarChart({ skills, className }: SkillsRadarChart
         markers: {
             size: isMobile ? 3 : 4,
             colors: ['#2481cc'],
-            strokeColor: isDark ? '#1e293b' : '#fff',
+            strokeColors: isDark ? '#1e293b' : '#fff',
             strokeWidth: 2,
         },
         xaxis: {

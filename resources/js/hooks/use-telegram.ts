@@ -58,7 +58,7 @@ export function initTelegramWebApp() {
     tg.expand();
     
     // Available in SDK 7.7+
-    if ((tg as any).disableVerticalSwipes) {
-        (tg as any).disableVerticalSwipes();
+    if (tg.disableVerticalSwipes) {
+        tg.disableVerticalSwipes();
     }
 }

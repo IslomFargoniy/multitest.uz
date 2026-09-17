@@ -5,18 +5,18 @@ import { useTranslation } from 'react-i18next';
 import AppLayout from '@/layouts/app-layout';
 import AttemptTable from '@/components/attempt/attempt-table';
 import PremiumFilters from '@/components/premium-filters';
-import { type AttemptPaginate, type BreadcrumbItem, Role, SearchData } from '@/types';
+import { type AttemptPaginate, type Auth, type BreadcrumbItem, type Role, type SearchData } from '@/types';
 
 export default function Attempt() {
     const { attempt, roles, auth } = usePage<{
         attempt: AttemptPaginate;
         roles: Role[];
-        auth: any;
+        auth?: Auth;
     }>().props;
 
     const { t } = useTranslation();
-    const isAdmin = auth?.user?.roles?.some((role: any) => role.name === 'Admin');
-    const isTeacher = auth?.user?.roles?.some((role: any) => role.name === 'Teacher');
+    const isAdmin = auth?.user?.roles?.some((role: Role) => role.name === 'Admin');
+    const isTeacher = auth?.user?.roles?.some((role: Role) => role.name === 'Teacher');
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
