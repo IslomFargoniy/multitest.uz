@@ -29,6 +29,7 @@ import uz.multitest.app.presentation.components.GradientButton
 import uz.multitest.app.presentation.components.LoadingStateView
 import uz.multitest.app.presentation.components.MultiTestCard
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExamResultScreen(
     attemptId: Long,
@@ -91,7 +92,7 @@ fun ExamResultScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Column(
-                                    horizontalAlignment = Alignment.CenterVertically
+                                    horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Box(
                                         modifier = Modifier

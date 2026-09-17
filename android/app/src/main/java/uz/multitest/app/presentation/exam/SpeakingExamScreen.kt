@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uz.multitest.app.core.theme.*
 import uz.multitest.app.presentation.components.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpeakingExamScreen(
     attemptId: Long,
@@ -315,7 +316,7 @@ private fun QuestionActiveView(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterVertically,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
             // Question Badge
