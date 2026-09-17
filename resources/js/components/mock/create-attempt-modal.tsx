@@ -126,24 +126,24 @@ export default function CreateAttemptModal({ mock, test, label }: Props) {
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="sm:max-w-[480px] w-full p-0 overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-2xl max-h-[90vh] overflow-y-auto">
                     {/* Header */}
-                    <div className="bg-slate-900 p-5 sm:p-6 pr-12 text-white dark:bg-slate-900/90 relative overflow-hidden">
-                        <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-primary/20 blur-2xl pointer-events-none" />
+                    <div className="bg-gradient-to-b from-indigo-50/80 to-white dark:from-indigo-950/40 dark:to-slate-900/60 p-5 sm:p-6 pr-12 border-b border-slate-100 dark:border-slate-800/80 relative overflow-hidden">
+                        <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-primary/10 blur-2xl pointer-events-none" />
                         
                         <DialogHeader>
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/20 text-primary shadow-sm">
-                                    <Headphones className="h-5 w-5 text-primary" />
+                                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-500/20">
+                                    <Headphones className="h-5 w-5" />
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                    <DialogTitle className="text-lg font-black tracking-tight truncate text-white">
+                                    <DialogTitle className="text-lg font-black tracking-tight truncate text-slate-900 dark:text-white">
                                         {mock?.name || test?.name || t('attempt_modal.ready_title', 'Imtihonni Boshlash')}
                                     </DialogTitle>
-                                    <DialogDescription className="mt-0.5 text-xs text-slate-400 flex items-center gap-3 font-medium">
-                                        <span className="inline-flex items-center gap-1">
-                                            <Timer className="h-3.5 w-3.5 text-amber-400" /> ~15-20 min
+                                    <DialogDescription className="mt-1 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-3 font-semibold">
+                                        <span className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-lg border border-amber-200/50 dark:border-amber-800/30">
+                                            <Timer className="h-3 w-3" /> ~15-20 min
                                         </span>
                                         <span>•</span>
-                                        <span>{allPartsCount} {t('practice.total_parts', 'ta qism')}</span>
+                                        <span className="text-slate-600 dark:text-slate-300">{allPartsCount} {t('practice.total_parts', 'ta qism')}</span>
                                     </DialogDescription>
                                 </div>
                             </div>
