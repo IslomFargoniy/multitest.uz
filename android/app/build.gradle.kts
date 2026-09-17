@@ -50,6 +50,27 @@ android {
         compose = true
         buildConfig = true
     }
+
+    applicationVariants.all {
+        val variant = this
+        outputs.map { it as com.android.build.gradle.internal.api.ApkVariantOutputImpl }
+            .forEach { output ->
+                output.outputFileName = "MultiTest_v${variant.versionName}_${variant.buildType.name}.apk"
+            }
+
+        assembleProvider.configure {
+            doLast {
+                variant.outputs.forEach { output ->
+                    val file = output.outputFile
+                    if (file != null && file.exists()) {
+                        val target = File(rootDir, file.name)
+                        file.copyTo(target, overwrite = true)
+                        println("APK muvaffaqiyatli saqlandi: ${target.absolutePath}")
+                    }
+                }
+            }
+        }
+    }
 }
 
 dependencies {
