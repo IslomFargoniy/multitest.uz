@@ -5,6 +5,13 @@ import { CloudUpload, Info, Maximize, Mic, Minimize, Timer, Volume2, ShieldAlert
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
+import {
+    getPersistentAudioStream,
+    getOptimalAudioMimeType,
+    pauseAudioTracks,
+    resumeAudioTracks,
+    releasePersistentAudioStream,
+} from '@/utils/media-stream-manager';
 
 export default function QuestionPlayer({ attempt_part }: any) {
     const { t } = useTranslation();
@@ -58,6 +65,7 @@ export default function QuestionPlayer({ attempt_part }: any) {
     // Show native BackButton to exit test with confirmation
     useTelegramBackButton(phase !== 'uploading', () => {
         if (confirm(t('question_player.exit_confirm', 'Haqiqatan ham testdan chiqmoqchimisiz? Natijalaringiz saqlanmasligi mumkin.'))) {
+            releasePersistentAudioStream();
             router.visit('/dashboard');
         }
     });
@@ -74,17 +82,19 @@ export default function QuestionPlayer({ attempt_part }: any) {
         setIndex(-1);
         setPhase('introduction');
         answersRef.current = [];
-        return () => stopAllMedia();
+        return () => {
+            if (recorderRef.current && recorderRef.current.state !== 'inactive') {
+                recorderRef.current.stop();
+            }
+            pauseAudioTracks();
+        };
     }, [attempt_part.id]);
 
-    const stopAllMedia = () => {
+    const stopRecorderOnly = () => {
         if (recorderRef.current && recorderRef.current.state !== 'inactive') {
             recorderRef.current.stop();
         }
-        if (streamRef.current) {
-            streamRef.current.getTracks().forEach((track) => track.stop());
-            streamRef.current = null;
-        }
+        pauseAudioTracks();
     };
 
     const question = index >= 0 ? questions[index] : null;
@@ -176,16 +186,13 @@ export default function QuestionPlayer({ attempt_part }: any) {
     const startRecording = async () => {
         if (!question) return;
         try {
-            stopAllMedia();
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            stopRecorderOnly();
+            const stream = await getPersistentAudioStream();
             streamRef.current = stream;
+            resumeAudioTracks();
 
-            // Check supported types (Chrome prefers webm, Safari prefers mp4/ogg)
-            const mimeType = MediaRecorder.isTypeSupported('audio/webm')
-                ? 'audio/webm'
-                : 'audio/ogg';
-
-            const recorder = new MediaRecorder(stream, { mimeType });
+            const { mimeType, extension } = getOptimalAudioMimeType();
+            const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
             recorderRef.current = recorder;
             chunksRef.current = [];
             recordingStartTimeRef.current = new Date().toISOString();
@@ -195,21 +202,19 @@ export default function QuestionPlayer({ attempt_part }: any) {
             };
 
             recorder.onstop = () => {
-                const capturedBlob = new Blob(chunksRef.current, { type: recorder.mimeType });
-
-                // Extract extension for the filename
-                const extension = recorder.mimeType.includes('webm') ? 'webm' : 'ogg';
+                const finalMime = recorder.mimeType || mimeType || 'audio/webm';
+                const capturedBlob = new Blob(chunksRef.current, { type: finalMime });
 
                 answersRef.current.push({
                     question_id: question.id,
                     started_at: recordingStartTimeRef.current,
                     finished_at: new Date().toISOString(),
                     audio: capturedBlob,
-                    ext: extension
+                    ext: extension || (finalMime.includes('mp4') ? 'mp4' : 'webm'),
                 });
 
                 chunksRef.current = [];
-                stopAllMedia();
+                stopRecorderOnly();
                 goNext();
             };
 
@@ -219,6 +224,7 @@ export default function QuestionPlayer({ attempt_part }: any) {
             setTimer(question.answer_second);
             setTotalTime(question.answer_second);
         } catch (err) {
+            console.error('Recording error:', err);
             alert(t('question_player.mic_error'));
         }
     };
@@ -292,10 +298,12 @@ export default function QuestionPlayer({ attempt_part }: any) {
                     const data = await response.json().catch(() => ({}));
                     // Navigate to the next part or back to attempt page
                     if (data.redirect) {
+                        if (!next) releasePersistentAudioStream();
                         router.visit(data.redirect);
                     } else if (next) {
                         router.visit(route('practice.show', next.id));
                     } else {
+                        releasePersistentAudioStream();
                         router.visit(route('attempt.show', attempt_part.attempt.id));
                     }
                 } else {
@@ -304,6 +312,7 @@ export default function QuestionPlayer({ attempt_part }: any) {
                     if (next) {
                         router.visit(route('practice.show', next.id));
                     } else {
+                        releasePersistentAudioStream();
                         router.visit(route('attempt.show', attempt_part.attempt.id));
                     }
                 }
@@ -313,6 +322,7 @@ export default function QuestionPlayer({ attempt_part }: any) {
                 if (next) {
                     router.visit(route('practice.show', next.id));
                 } else {
+                    releasePersistentAudioStream();
                     router.visit(route('attempt.show', attempt_part.attempt.id));
                 }
             });

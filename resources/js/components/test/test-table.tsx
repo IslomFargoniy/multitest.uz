@@ -101,7 +101,7 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* 🗃️ TEST CARDS GRID */}
-            <div className="grid grid-cols-2 gap-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
                 {items.map((item, index) => {
                     const globalIndex = index + 1;
 
