@@ -124,14 +124,9 @@ export default function CreateAttemptModal({ mock, test, label }: Props) {
             </button>
 
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="fixed bottom-0 left-0 right-0 top-auto translate-y-0 sm:top-[50%] sm:bottom-auto sm:translate-y-[-50%] sm:max-w-[460px] mx-auto overflow-hidden rounded-t-[2rem] sm:rounded-2xl border-t sm:border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-0 shadow-2xl max-h-[90vh] overflow-y-auto">
-                    {/* Mobile Drag Indicator */}
-                    <div className="w-full flex justify-center pt-2 sm:hidden">
-                        <div className="w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700" />
-                    </div>
-
+                <DialogContent className="sm:max-w-[480px] w-full p-0 overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-2xl max-h-[90vh] overflow-y-auto">
                     {/* Header */}
-                    <div className="bg-slate-900 p-5 sm:p-6 text-white dark:bg-slate-900/90 relative overflow-hidden">
+                    <div className="bg-slate-900 p-5 sm:p-6 pr-12 text-white dark:bg-slate-900/90 relative overflow-hidden">
                         <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-primary/20 blur-2xl pointer-events-none" />
                         
                         <DialogHeader>

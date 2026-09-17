@@ -114,11 +114,7 @@ export default function PremiumFilters({
                                 </button>
                             </DialogTrigger>
 
-                            <DialogContent className="fixed bottom-0 left-0 right-0 top-auto translate-y-0 sm:top-[50%] sm:bottom-auto sm:translate-y-[-50%] sm:max-w-[460px] mx-auto overflow-hidden rounded-t-[2rem] sm:rounded-2xl border-t sm:border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-5 shadow-2xl max-h-[85vh] overflow-y-auto">
-                                <div className="w-full flex justify-center pb-2 sm:hidden">
-                                    <div className="w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700" />
-                                </div>
-
+                            <DialogContent className="sm:max-w-[460px] w-full p-5 overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-2xl max-h-[85vh] overflow-y-auto">
                                 <DialogHeader className="pb-3 border-b border-border/50">
                                     <DialogTitle className="text-base font-black flex items-center justify-between">
                                         <span className="flex items-center gap-2">
