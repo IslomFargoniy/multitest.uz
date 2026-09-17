@@ -167,77 +167,74 @@
 }
 
 :root {
-    /* 🏛️ Light Theme - Subtle Background Contrast */
-    --background: var(--tg-theme-bg-color, oklch(0.985 0.002 250)); /* Very light gray-ish blue */
-    --foreground: var(--tg-theme-text-color, oklch(0.15 0 0));
-    --card: var(--tg-theme-section-bg-color, var(--tg-theme-bg-color, oklch(1 0 0))); /* Pure white */
-    --card-foreground: var(--tg-theme-text-color, oklch(0.15 0 0));
+    /* 🏛️ Light Theme - Clean Slate & Electric Indigo */
+    --background: var(--tg-theme-bg-color, oklch(0.985 0.005 250)); /* Soft porcelain slate #F8FAFC */
+    --foreground: var(--tg-theme-text-color, oklch(0.15 0.02 250)); /* Deep slate #0F172A */
+    --card: var(--tg-theme-section-bg-color, var(--tg-theme-bg-color, oklch(1 0 0))); /* Crisp pure white */
+    --card-foreground: var(--tg-theme-text-color, oklch(0.15 0.02 250));
     --popover: var(--tg-theme-section-bg-color, var(--tg-theme-bg-color, oklch(1 0 0)));
-    --popover-foreground: var(--tg-theme-text-color, oklch(0.15 0 0));
-    --primary: var(--tg-theme-button-color, oklch(0.58 0.2 250)); /* Premium Royal/Telegram Blue */
+    --popover-foreground: var(--tg-theme-text-color, oklch(0.15 0.02 250));
+    --primary: var(--tg-theme-button-color, oklch(0.55 0.22 265)); /* Electric Indigo #4F46E5 */
     --primary-foreground: var(--tg-theme-button-text-color, oklch(1 0 0));
-    --secondary: var(--tg-theme-secondary-bg-color, oklch(0.97 0 0));
-    --secondary-foreground: var(--tg-theme-text-color, oklch(0.15 0 0));
-    --muted: var(--tg-theme-secondary-bg-color, oklch(0.95 0.005 250));
-    --muted-foreground: var(--tg-theme-hint-color, oklch(0.45 0 0));
-    --accent: var(--tg-theme-secondary-bg-color, oklch(0.97 0 0));
-    --accent-foreground: var(--tg-theme-button-color, oklch(0.58 0.2 250));
+    --secondary: var(--tg-theme-secondary-bg-color, oklch(0.96 0.008 250));
+    --secondary-foreground: var(--tg-theme-text-color, oklch(0.20 0.02 250));
+    --muted: var(--tg-theme-secondary-bg-color, oklch(0.95 0.008 250));
+    --muted-foreground: var(--tg-theme-hint-color, oklch(0.48 0.02 250)); /* Readable slate #475569 */
+    --accent: var(--tg-theme-secondary-bg-color, oklch(0.96 0.012 265));
+    --accent-foreground: var(--tg-theme-button-color, oklch(0.55 0.22 265));
     --destructive: var(--tg-theme-destructive-text-color, oklch(0.577 0.245 27.32));
     --destructive-foreground: oklch(1 0 0);
-    --border: var(--tg-theme-secondary-bg-color, oklch(0.91 0.005 250));
-    --input: var(--tg-theme-secondary-bg-color, oklch(0.91 0.005 250));
-    --ring: var(--tg-theme-button-color, oklch(0.58 0.2 250));
+    --border: var(--tg-theme-secondary-bg-color, oklch(0.92 0.008 250)); /* Clean border #E2E8F0 */
+    --input: var(--tg-theme-secondary-bg-color, oklch(0.92 0.008 250));
+    --ring: var(--tg-theme-button-color, oklch(0.55 0.22 265));
 
-
-    --radius: 0.75rem;
+    --radius: 0.875rem;
 
     /* Sidebar Light */
-    --sidebar: var(--tg-theme-section-bg-color, var(--tg-theme-bg-color, oklch(1 0 0))); /* Pure white */
-    --sidebar-foreground: var(--tg-theme-text-color, oklch(0.15 0 0));
-    --sidebar-primary: var(--tg-theme-button-color, oklch(0.58 0.2 250));
+    --sidebar: var(--tg-theme-section-bg-color, var(--tg-theme-bg-color, oklch(1 0 0)));
+    --sidebar-foreground: var(--tg-theme-text-color, oklch(0.15 0.02 250));
+    --sidebar-primary: var(--tg-theme-button-color, oklch(0.55 0.22 265));
     --sidebar-primary-foreground: var(--tg-theme-button-text-color, oklch(1 0 0));
-    --sidebar-accent: var(--tg-theme-secondary-bg-color, oklch(0.945 0 0));
-    --sidebar-accent-foreground: var(--tg-theme-text-color, oklch(0.15 0 0));
-    --sidebar-border: var(--tg-theme-secondary-bg-color, oklch(0.92 0 0));
-    --sidebar-ring: var(--tg-theme-button-color, oklch(0.58 0.2 250));
+    --sidebar-accent: var(--tg-theme-secondary-bg-color, oklch(0.96 0.012 265));
+    --sidebar-accent-foreground: var(--tg-theme-text-color, oklch(0.15 0.02 250));
+    --sidebar-border: var(--tg-theme-secondary-bg-color, oklch(0.92 0.008 250));
+    --sidebar-ring: var(--tg-theme-button-color, oklch(0.55 0.22 265));
 }
 
 .dark {
-    /* 🌑 Dark Theme - More Contrast and Depth */
-    --background: var(--tg-theme-bg-color, oklch(0.09 0.015 250)); /* Deep blue-gray dark background */
-    --foreground: var(--tg-theme-text-color, oklch(0.985 0 0));
+    /* 🌑 Dark Theme - Deep Midnight Slate & Vibrant Indigo */
+    --background: var(--tg-theme-bg-color, oklch(0.15 0.025 255)); /* Deep space midnight #0B0F19 */
+    --foreground: var(--tg-theme-text-color, oklch(0.98 0.005 250)); /* Soft crisp white #F8FAFC */
     
-    /* Dynamically derive card/sidebar background from Telegram background using color-mix for native contrast */
-    --card: var(--tg-theme-section-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.09 0.015 250)) 93%, white 7%));
-    --card-foreground: var(--tg-theme-text-color, oklch(0.985 0 0));
-    --popover: var(--tg-theme-section-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.09 0.015 250)) 93%, white 7%));
-    --popover-foreground: var(--tg-theme-text-color, oklch(0.985 0 0));
+    --card: var(--tg-theme-section-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.15 0.025 255)) 88%, white 12%)); /* Elevated dark card #141C2E */
+    --card-foreground: var(--tg-theme-text-color, oklch(0.98 0.005 250));
+    --popover: var(--tg-theme-section-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.15 0.025 255)) 88%, white 12%));
+    --popover-foreground: var(--tg-theme-text-color, oklch(0.98 0.005 250));
     
-    --primary: var(--tg-theme-button-color, oklch(0.62 0.18 250)); /* Vibrant Telegram Blue */
-    --primary-foreground: var(--tg-theme-button-text-color, oklch(0.985 0 0));
-    --secondary: var(--tg-theme-secondary-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.09 0.015 250)) 91%, white 9%));
-    --secondary-foreground: var(--tg-theme-text-color, oklch(0.985 0 0));
-    --muted: var(--tg-theme-secondary-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.09 0.015 250)) 95%, white 5%));
-    --muted-foreground: var(--tg-theme-hint-color, oklch(0.6 0 0));
-    --accent: var(--tg-theme-secondary-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.09 0.015 250)) 91%, white 9%));
-    --accent-foreground: var(--tg-theme-text-color, oklch(0.985 0 0));
-    --destructive: var(--tg-theme-destructive-text-color, oklch(0.396 0.141 25.72));
-    --destructive-foreground: var(--tg-theme-text-color, oklch(0.985 0 0));
+    --primary: var(--tg-theme-button-color, oklch(0.65 0.20 265)); /* Vibrant Electric Indigo #6366F1 */
+    --primary-foreground: var(--tg-theme-button-text-color, oklch(0.98 0 0));
+    --secondary: var(--tg-theme-secondary-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.15 0.025 255)) 84%, white 16%));
+    --secondary-foreground: var(--tg-theme-text-color, oklch(0.98 0.005 250));
+    --muted: var(--tg-theme-secondary-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.15 0.025 255)) 90%, white 10%));
+    --muted-foreground: var(--tg-theme-hint-color, oklch(0.72 0.015 250)); /* Highly legible slate #94A3B8 */
+    --accent: var(--tg-theme-secondary-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.15 0.025 255)) 82%, white 18%));
+    --accent-foreground: var(--tg-theme-text-color, oklch(0.98 0.005 250));
+    --destructive: var(--tg-theme-destructive-text-color, oklch(0.45 0.18 25.72));
+    --destructive-foreground: var(--tg-theme-text-color, oklch(0.98 0 0));
     
-    --border: var(--tg-theme-secondary-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.09 0.015 250)) 88%, white 12%));
-    --input: var(--tg-theme-secondary-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.09 0.015 250)) 88%, white 12%));
-    --ring: var(--tg-theme-button-color, oklch(0.62 0.18 250));
-
+    --border: var(--tg-theme-secondary-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.15 0.025 255)) 80%, white 20%));
+    --input: var(--tg-theme-secondary-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.15 0.025 255)) 80%, white 20%));
+    --ring: var(--tg-theme-button-color, oklch(0.65 0.20 265));
 
     /* Sidebar Dark */
-    --sidebar: var(--tg-theme-section-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.09 0.015 250)) 95%, white 5%));
-    --sidebar-foreground: var(--tg-theme-text-color, oklch(0.985 0 0));
-    --sidebar-primary: var(--tg-theme-button-color, oklch(0.62 0.18 250));
-    --sidebar-primary-foreground: var(--tg-theme-button-text-color, oklch(0.985 0 0));
-    --sidebar-accent: var(--tg-theme-secondary-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.09 0.015 250)) 91%, white 9%));
-    --sidebar-accent-foreground: var(--tg-theme-text-color, oklch(0.985 0 0));
-    --sidebar-border: var(--tg-theme-secondary-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.09 0.015 250)) 85%, white 15%));
-    --sidebar-ring: var(--tg-theme-button-color, oklch(0.62 0.18 250));
+    --sidebar: var(--tg-theme-section-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.15 0.025 255)) 90%, white 10%));
+    --sidebar-foreground: var(--tg-theme-text-color, oklch(0.98 0.005 250));
+    --sidebar-primary: var(--tg-theme-button-color, oklch(0.65 0.20 265));
+    --sidebar-primary-foreground: var(--tg-theme-button-text-color, oklch(0.98 0 0));
+    --sidebar-accent: var(--tg-theme-secondary-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.15 0.025 255)) 82%, white 18%));
+    --sidebar-accent-foreground: var(--tg-theme-text-color, oklch(0.98 0.005 250));
+    --sidebar-border: var(--tg-theme-secondary-bg-color, color-mix(in srgb, var(--tg-theme-bg-color, oklch(0.15 0.025 255)) 80%, white 20%));
+    --sidebar-ring: var(--tg-theme-button-color, oklch(0.65 0.20 265));
 }
 
 
