@@ -52,8 +52,12 @@ export interface SearchData {
     date?: string;
     daysInMonth?: number;
     role?: string;
+    teacher_id?: string | number;
+    user_id?: string | number;
+    test_id?: string | number;
+    mock_id?: string | number;
 
-    [key: string]: string | number; // Allow dynamic keys
+    [key: string]: string | number | undefined;
 }
 
 export interface Link {
@@ -86,7 +90,7 @@ export interface Test {
     parts?: Part[];
     language?: Language;
     folder?: { name: string };
-    types?: any[];
+    types?: unknown[];
     attempts_count?: number;
 }
 
@@ -118,16 +122,16 @@ export interface MockStudent {
 export interface Mock {
     id: number;
     user_id: number;
-    test_id?: number;
+    test_id?: number | null;
     name: string;
     comment?: string;
     description?: string;
     audio_path?: string;
-    started_at?: string;
-    starts_at?: string;
-    finished_at?: string;
+    started_at?: string | null;
+    starts_at?: string | null;
+    finished_at?: string | null;
     slug: string;
-    active: number;
+    active: number | boolean;
     open?: number;
     status?: 'active' | 'scheduled' | 'expired' | 'inactive';
     created_at: string;
@@ -147,6 +151,7 @@ export interface MockPaginate {
     to: number;
     total: number;
     current_page: number;
+    last_page: number;
     links: Link[];
 }
 
@@ -164,6 +169,7 @@ export interface Part {
     id: number;
     test_id: number;
     name: string;
+    title?: string;
     description: string;
     audio_path: string;
     created_at: string;
@@ -177,9 +183,9 @@ export interface Question {
     part_id: number;
     textarea: string;
     audio_path: string;
-    audio_second: string;
-    ready_second: string;
-    answer_second: string;
+    audio_second: string | number;
+    ready_second: string | number;
+    answer_second: string | number;
     created_at: string;
     updated_at: string;
     part?: Part;

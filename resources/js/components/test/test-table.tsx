@@ -217,7 +217,7 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
                                     <CreateAttemptModal test={item} label={t('start') || 'Boshlash'} />
                                 </div>
 
-                                {(isAdmin || auth?.user.id == item.user_id) && (
+                                {(isAdmin || auth?.user?.id === item.user_id) && (
                                     <div className="flex items-center justify-center gap-2 mt-1">
                                         <UpdateTestModal test={item} />
                                         <span className="h-1 w-1 rounded-full bg-slate-200 dark:bg-slate-700" />

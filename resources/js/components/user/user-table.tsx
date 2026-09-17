@@ -1,7 +1,7 @@
 import DeleteItemModal from '@/components/delete-item-modal';
 import UpdateUserModal from '@/components/user/update-user-modal';
 import TablePagination from '@/components/ui/table-pagination';
-import { type UserPaginate, SearchData } from '@/types';
+import { type UserPaginate, SearchData, User, Role } from '@/types';
 import { Link, useForm, router } from '@inertiajs/react';
 import { Calendar, ChevronLeft, ChevronRight, Mail, Phone, ShieldCheck, UserCircle, Zap } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -42,7 +42,7 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
 
     const isMobile = useIsMobile();
     
-    const UserCard = ({ item, globalIndex }: { item: any; globalIndex: number }) => (
+    const UserCard = ({ item, globalIndex }: { item: User; globalIndex: number }) => (
         <div
             className="tma-card group relative cursor-pointer"
             onClick={() => item.id && router.get(route('user.show', item.id))}
@@ -52,7 +52,7 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
                     #{globalIndex.toString().padStart(2, '0')}
                 </span>
                 <div className="flex flex-wrap justify-end gap-1">
-                    {item.roles?.map((role: any) => (
+                    {item.roles?.map((role: Role) => (
                         <span
                             key={role.id}
                             className={`inline-flex items-center gap-1 rounded-lg border px-2 py-0.5 text-[9px] font-black tracking-tight uppercase ${getRoleStyles(role.name)}`}

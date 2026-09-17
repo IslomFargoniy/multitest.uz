@@ -1,6 +1,6 @@
-import EvaluateAttemptModal from '@/components/attempt/evaluate-attempt-modal';
 import DeleteItemModal from '@/components/delete-item-modal';
-import { type AttemptPaginate, Auth, SearchData } from '@/types';
+import EvaluateAttemptModal from '@/components/attempt/evaluate-attempt-modal';
+import { type Attempt, type AttemptPaginate, Auth, SearchData } from '@/types';
 import { Link, router, useForm, usePage } from '@inertiajs/react';
 import { BookOpen, Calendar, Clock, Info, Star, User, Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -101,7 +101,7 @@ const AttemptTable = ({ searchData, ...attempt }: AttemptTableProps) => {
         });
     };
 
-    const AttemptCard = ({ item, globalIndex }: { item: any; globalIndex: number }) => (
+    const AttemptCard = ({ item, globalIndex }: { item: Attempt; globalIndex: number }) => (
         <div 
             className="group relative cursor-pointer rounded-2xl border border-slate-100 bg-white p-4 transition-all hover:border-primary/20 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
             onClick={() => item.id && router.get(route('attempt.show', { attempt: item.id }))}
