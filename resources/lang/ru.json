@@ -564,7 +564,8 @@
         "leave_blank_to_keep": "Оставьте пустым, чтобы сохранить текущий пароль",
         "joined": "Присоединился",
         "activity": "Активность",
-        "create_test_limit": "Лимит создания тестов"
+        "create_test_limit": "Лимит создания тестов",
+        "no_users_found": "Пользователи не найдены"
     },
     "attempt_show": {
         "assessment_report": "Отчет об оценке",
@@ -998,7 +999,7 @@
     "password', 'password_confirmation": "Подтверждение пароля",
     "paste_test_placeholder": "Вставьте вопросы сюда...",
     "paste_test_text": "Вставьте текст теста",
-    "per_page": "На страницу",
+    "per_page": "На странице",
     "performance_overview": "Обзор успеваемости",
     "phone": "Телефон",
     "prev": "Предыдущий",
@@ -1023,7 +1024,7 @@
     "salary": "Зарплата",
     "salary_payment": "Выплата зарплаты",
     "save": "Сохранить",
-    "saving": "Сохранение",
+    "saving": "Сохранение...",
     "score": "Баллы",
     "script": "Скрипт",
     "search": "Поиск",
@@ -1213,7 +1214,7 @@
     "form": "form",
     "themeChanged": "themeChanged",
     "mock_created": "Пробный тест успешно создан!",
-    "teacher": "Преподаватель",
+    "teacher": "Учитель",
     "": {
         "/i18n": "/i18n",
         "/pages/${name}": {
@@ -1302,5 +1303,16 @@
     "mock_tests": "Пробные тесты",
     "create_test": "Создать тест",
     "tests_description": "Список всех доступных практических тестов",
-    "tests_subtitle": "Список всех доступных практических тестов"
+    "tests_subtitle": "Список всех доступных практических тестов",
+    "from_date": "Дата с",
+    "to_date": "Дата по",
+    "apply_filters": "Применить фильтры",
+    "clear_all": "Очистить все",
+    "previous": "Предыдущий",
+    "contact": "Контакты",
+    "actions": "Действия",
+    "select_theme": "Выберите тему:",
+    "confirm_logout": "Вы действительно хотите выйти из системы?",
+    "quick_actions": "Быстрые действия",
+    "logout": "Выйти из системы"
 }
