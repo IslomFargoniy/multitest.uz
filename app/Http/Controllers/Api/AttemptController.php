@@ -139,11 +139,17 @@ class AttemptController extends Controller
                     'finished_at' => $answerData['finished_at'] ?? now(),
                 ];
 
-                // Check file upload in multipart (answers.0.audio, audio_file_0, or direct audio file)
+                // Check file upload in multipart (answers.0.audio, answers.0.audio_path, or audio_12)
                 $fileKey = "answers.{$index}.audio";
+                $altKey = "answers.{$index}.audio_path";
                 if ($request->hasFile($fileKey)) {
                     $payload['audio_path'] = $this->fileUploadService->uploadAudio(
                         $request->file($fileKey),
+                        'attempt_answers_audio'
+                    );
+                } elseif ($request->hasFile($altKey)) {
+                    $payload['audio_path'] = $this->fileUploadService->uploadAudio(
+                        $request->file($altKey),
                         'attempt_answers_audio'
                     );
                 } elseif ($request->hasFile("audio_{$questionId}")) {
