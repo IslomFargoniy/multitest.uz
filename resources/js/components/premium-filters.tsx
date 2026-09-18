@@ -278,29 +278,58 @@ export default function PremiumFilters({
                                         </div>
                                     )}
 
-                                    {/* Date Range with Native Mobile Date Pickers */}
-                                    <div className="space-y-1.5">
+                                    {/* Date Range - Stacked Full Width Rows on Mobile */}
+                                    <div className="space-y-2">
                                         <label className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
                                             <Calendar className="h-3.5 w-3.5 text-indigo-500" /> {t('date_range')}
                                         </label>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <div className="space-y-1">
-                                                <span className="text-[11px] font-semibold text-slate-400">{t('from_date')}</span>
-                                                <input
-                                                    type="date"
-                                                    value={data.from || ''}
-                                                    onChange={(e) => setData('from', e.target.value)}
-                                                    className="w-full h-11 px-3 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
-                                                />
+                                        <div className="space-y-2">
+                                            {/* From Date */}
+                                            <div className="flex items-center justify-between gap-2 p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800">
+                                                <span className="text-xs font-bold text-slate-600 dark:text-slate-300 shrink-0">
+                                                    {t('from_date')}
+                                                </span>
+                                                <div className="flex items-center gap-1">
+                                                    <input
+                                                        type="date"
+                                                        value={data.from || ''}
+                                                        onChange={(e) => setData('from', e.target.value)}
+                                                        className="h-8 px-2 text-xs font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                                                    />
+                                                    {data.from && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setData('from', '')}
+                                                            className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                                                        >
+                                                            <X className="h-3.5 w-3.5" />
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </div>
-                                            <div className="space-y-1">
-                                                <span className="text-[11px] font-semibold text-slate-400">{t('to_date')}</span>
-                                                <input
-                                                    type="date"
-                                                    value={data.to || ''}
-                                                    onChange={(e) => setData('to', e.target.value)}
-                                                    className="w-full h-11 px-3 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
-                                                />
+
+                                            {/* To Date */}
+                                            <div className="flex items-center justify-between gap-2 p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800">
+                                                <span className="text-xs font-bold text-slate-600 dark:text-slate-300 shrink-0">
+                                                    {t('to_date')}
+                                                </span>
+                                                <div className="flex items-center gap-1">
+                                                    <input
+                                                        type="date"
+                                                        value={data.to || ''}
+                                                        onChange={(e) => setData('to', e.target.value)}
+                                                        className="h-8 px-2 text-xs font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                                                    />
+                                                    {data.to && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setData('to', '')}
+                                                            className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                                                        >
+                                                            <X className="h-3.5 w-3.5" />
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -607,23 +636,23 @@ export default function PremiumFilters({
                                 <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                                     <Calendar className="h-4 w-4 text-indigo-500" /> {t('date_range')}
                                 </label>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <div className="space-y-1">
-                                        <span className="text-[11px] font-semibold text-slate-400">{t('from_date')}</span>
+                                <div className="space-y-2">
+                                    <div className="flex items-center justify-between gap-2 p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800">
+                                        <span className="text-xs font-semibold text-slate-500">{t('from_date')}</span>
                                         <input
                                             type="date"
                                             value={data.from || ''}
                                             onChange={(e) => setData('from', e.target.value)}
-                                            className="w-full h-10 px-3 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                                            className="h-8 px-2 text-xs font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
                                         />
                                     </div>
-                                    <div className="space-y-1">
-                                        <span className="text-[11px] font-semibold text-slate-400">{t('to_date')}</span>
+                                    <div className="flex items-center justify-between gap-2 p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800">
+                                        <span className="text-xs font-semibold text-slate-500">{t('to_date')}</span>
                                         <input
                                             type="date"
                                             value={data.to || ''}
                                             onChange={(e) => setData('to', e.target.value)}
-                                            className="w-full h-10 px-3 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                                            className="h-8 px-2 text-xs font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
                                         />
                                     </div>
                                 </div>
