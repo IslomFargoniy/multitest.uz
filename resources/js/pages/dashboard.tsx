@@ -36,11 +36,11 @@ export default function Dashboard() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={t('sidebar.dashboard')} />
 
-            <div className="flex min-h-0 w-full flex-grow flex-col gap-3 p-1 sm:gap-6 sm:p-6 lg:gap-8 lg:p-8">
+            <div className="flex min-h-0 w-full flex-grow flex-col gap-4 p-4 sm:gap-6 sm:p-6 lg:gap-8 lg:p-8">
                 {/* 🌈 Welcome Header Section */}
-                <div className="flex items-center justify-between gap-3 px-0.5">
-                    <div className="flex flex-col gap-0.5 min-w-0">
-                        <h1 className="text-lg sm:text-2xl lg:text-3xl font-black tracking-tight text-slate-900 dark:text-white truncate">
+                <div className="flex items-center justify-between gap-4">
+                    <div className="flex flex-col gap-1 min-w-0">
+                        <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-slate-900 dark:text-white truncate">
                             {t('welcome_back')}, {user.name.split(' ')[0]}! 👋
                         </h1>
                         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{t('check_your_progress_and_scores')}</p>
@@ -50,11 +50,11 @@ export default function Dashboard() {
                             <img
                                 src={user.avatar}
                                 alt={user.name}
-                                className="h-9 w-9 sm:h-12 sm:w-12 rounded-full border border-slate-200 dark:border-slate-800 object-cover shadow-sm"
+                                className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border border-slate-200 dark:border-slate-800 object-cover shadow-sm"
                             />
                         ) : (
-                            <div className="flex h-9 w-9 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-800">
-                                <LucideUserCircle className="h-5 w-5 sm:h-8 sm:w-8" />
+                            <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-800">
+                                <LucideUserCircle className="h-6 w-6 sm:h-8 sm:w-8" />
                             </div>
                         )}
                         <span className="absolute right-0 bottom-0 h-2.5 w-2.5 rounded-full border border-white bg-emerald-500 dark:border-slate-900"></span>
@@ -62,10 +62,10 @@ export default function Dashboard() {
                 </div>
 
                 {/* 📊 Top Stats Grid */}
-                <div className="grid grid-cols-2 gap-2.5 sm:gap-6">
+                <div className="grid grid-cols-2 gap-3.5 sm:gap-6">
                     {/* Exam Attempts Card */}
-                    <Card className="rounded-xl sm:rounded-2xl border-border bg-card shadow-sm transition-all hover:shadow-md">
-                        <CardContent className="flex flex-col justify-between h-full p-3 sm:p-4">
+                    <Card className="rounded-2xl border-border bg-card shadow-sm transition-all hover:shadow-md">
+                        <CardContent className="flex flex-col justify-between h-full p-4">
                             <div className="flex items-center justify-between w-full">
                                 <span className="text-[10px] sm:text-xs font-black tracking-wider uppercase text-slate-500 dark:text-slate-400">{t('exam_attempts.title')}</span>
                                 <div className="rounded-lg bg-blue-50 p-1.5 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">

@@ -48,8 +48,6 @@ declare global {
                 setBackgroundColor: (color: string) => void;
                 enableClosingConfirmation: () => void;
                 disableClosingConfirmation: () => void;
-                disableVerticalSwipes?: () => void;
-                enableVerticalSwipes?: () => void;
                 onEvent: (eventType: string, eventHandler: (...args: any[]) => void) => void;
                 offEvent: (eventType: string, eventHandler: (...args: any[]) => void) => void;
                 MainButton: {

@@ -5,16 +5,16 @@ import { useTranslation } from 'react-i18next';
 import AppLayout from '@/layouts/app-layout';
 import UserTable from '@/components/user/user-table';
 import PremiumFilters from '@/components/premium-filters';
-import { type BreadcrumbItem, type UserPaginate, SearchData, Role, Auth } from '@/types';
+import { type BreadcrumbItem, type UserPaginate, SearchData, Role } from '@/types';
 
 export default function User() {
     const { user, roles, auth } = usePage<{
         user: UserPaginate;
         roles: Role[];
-        auth?: Auth;
+        auth: any;
     }>().props;
     const { t } = useTranslation();
-    const isAdmin = auth?.user?.roles?.some((role: Role) => role.name === 'Admin');
+    const isAdmin = auth?.user?.roles?.some((role: any) => role.name === 'Admin');
 
     const breadcrumbs: BreadcrumbItem[] = [
         {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { type BreadcrumbItem, Mock, MockStudent, Attempt } from '@/types';
+import { type BreadcrumbItem } from '@/types';
 import { useTranslation } from 'react-i18next';
 import { Users, Calendar, CheckCircle2, Clock, Activity, FileText, ArrowLeft, FileSpreadsheet, Download } from 'lucide-react';
 import { format } from 'date-fns';
@@ -13,7 +13,7 @@ import AttemptTable from '@/components/attempt/attempt-table';
 
 export default function MockShow() {
     const { mock, isAdmin } = usePage<{
-        mock: Mock;
+        mock: any;
         isAdmin: boolean;
     }>().props;
 
@@ -31,10 +31,10 @@ export default function MockShow() {
         },
     ];
 
-    const students: MockStudent[] = mock.students ?? [];
-    const attempts: Attempt[] = mock.attempts ?? [];
+    const students = mock.students ?? [];
+    const attempts = mock.attempts ?? [];
     const totalStudents = students.length;
-    const attendedStudents = students.filter((s: MockStudent) => s.attended).length;
+    const attendedStudents = students.filter((s: any) => s.attended).length;
     const pendingStudents = totalStudents - attendedStudents;
     const isActive = mock.active === 1 || mock.active === true;
 
@@ -49,8 +49,8 @@ export default function MockShow() {
 
     const exportToExcel = () => {
         import('xlsx').then((XLSX) => {
-            const dataToExport = students.map((st: MockStudent, index: number) => {
-                const att = st.attempt || attempts.find((a: Attempt) => a.mock_student_id === st.id);
+            const dataToExport = students.map((st: any, index: number) => {
+                const att = st.attempt || attempts.find((a: any) => a.mock_student_id === st.id);
                 return {
                     '№': index + 1,
                     [t('mock_exam.student_name') || "O'quvchi Ismi"]: st.name,
@@ -253,7 +253,7 @@ export default function MockShow() {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900">
-                                        {students.map((st: MockStudent, idx: number) => (
+                                        {students.map((st: any, idx: number) => (
                                             <tr key={st.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/40">
                                                 <td className="px-4 py-3 font-mono text-gray-400">{idx + 1}</td>
                                                 <td className="px-4 py-3 font-bold text-gray-900 dark:text-gray-100">{st.name}</td>

@@ -1,4 +1,4 @@
-// components/ui/baseButton.ts
+// components/ui/baseButton.js
 export const baseButton = `
     inline-flex items-center gap-2
     font-medium text-sm

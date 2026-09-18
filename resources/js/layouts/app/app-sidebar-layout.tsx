@@ -2,9 +2,11 @@ import { AppContent } from '@/components/app-content';
 import { AppShell } from '@/components/app-shell';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppSidebarHeader } from '@/components/app-sidebar-header';
+import LanguageBar from '@/components/language';
 import { useTelegramBackButton } from '@/components/telegram-theme-provider';
 import { type BreadcrumbItem } from '@/types';
 import { usePage, router } from '@inertiajs/react';
+
 import { type PropsWithChildren } from 'react';
 import { AppBottomNav } from '@/components/app-bottom-nav';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -15,10 +17,6 @@ export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWi
     const isMobile = useIsMobile();
     const { url } = usePage();
     const isDashboard = url === '/dashboard';
-
-    // Detail/nested pages should not show bottom nav so full content is visible
-    const isDetailPage = /\/(attempt|test|user|practice)\/\d+/.test(url);
-    const showBottomNav = isMobile && !isDetailPage;
 
     useTelegramBackButton(!isDashboard, () => {
         if (window.history.length > 1) {
@@ -31,22 +29,19 @@ export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWi
     return (
         <AppShell variant="sidebar">
             <AppSidebar />
-            <AppContent
-                variant="sidebar"
-                className={`w-full overflow-x-hidden ${
-                    showBottomNav
-                        ? 'pb-[calc(6.5rem+env(safe-area-inset-bottom))] md:pb-0'
-                        : 'pb-[calc(2rem+env(safe-area-inset-bottom))] md:pb-0'
-                }`}
-            >
-                <AppSidebarHeader breadcrumbs={breadcrumbs} />
+            <AppContent variant="sidebar" className="w-full overflow-x-hidden pb-[calc(7.5rem+env(safe-area-inset-bottom))] pt-16 md:pb-0 md:pt-0">
 
-                <div className="flex-1 px-1.5 sm:px-4 md:px-0">
+                <div className="md:mb-14">
+                    <AppSidebarHeader breadcrumbs={breadcrumbs} />
+                </div>
+
+                <div className="px-2 sm:px-4 md:px-0">
                     {children}
                 </div>
             </AppContent>
 
-            {showBottomNav && <AppBottomNav />}
+            {isMobile && <AppBottomNav />}
+
         </AppShell>
     );
 }

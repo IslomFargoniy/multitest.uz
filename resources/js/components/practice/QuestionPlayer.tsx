@@ -5,26 +5,10 @@ import { CloudUpload, Info, Maximize, Mic, Minimize, Timer, Volume2, ShieldAlert
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import {
-    getPersistentAudioStream,
-    getOptimalAudioMimeType,
-    pauseAudioTracks,
-    resumeAudioTracks,
-    releasePersistentAudioStream,
-} from '@/utils/media-stream-manager';
-import { AttemptPart, Question } from '@/types';
 
-interface RecordedAnswer {
-    question_id: number;
-    started_at: string;
-    finished_at: string;
-    audio: Blob;
-    ext: string;
-}
-
-export default function QuestionPlayer({ attempt_part }: { attempt_part: AttemptPart }) {
+export default function QuestionPlayer({ attempt_part }: any) {
     const { t } = useTranslation();
-    const questions: Question[] = attempt_part.part?.questions ?? [];
+    const questions = attempt_part.part.questions;
 
     const [index, setIndex] = useState(-1);
     const [phase, setPhase] = useState<'introduction' | 'audio' | 'ready' | 'recording' | 'uploading'>('introduction');
@@ -74,7 +58,6 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
     // Show native BackButton to exit test with confirmation
     useTelegramBackButton(phase !== 'uploading', () => {
         if (confirm(t('question_player.exit_confirm', 'Haqiqatan ham testdan chiqmoqchimisiz? Natijalaringiz saqlanmasligi mumkin.'))) {
-            releasePersistentAudioStream();
             router.visit('/dashboard');
         }
     });
@@ -84,26 +67,24 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
     const recorderRef = useRef<MediaRecorder | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
     const chunksRef = useRef<Blob[]>([]);
-    const answersRef = useRef<RecordedAnswer[]>([]);
+    const answersRef = useRef<any[]>([]);
     const recordingStartTimeRef = useRef<string>('');
 
     useEffect(() => {
         setIndex(-1);
         setPhase('introduction');
         answersRef.current = [];
-        return () => {
-            if (recorderRef.current && recorderRef.current.state !== 'inactive') {
-                recorderRef.current.stop();
-            }
-            pauseAudioTracks();
-        };
+        return () => stopAllMedia();
     }, [attempt_part.id]);
 
-    const stopRecorderOnly = () => {
+    const stopAllMedia = () => {
         if (recorderRef.current && recorderRef.current.state !== 'inactive') {
             recorderRef.current.stop();
         }
-        pauseAudioTracks();
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach((track) => track.stop());
+            streamRef.current = null;
+        }
     };
 
     const question = index >= 0 ? questions[index] : null;
@@ -117,7 +98,7 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
     /* Phase 0: Part Introduction */
     useEffect(() => {
         if (phase !== 'introduction') return;
-        const audioPath = attempt_part.part?.audio_path;
+        const audioPath = attempt_part.part.audio_path;
         if (!audioPath) {
             setIndex(0);
             setPhase('audio');
@@ -142,8 +123,8 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
     useEffect(() => {
         if (phase !== 'audio' || !question) return;
         const audioPath = question.audio_path;
-        const readySec = Number(question.ready_second) || 0;
         if (!audioPath) {
+            const readySec = question.ready_second;
             setPhase('ready');
             setTimer(readySec);
             setTotalTime(readySec);
@@ -152,9 +133,10 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
         const audio = new Audio(audioPath);
         audio.play().catch(() => {
             setPhase('ready');
-            setTimer(readySec);
+            setTimer(question.ready_second);
         });
         audio.onended = () => {
+            const readySec = question.ready_second;
             setPhase('ready');
             setTimer(readySec);
             setTotalTime(readySec);
@@ -194,13 +176,16 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
     const startRecording = async () => {
         if (!question) return;
         try {
-            stopRecorderOnly();
-            const stream = await getPersistentAudioStream();
+            stopAllMedia();
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             streamRef.current = stream;
-            resumeAudioTracks();
 
-            const { mimeType, extension } = getOptimalAudioMimeType();
-            const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+            // Check supported types (Chrome prefers webm, Safari prefers mp4/ogg)
+            const mimeType = MediaRecorder.isTypeSupported('audio/webm')
+                ? 'audio/webm'
+                : 'audio/ogg';
+
+            const recorder = new MediaRecorder(stream, { mimeType });
             recorderRef.current = recorder;
             chunksRef.current = [];
             recordingStartTimeRef.current = new Date().toISOString();
@@ -210,37 +195,37 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
             };
 
             recorder.onstop = () => {
-                const finalMime = recorder.mimeType || mimeType || 'audio/webm';
-                const capturedBlob = new Blob(chunksRef.current, { type: finalMime });
+                const capturedBlob = new Blob(chunksRef.current, { type: recorder.mimeType });
+
+                // Extract extension for the filename
+                const extension = recorder.mimeType.includes('webm') ? 'webm' : 'ogg';
 
                 answersRef.current.push({
                     question_id: question.id,
                     started_at: recordingStartTimeRef.current,
                     finished_at: new Date().toISOString(),
                     audio: capturedBlob,
-                    ext: extension || (finalMime.includes('mp4') ? 'mp4' : 'webm'),
+                    ext: extension
                 });
 
                 chunksRef.current = [];
-                stopRecorderOnly();
+                stopAllMedia();
                 goNext();
             };
 
             recorder.start();
             impact('medium');
             setPhase('recording');
-            const answerSec = Number(question.answer_second) || 0;
-            setTimer(answerSec);
-            setTotalTime(answerSec);
+            setTimer(question.answer_second);
+            setTotalTime(question.answer_second);
         } catch (err) {
-            console.error('Recording error:', err);
             alert(t('question_player.mic_error'));
         }
     };
 
-    const submitAnswerIncremental = (answer: RecordedAnswer) => {
+    const submitAnswerIncremental = (answer: any) => {
         const form = new FormData();
-        form.append(`answers[0][question_id]`, String(answer.question_id));
+        form.append(`answers[0][question_id]`, answer.question_id);
         form.append(`answers[0][started_at]`, answer.started_at);
         form.append(`answers[0][finished_at]`, answer.finished_at);
         form.append(`answers[0][audio_path]`, answer.audio, `q_${answer.question_id}.${answer.ext}`);
@@ -287,8 +272,8 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
     const submit = () => {
         const form = new FormData();
 
-        const next = attempt_part.attempt?.attempt_parts?.find((p: AttemptPart) => p.id > attempt_part.id);
-        if (next) form.append('next_attempt_part_id', String(next.id));
+        const next = attempt_part.attempt.attempt_parts.find((p: any) => p.id > attempt_part.id);
+        if (next) form.append('next_attempt_part_id', next.id);
 
         // Use fetch to avoid BodyStreamBuffer abort, then navigate after upload completes
         fetch(route('practice.save_answers', attempt_part.id), {
@@ -307,12 +292,10 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
                     const data = await response.json().catch(() => ({}));
                     // Navigate to the next part or back to attempt page
                     if (data.redirect) {
-                        if (!next) releasePersistentAudioStream();
                         router.visit(data.redirect);
                     } else if (next) {
                         router.visit(route('practice.show', next.id));
-                    } else if (attempt_part.attempt?.id) {
-                        releasePersistentAudioStream();
+                    } else {
                         router.visit(route('attempt.show', attempt_part.attempt.id));
                     }
                 } else {
@@ -320,8 +303,7 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
                     // Still navigate even if save failed
                     if (next) {
                         router.visit(route('practice.show', next.id));
-                    } else if (attempt_part.attempt?.id) {
-                        releasePersistentAudioStream();
+                    } else {
                         router.visit(route('attempt.show', attempt_part.attempt.id));
                     }
                 }
@@ -330,8 +312,7 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
                 console.error('Final submit network error:', error);
                 if (next) {
                     router.visit(route('practice.show', next.id));
-                } else if (attempt_part.attempt?.id) {
-                    releasePersistentAudioStream();
+                } else {
                     router.visit(route('attempt.show', attempt_part.attempt.id));
                 }
             });
@@ -399,9 +380,7 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
                     <span className="rounded-md bg-indigo-600 px-2.5 py-1 text-[11px] font-bold tracking-wide text-white uppercase">
                         {t('question_player.part_label')}
                     </span>
-                    <h1 className="text-base md:text-lg font-bold tracking-tight text-slate-800 dark:text-slate-100">
-                        {attempt_part.part?.name || attempt_part.part?.title}
-                    </h1>
+                    <h1 className="text-base md:text-lg font-bold tracking-tight text-slate-800 dark:text-slate-100">{attempt_part.part.title}</h1>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -438,12 +417,10 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
                     <div className="max-w-none">
                         {phase === 'introduction' ? (
                             <div className="space-y-4">
-                                <h2 className="text-2xl md:text-3xl font-extrabold leading-snug text-slate-800 dark:text-slate-100">
-                                    {attempt_part.part?.name || attempt_part.part?.title || t('practice_show.part_label')}
-                                </h2>
+                                <h2 className="text-2xl md:text-3xl font-extrabold leading-snug text-slate-800 dark:text-slate-100">{attempt_part.part.name}</h2>
                                 <div
                                     className="text-base md:text-lg leading-relaxed text-slate-600 dark:text-slate-300"
-                                    dangerouslySetInnerHTML={{ __html: attempt_part.part?.description || '' }}
+                                    dangerouslySetInnerHTML={{ __html: attempt_part.part.description }}
                                 />
                             </div>
                         ) : phase === 'uploading' ? (
@@ -454,7 +431,7 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
                         ) : (
                             <div
                                 className="tinymce-content prose prose-slate dark:prose-invert prose-p:text-slate-600 dark:prose-p:text-slate-200 prose-img:rounded-2xl prose-strong:text-indigo-600 max-w-none flex-1 text-lg md:text-xl leading-relaxed dark:text-slate-200"
-                                dangerouslySetInnerHTML={{ __html: question?.textarea || '' }}
+                                dangerouslySetInnerHTML={{ __html: question?.textarea }}
                             />
                         )}
                     </div>
