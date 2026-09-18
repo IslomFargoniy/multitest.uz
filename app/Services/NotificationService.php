@@ -39,12 +39,15 @@ class NotificationService
             $audioPath = $this->getAudioPhysicalPath($answer->audio_path);
             $hasAudio = $audioPath && file_exists($audioPath);
 
-            $caption = "🎉 *Natijangiz tayyor!*\n\n"
-                . "👤 {$user->name}\n"
-                . "📝 *Savol :* {$questionText}\n"
-                . "📊 *AI bahosi:* {$scoreAi}\n\n"
-                . "💳 *Bizni Qo'llab-quvvatlang:*\n\n"
-                . "`9860600402432220`\n\n"
+            $userName = htmlspecialchars($user->name ?? 'Foydalanuvchi', ENT_QUOTES, 'UTF-8');
+            $qText = htmlspecialchars($questionText, ENT_QUOTES, 'UTF-8');
+
+            $caption = "🎉 <b>Natijangiz tayyor!</b>\n\n"
+                . "👤 {$userName}\n"
+                . "📝 <b>Savol :</b> {$qText}\n"
+                . "📊 <b>AI bahosi:</b> {$scoreAi}\n\n"
+                . "💳 <b>Bizni Qo'llab-quvvatlang:</b>\n\n"
+                . "<code>9860600402432220</code>\n\n"
                 . "Donat qilishingiz mumkin.";
 
             // 1. Send Images if any
@@ -64,7 +67,7 @@ class NotificationService
                             $media[] = [
                                 'type' => 'photo',
                                 'media' => $mediaId,
-                                'parse_mode' => 'Markdown',
+                                'parse_mode' => 'HTML',
                             ];
                         }
                         $params = ['chat_id' => $chatId, 'media' => json_encode($media)];
@@ -81,7 +84,7 @@ class NotificationService
                         $telegram->sendPhoto([
                             'chat_id' => $chatId,
                             'photo' => $photo,
-                            'parse_mode' => 'Markdown',
+                            'parse_mode' => 'HTML',
                         ]);
                     }
                 } catch (\Exception $imgErr) {
@@ -96,7 +99,7 @@ class NotificationService
                         'chat_id' => $chatId,
                         'voice' => InputFile::create($audioPath, 'answer.ogg'),
                         'caption' => $caption,
-                        'parse_mode' => 'Markdown',
+                        'parse_mode' => 'HTML',
                     ]);
                     return;
                 } catch (\Exception $audErr) {
@@ -108,7 +111,7 @@ class NotificationService
             $telegram->sendMessage([
                 'chat_id' => $chatId,
                 'text' => $caption,
-                'parse_mode' => 'Markdown',
+                'parse_mode' => 'HTML',
             ]);
 
         } catch (\Throwable $e) {
