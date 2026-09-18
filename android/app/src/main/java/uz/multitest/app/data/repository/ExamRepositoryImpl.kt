@@ -90,12 +90,12 @@ class ExamRepositoryImpl @Inject constructor(
 
             // Build multipart files list
             val fileParts = mutableListOf<MultipartBody.Part>()
-            answers.forEach { item ->
+            answers.forEachIndexed { index, item ->
                 item.audioFile?.let { file ->
                     if (file.exists() && file.length() > 0) {
                         val requestFile = file.asRequestBody("audio/mp4".toMediaTypeOrNull())
-                        val part = MultipartBody.Part.createFormData("audio_${item.questionId}", file.name, requestFile)
-                        fileParts.add(part)
+                        fileParts.add(MultipartBody.Part.createFormData("audio_${item.questionId}", file.name, requestFile))
+                        fileParts.add(MultipartBody.Part.createFormData("answers.$index.audio", file.name, requestFile))
                     }
                 }
             }
