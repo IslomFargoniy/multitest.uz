@@ -101,7 +101,7 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* 🗃️ TEST CARDS GRID */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+            <div className="grid grid-cols-2 gap-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
                 {items.map((item, index) => {
                     const globalIndex = index + 1;
 
@@ -217,7 +217,7 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
                                     <CreateAttemptModal test={item} label={t('start') || 'Boshlash'} />
                                 </div>
 
-                                {(isAdmin || auth?.user?.id === item.user_id) && (
+                                {(isAdmin || auth?.user.id == item.user_id) && (
                                     <div className="flex items-center justify-center gap-2 mt-1">
                                         <UpdateTestModal test={item} />
                                         <span className="h-1 w-1 rounded-full bg-slate-200 dark:bg-slate-700" />

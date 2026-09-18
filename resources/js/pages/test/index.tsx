@@ -60,19 +60,19 @@ export default function Test() {
                 <meta property="og:image" content={seoData?.og_image} />
             </Head>
 
-            <div className="flex h-full flex-1 flex-col gap-3 sm:gap-5 rounded-xl p-1.5 sm:p-4 max-w-7xl mx-auto w-full">
+            <div className="flex h-full flex-1 flex-col gap-5 rounded-xl p-4 max-w-7xl mx-auto w-full">
                 {/* Header Actions */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 px-0.5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                        <h1 className="text-xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+                        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
                             {t('nav.tests') || 'Testlar'}
                         </h1>
-                        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                             {t('tests_description') || "Mavjud barcha CEFR va IELTS Speaking testlari ro'yxati"}
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-2 self-end sm:self-auto">
+                    <div className="flex items-center gap-2">
                         {(isAdmin || isTeacher) && (
                             <CreateTestModal />
                         )}
@@ -91,7 +91,7 @@ export default function Test() {
                 </div>
 
                 {/* Cards Container */}
-                <div className="w-full mt-1 sm:mt-2">
+                <div className="w-full mt-2">
                     <TestTable {...test} searchData={data} />
                 </div>
             </div>

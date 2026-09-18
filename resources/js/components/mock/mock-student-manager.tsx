@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Attempt } from '@/types';
 
 export interface MockStudentItem {
     id: number;
@@ -16,7 +15,7 @@ export interface MockStudentItem {
     code: string;
     attended: boolean;
     phone?: string | null;
-    attempt?: Attempt | null;
+    attempt?: any;
 }
 
 interface MockStudentManagerProps {
@@ -135,7 +134,7 @@ export default function MockStudentManager({ mockId, mockName, students = [] }: 
 
     const handleExportExcel = () => {
         import('xlsx').then((XLSX) => {
-            const dataToExport = students.map((st: MockStudentItem, index: number) => {
+            const dataToExport = students.map((st: any, index: number) => {
                 const att = st.attempt;
                 return {
                     '№': index + 1,

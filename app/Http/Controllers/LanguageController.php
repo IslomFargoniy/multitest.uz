@@ -8,7 +8,6 @@ use App\Models\Language;
 use App\Models\Test;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
@@ -17,9 +16,9 @@ class LanguageController extends Controller
     public function allJson()
     {
         try {
-            $languages = Cache::remember('languages_all_json', 3600, function () {
-                return Language::all();
-            });
+
+            $languages = Language::query();
+            $languages = $languages->get();
 
             return response()->json([
                 'status' => 'success',
@@ -36,22 +35,21 @@ class LanguageController extends Controller
     public function sidebarJson()
     {
         try {
-            $userId = Auth::id();
-            $languages = Cache::remember("languages_sidebar_user_{$userId}", 600, function () use ($userId) {
-                return Language::query()
-                    ->withCount([
-                        'tests' => function ($query) {
-                            $query->where('is_public', true);
-                        },
-                    ])
-                    ->whereHas('tests', function ($query) use ($userId) {
-                        $query->where(function ($query) use ($userId) {
-                            $query->where('is_public', true)
-                                ->orWhere('user_id', '=', $userId);
-                        });
-                    })
-                    ->get();
-            });
+
+            $languages = Language::query()
+                ->withCount([
+                    'tests' => function ($query) {
+                        $query->where('is_public', true);
+                    },
+                ])
+                ->whereHas('tests', function ($query) {
+                    $query->where(function ($query) {
+                        $query->where('is_public', true)
+                            ->orWhere('user_id', '=', Auth::id());
+                    });
+                });
+
+            $languages = $languages->get();
 
             return response()->json([
                 'status' => 'success',

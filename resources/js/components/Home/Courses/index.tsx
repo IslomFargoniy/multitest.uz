@@ -37,7 +37,7 @@ const Courses: React.FC = () => {
 
     return (
         <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 hide-scrollbar py-4 px-2">
-            {tests.map((items: Test) => (
+            {tests.map((items: any) => (
                 <div key={items.id} className="min-w-[320px] sm:min-w-[380px] snap-center flex-shrink-0">
                     <div className="bg-white dark:bg-gray-900 px-3 pt-3 pb-8 shadow-md dark:shadow-gray-800/50 rounded-2xl h-full border border-gray-100 dark:border-gray-800">
                         <div className="relative rounded-xl overflow-hidden h-48 bg-gray-100">

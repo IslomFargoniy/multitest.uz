@@ -7,7 +7,6 @@ use App\Http\Requests\StoreTestRequest;
 use App\Http\Requests\UpdateTestRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 use App\Services\FileUploadService;
 use Inertia\Inertia;
@@ -24,19 +23,17 @@ class TestController extends Controller
     public function allJson(Request $request)
     {
         try {
-            $mockId = $request->input('mock_id', 'none');
-            $cacheKey = "tests_all_json_mock_{$mockId}";
 
-            $tests = Cache::remember($cacheKey, 600, function () use ($request) {
-                $query = Test::query();
-                if ($request->has('mock_id')) {
-                    $mock_id = $request->input('mock_id');
-                    $query->whereDoesntHave('mock_tests', function ($q) use ($mock_id) {
-                        $q->where('mock_id', $mock_id);
-                    });
-                }
-                return $query->get();
-            });
+            $tests = Test::query();
+
+            if ($request->has('mock_id')) {
+                $mock_id = $request->input('mock_id');
+                $tests->whereDoesntHave('mock_tests', function ($query) use ($mock_id) {
+                    $query->where('mock_id', $mock_id);
+                });
+            }
+
+            $tests = $tests->get();
 
             return response()->json([
                 'status' => 'success',

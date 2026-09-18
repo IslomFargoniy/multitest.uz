@@ -5,17 +5,18 @@ import { type BreadcrumbItem as BreadcrumbItemType } from '@/types';
 
 export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItemType[] }) {
     return (
-        <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border/50 bg-background/80 dark:bg-slate-950/80 px-4 sm:px-6 backdrop-blur-xl">
-            <div className="flex items-center gap-2 min-w-0 flex-1">
-                <SidebarTrigger className="-ml-1 flex" />
-                <div className="truncate">
+        <div className="fixed top-0 z-50 block w-full bg-sidebar">
+
+            <header className="border-sidebar-border/50 flex h-14 items-center justify-between border-b px-6">
+                <div className="flex items-center gap-2">
+                    <SidebarTrigger className="-ml-1" />
                     <Breadcrumbs breadcrumbs={breadcrumbs} />
                 </div>
-            </div>
-            
-            <div className="shrink-0">
-                <LanguageBar />
-            </div>
-        </header>
+                <div className="flex-1"></div>
+                <div className="fixed top-0 right-0 p-3 md:right-30">
+                    <LanguageBar />
+                </div>
+            </header>
+        </div>
     );
 }

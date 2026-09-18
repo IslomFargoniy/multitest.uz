@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { Head, usePage, useForm, router } from '@inertiajs/react';
-import { type BreadcrumbItem, type MockPaginate, SearchData, Test, User, Auth, Role } from '@/types';
+import { type BreadcrumbItem, type MockPaginate, SearchData, Test, User } from '@/types';
 import MockTable from '@/components/mock/mock-table';
 import FindMockModal from '@/components/mock/find-mock-modal';
 import CreateMockModal from '@/components/mock/create-mock-modal';
@@ -13,12 +13,12 @@ export default function Mock() {
         tests: Test[];
         users: User[];
         teachers?: User[];
-        filters?: SearchData;
+        filters: any;
         isAdmin: boolean;
-        auth?: Auth;
+        auth?: any;
     }>().props;
 
-    const isTeacher = auth?.user?.roles?.some((role: Role) => role.name === 'Teacher');
+    const isTeacher = auth?.user?.roles?.some((role: any) => role.name === 'Teacher');
     const { t } = useTranslation();
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -49,19 +49,19 @@ export default function Mock() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={t('mock') || 'Mock Testlar'} />
 
-            <div className="flex h-full flex-1 flex-col gap-3 sm:gap-5 rounded-xl p-1.5 sm:p-4 max-w-7xl mx-auto w-full">
+            <div className="flex h-full flex-1 flex-col gap-5 rounded-xl p-4 max-w-7xl mx-auto w-full">
                 {/* Header with Title and Find Mock Modal */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 px-0.5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                        <h1 className="text-xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+                        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
                             {t('mock') || 'Mock Testlar'}
                         </h1>
-                        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                             {t('mock_exam.subtitle') || "Mock imtihonlarni tashkil qilish, o'quvchilarga kod berish va natijalarni nazorat qilish"}
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-2 self-end sm:self-auto">
+                    <div className="flex items-center gap-2">
                         <FindMockModal />
                         {(isAdmin || isTeacher) && (
                             <CreateMockModal tests={tests} />
@@ -83,7 +83,7 @@ export default function Mock() {
                 </div>
 
                 {/* Cards / Table */}
-                <div className="mt-1 sm:mt-2">
+                <div className="mt-2">
                     <MockTable
                         {...mock}
                         searchData={data}

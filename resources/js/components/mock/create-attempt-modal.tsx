@@ -1,12 +1,10 @@
-import { useHaptic } from '@/components/telegram-theme-provider';
-import AudioEqualizer from '@/components/ui/audio-equalizer';
+import AudioRecorder from '@/components/ui/audio-recorder';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Mock, Test } from '@/types';
-import { getPersistentAudioStream } from '@/utils/media-stream-manager';
 import { useForm } from '@inertiajs/react';
-import { ArrowRight, Check, CheckCircle2, CirclePlay, Headphones, Mic, MicOff, ShieldCheck, Sparkles, Timer } from 'lucide-react';
-import { FormEventHandler, useRef, useState } from 'react';
+import { ArrowRight, CirclePlay, Headphones, Mic2, ShieldCheck, Check } from 'lucide-react';
+import { FormEventHandler, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -18,14 +16,9 @@ interface Props {
 
 export default function CreateAttemptModal({ mock, test, label }: Props) {
     const { t } = useTranslation();
-    const { impact, notification } = useHaptic();
     const [open, setOpen] = useState(false);
-    const [isCheckingMic, setIsCheckingMic] = useState(false);
     const [hasCheckedMic, setHasCheckedMic] = useState(false);
-    const [micError, setMicError] = useState(false);
-
-    const audioContextRef = useRef<AudioContext | null>(null);
-    const analyserRef = useRef<AnalyserNode | null>(null);
+    const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
     const { data, setData, post, processing } = useForm<{
         mock_id: number | null;
@@ -37,238 +30,150 @@ export default function CreateAttemptModal({ mock, test, label }: Props) {
         part_ids: test?.parts?.map((p) => p.id) || [],
     });
 
-    const runFastMicCheck = async () => {
-        setIsCheckingMic(true);
-        setMicError(false);
-        impact('medium');
-
-        try {
-            const stream = await getPersistentAudioStream();
-
-            // Set up audio analyzer for live 2-second feedback (Option B)
-            const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-            audioContextRef.current = audioContext;
-            const source = audioContext.createMediaStreamSource(stream);
-            const analyser = audioContext.createAnalyser();
-            analyser.fftSize = 256;
-            source.connect(analyser);
-            analyserRef.current = analyser;
-
-            // Run 2-second live mic check
-            setTimeout(() => {
-                setIsCheckingMic(false);
-                setHasCheckedMic(true);
-                notification('success');
-                toast.success(t('audio_recorder.mic_found', 'Mikrofon muvaffaqiyatli tekshirildi!'));
-                audioContextRef.current?.close();
-            }, 2000);
-        } catch (error) {
-            console.error('Microphone check error:', error);
-            setIsCheckingMic(false);
-            setMicError(true);
-            notification('error');
-            toast.error(t('audio_recorder.mic_denied', "Mikrofonga ruxsat berilmadi. Iltimos ruxsat bering!"));
-        }
-    };
-
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        impact('heavy');
-
         post(route('attempt.store'), {
             onSuccess: () => {
                 setOpen(false);
-                toast.success(t('attempt_modal.good_luck', 'Omad yor bo‘lsin!'));
+                toast.success(t('attempt_modal.good_luck'));
             },
             onError: (err: any) => {
-                toast.error(err?.error || t('error.create_failed', 'Urinish yaratishda xatolik yuz berdi'));
+                toast.error(err?.error || t('error.create_failed'));
             },
         });
-    };
-
-    const allPartsCount = test?.parts?.length || 0;
-    const isAllSelected = test?.parts && data.part_ids.length === test.parts.length;
-
-    const toggleAllParts = () => {
-        if (!test?.parts) return;
-        impact('light');
-        if (isAllSelected) {
-            setData('part_ids', []);
-        } else {
-            setData('part_ids', test.parts.map((p) => p.id));
-        }
-    };
-
-    const togglePart = (id: number) => {
-        impact('light');
-        const current = data.part_ids;
-        if (current.includes(id)) {
-            setData('part_ids', current.filter((pId) => pId !== id));
-        } else {
-            setData('part_ids', [...current, id]);
-        }
     };
 
     return (
         <>
             <button
                 type="button"
-                onClick={() => {
-                    impact('light');
-                    setOpen(true);
-                }}
-                className="group flex w-full items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary/90 px-4 py-3 font-bold text-primary-foreground shadow-sm transition-all active:scale-95 cursor-pointer"
+                onClick={() => setOpen(true)}
+                className="group flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-4 py-3 font-bold text-white shadow-xs transition-all active:scale-95 cursor-pointer"
             >
                 <CirclePlay className="h-4.5 w-4.5 transition-transform group-hover:scale-110" />
-                <span className="text-xs tracking-wider uppercase font-black">{label || t('attempt_modal.start_practice', 'Boshlash')}</span>
+                <span className="text-xs tracking-wider uppercase">{label || t('attempt_modal.start_practice') || 'Boshlash'}</span>
             </button>
 
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="sm:max-w-[480px] w-full p-0 overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-2xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white p-0 shadow-2xl sm:max-w-[440px] dark:bg-slate-950">
                     {/* Header */}
-                    <div className="bg-gradient-to-b from-indigo-50/80 to-white dark:from-indigo-950/40 dark:to-slate-900/60 p-5 sm:p-6 pr-12 border-b border-slate-100 dark:border-slate-800/80 relative overflow-hidden">
-                        <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-primary/10 blur-2xl pointer-events-none" />
-                        
+                    <div className="bg-slate-900 p-5 text-white dark:bg-slate-900/80">
                         <DialogHeader>
-                            <div className="flex items-center gap-3">
-                                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-500/20">
-                                    <Headphones className="h-5 w-5" />
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                    <DialogTitle className="text-lg font-black tracking-tight truncate text-slate-900 dark:text-white">
-                                        {mock?.name || test?.name || t('attempt_modal.ready_title', 'Imtihonni Boshlash')}
-                                    </DialogTitle>
-                                    <DialogDescription className="mt-1 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-3 font-semibold">
-                                        <span className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-lg border border-amber-200/50 dark:border-amber-800/30">
-                                            <Timer className="h-3 w-3" /> ~15-20 min
-                                        </span>
-                                        <span>•</span>
-                                        <span className="text-slate-600 dark:text-slate-300">{allPartsCount} {t('practice.total_parts', 'ta qism')}</span>
-                                    </DialogDescription>
-                                </div>
+                            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-600/30 text-indigo-400">
+                                <Headphones className="h-4 w-4" />
                             </div>
+                            <DialogTitle className="text-lg font-bold tracking-tight">{t('attempt_modal.ready_title') || "Imtihonga tayyormisiz?"}</DialogTitle>
+                            <DialogDescription className="mt-0.5 text-xs text-slate-400">
+                                {t('attempt_modal.mic_requirement') || "Iltimos, mikrofoningiz to'g'ri ishlayotganiga ishonch hosil qiling"}
+                            </DialogDescription>
                         </DialogHeader>
                     </div>
 
-                    <div className="p-4 sm:p-6 space-y-4">
-                        {/* 1. Parts Selection Section */}
-                        {test?.parts && test.parts.length > 0 && (
-                            <div className="space-y-2">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-[10px] font-black tracking-widest text-slate-400 dark:text-slate-500 uppercase">
-                                        {t('attempt_modal.select_parts', 'Bo‘limlar')} ({data.part_ids.length}/{allPartsCount})
+                    <div className="space-y-4 p-5">
+                        {/* Primary Action */}
+                        <form onSubmit={submit} className="w-full space-y-3">
+                            {test?.parts && test.parts.length > 0 && (
+                                <div className="space-y-2 mb-3">
+                                    <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                                        {t('attempt_modal.select_parts') || 'Bo\'limlarni tanlang'}
                                     </span>
-                                    <button
-                                        type="button"
-                                        onClick={toggleAllParts}
-                                        className="text-[10px] font-bold text-primary hover:underline cursor-pointer"
-                                    >
-                                        {isAllSelected ? t('common.deselect_all', 'Barchasini bekor qilish') : t('common.select_all', 'Barchasi')}
-                                    </button>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-2">
-                                    {test.parts.map((part) => {
-                                        const isSelected = data.part_ids.includes(part.id);
-                                        return (
-                                            <button
+                                    <div className="grid gap-2 grid-cols-2">
+                                        {test.parts.map((part) => (
+                                            <label
                                                 key={part.id}
-                                                type="button"
-                                                onClick={() => togglePart(part.id)}
-                                                className={`flex items-center justify-between p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                                                    isSelected
-                                                        ? 'border-primary bg-primary/10 text-primary dark:border-primary/50'
-                                                        : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-500'
+                                                className={`flex cursor-pointer items-center justify-between rounded-xl border p-2.5 transition-all ${
+                                                    data.part_ids.includes(part.id)
+                                                        ? 'border-indigo-500 bg-indigo-50/60 dark:border-indigo-500/50 dark:bg-indigo-500/10'
+                                                        : 'border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/50'
                                                 }`}
                                             >
-                                                <span className="truncate">{part.name}</span>
-                                                <div
-                                                    className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-md border ${
-                                                        isSelected
-                                                            ? 'border-primary bg-primary text-primary-foreground'
-                                                            : 'border-slate-300 dark:border-slate-700'
-                                                    }`}
-                                                >
-                                                    {isSelected && <Check className="h-3 w-3 stroke-[3]" />}
+                                                <span className={`text-xs font-bold ${data.part_ids.includes(part.id) ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400'}`}>
+                                                    {part.name}
+                                                </span>
+                                                <div className={`flex h-4 w-4 items-center justify-center rounded-md border ${data.part_ids.includes(part.id) ? 'border-indigo-600 bg-indigo-600' : 'border-slate-300 dark:border-slate-700'}`}>
+                                                    {data.part_ids.includes(part.id) && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
                                                 </div>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* 2. Microphone Verification Area (Option B - Fast 2s Live Check) */}
-                        <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 p-3.5 space-y-2.5">
-                            <div className="flex items-center justify-between">
-                                <span className="flex items-center gap-1.5 text-[10px] font-black tracking-widest text-slate-500 dark:text-slate-400 uppercase">
-                                    <Mic className="h-3.5 w-3.5 text-primary" />
-                                    {t('attempt_modal.mic_check', 'Mikrofon Tekshiruvi')}
-                                </span>
-                                {hasCheckedMic && (
-                                    <span className="inline-flex items-center gap-1 text-[10px] font-black tracking-wider text-emerald-600 dark:text-emerald-400 uppercase bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full">
-                                        <CheckCircle2 className="h-3 w-3" />
-                                        {t('common.ready', 'Tayyor')}
-                                    </span>
-                                )}
-                            </div>
-
-                            {/* Live Equalizer when checking */}
-                            {isCheckingMic && (
-                                <div className="h-12 w-full rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-primary/40 bg-primary/5 dark:bg-primary/10 animate-in fade-in">
-                                    <AudioEqualizer analyser={analyserRef.current} active={isCheckingMic} />
-                                    <span className="text-[9px] font-bold text-primary mt-1 animate-pulse uppercase tracking-wider">
-                                        {t('audio_recorder.checking_mic', 'Ovoz to‘lqini tekshirilmoqda...')}
-                                    </span>
+                                                <input
+                                                    type="checkbox"
+                                                    className="hidden"
+                                                    checked={data.part_ids.includes(part.id)}
+                                                    onChange={(e) => {
+                                                        const current = data.part_ids;
+                                                        if (e.target.checked) {
+                                                            setData('part_ids', [...current, part.id]);
+                                                        } else {
+                                                            setData('part_ids', current.filter((id) => id !== part.id));
+                                                        }
+                                                    }}
+                                                />
+                                            </label>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
 
-                            {/* Mic Error state */}
-                            {micError && (
-                                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 text-xs font-bold">
-                                    <MicOff className="h-4 w-4 shrink-0" />
-                                    <p className="text-[11px] leading-snug">{t('audio_recorder.mic_denied', "Mikrofonga ruxsat berilmadi. Iltimos brauzer sozlamalaridan ruxsat bering.")}</p>
-                                </div>
-                            )}
-
-                            {!hasCheckedMic && !isCheckingMic && (
-                                <Button
-                                    type="button"
-                                    onClick={runFastMicCheck}
-                                    variant="outline"
-                                    className="w-full h-10 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xs hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
-                                >
-                                    <Mic className="h-3.5 w-3.5 mr-1.5 text-primary" />
-                                    {t('audio_recorder.verify_microphone', 'Mikrofonni Tekshirish')}
-                                </Button>
-                            )}
-                        </div>
-
-                        {/* 3. Primary Action Button */}
-                        <form onSubmit={submit} className="pt-2">
                             <Button
                                 type="submit"
-                                disabled={processing || data.part_ids.length === 0 || (!hasCheckedMic && !isCheckingMic)}
-                                className={`w-full h-12 rounded-xl text-sm font-black tracking-wide uppercase transition-all shadow-md ${
-                                    hasCheckedMic && data.part_ids.length > 0
-                                        ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/25 cursor-pointer active:scale-[0.98]'
-                                        : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed border-0'
+                                disabled={processing || !hasCheckedMic}
+                                className={`group h-11 w-full rounded-xl text-xs font-bold transition-all ${
+                                    hasCheckedMic
+                                        ? 'bg-indigo-600 text-white shadow-xs hover:bg-indigo-700 active:scale-[0.98] cursor-pointer'
+                                        : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 border border-transparent dark:border-slate-800 cursor-not-allowed'
                                 }`}
                             >
                                 {processing ? (
-                                    <span className="flex items-center gap-2">
-                                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                                        {t('common.preparing', 'Tayyorlanmoqda...')}
+                                    <span className="flex items-center gap-1.5">
+                                        <div className="h-3 w-3 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                        {t('common.preparing') || 'Tayyorlanmoqda'}...
                                     </span>
                                 ) : (
-                                    <span className="flex items-center justify-center gap-2">
-                                        <Sparkles className="h-4 w-4" />
-                                        {t('attempt_modal.start_now', 'Imtihonni Boshlash')}
-                                        <ArrowRight className="h-4 w-4 ml-1" />
+                                    <span className="flex items-center justify-center gap-1.5 tracking-wider uppercase">
+                                        {t('attempt_modal.start_now') || 'Imtihonni boshlash'}
+                                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                                     </span>
                                 )}
                             </Button>
+
+                            {!hasCheckedMic && (
+                                <div className="flex items-center justify-center gap-1.5 rounded-lg bg-amber-50/50 dark:bg-amber-900/10 py-1.5 border border-amber-100/50 dark:border-amber-900/20">
+                                    <span className="text-[8px] font-black tracking-tight text-amber-600 uppercase">
+                                        {t('attempt_modal.record_to_unlock')}
+                                    </span>
+                                </div>
+                            )}
                         </form>
+
+                        {/* 🎙️ Mic Testing Area (Micro-Compact) */}
+                        <div className="space-y-3 pt-2 border-t border-slate-50 dark:border-slate-900">
+                            <div className="flex items-center justify-between px-1">
+                                <span className="flex items-center gap-1.5 text-[9px] font-black tracking-[0.1em] text-slate-400 dark:text-slate-500 uppercase">
+                                    <Mic2 className="h-3 w-3 text-blue-500" />
+                                    {t('attempt_modal.mic_check')}
+                                </span>
+                                {hasCheckedMic && (
+                                    <span className="flex items-center gap-1 text-[9px] font-black tracking-widest text-emerald-500 uppercase">
+                                        <ShieldCheck className="h-3 w-3" />
+                                        {t('common.ready')}
+                                    </span>
+                                )}
+                            </div>
+
+                            <AudioRecorder
+                                onRecorded={(url) => {
+                                    setAudioUrl(url);
+                                    setHasCheckedMic(true);
+                                }}
+                            />
+
+                            {audioUrl && (
+                                <div className="animate-in fade-in slide-in-from-top-1 duration-300">
+                                    <div className="rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 p-1.5 shadow-sm">
+                                        <audio controls src={audioUrl} className="h-7 w-full opacity-80" />
+                                    </div>
+                                    <p className="mt-1 text-center text-[9px] font-bold text-slate-400 dark:text-slate-500">{t('attempt_modal.ensure_clear')}</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </DialogContent>
             </Dialog>
