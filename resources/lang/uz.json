@@ -564,7 +564,8 @@
         "leave_blank_to_keep": "Hozirgi parolni saqlab qolish uchun bo'sh qoldiring",
         "joined": "Qo'shilgan",
         "activity": "Faollik",
-        "create_test_limit": "Test yaratish chegarasi"
+        "create_test_limit": "Test yaratish chegarasi",
+        "no_users_found": "Foydalanuvchilar topilmadi"
     },
     "attempt_show": {
         "assessment_report": "Baholash hisoboti",
@@ -718,7 +719,7 @@
     "add_part": "Part qo'shish",
     "address": "Manzil",
     "ai_import": "AI Import",
-    "all": "Hammasi",
+    "all": "Barchasi",
     "all_answered_info": "Ajoyib! Barcha savollarga javob berdingiz. Yakunlash uchun pastdagi tugmani bosing.",
     "all_tests": "Barcha testlar",
     "all_time_hourly_distribution": "Barcha vaqtdagi soatlik taqsimot",
@@ -1023,7 +1024,7 @@
     "salary": "Maosh",
     "salary_payment": "Maosh to‘lovi",
     "save": "Saqlash",
-    "saving": "Saqlanmoqda",
+    "saving": "Saqlanmoqda...",
     "score": "Ball",
     "script": "Skript",
     "search": "Qidirish",
@@ -1302,5 +1303,16 @@
     "mock_tests": "Mock Testlar",
     "create_test": "Test yaratish",
     "tests_description": "Mavjud barcha Speaking testlari ro'yxati",
-    "tests_subtitle": "Mavjud barcha Speaking testlari ro'yxati"
+    "tests_subtitle": "Mavjud barcha Speaking testlari ro'yxati",
+    "from_date": "Dan",
+    "to_date": "Gacha",
+    "apply_filters": "Filtrlarni qo'llash",
+    "clear_all": "Barchasini tozalash",
+    "previous": "Oldingi",
+    "contact": "Aloqa",
+    "actions": "Harakatlar",
+    "select_theme": "Mavzuni tanlang:",
+    "confirm_logout": "Haqiqatan ham tizimdan chiqmoqchimisiz?",
+    "quick_actions": "Tezkor amallar",
+    "logout": "Tizimdan chiqish"
 }

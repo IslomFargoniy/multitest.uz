@@ -16,9 +16,6 @@ import {
     SlidersHorizontal,
     Check,
 } from 'lucide-react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import { format } from 'date-fns';
 
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -29,7 +26,6 @@ import {
     SheetTitle,
     SheetTrigger,
     SheetFooter,
-    SheetClose,
 } from '@/components/ui/sheet';
 import { Test, User, Role } from '@/types';
 
@@ -111,7 +107,7 @@ export default function PremiumFilters({
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                             <input
                                 type="text"
-                                placeholder={placeholder || t('search_placeholder') || 'Qidirish...'}
+                                placeholder={placeholder || t('search_placeholder')}
                                 value={data.search || ''}
                                 onChange={(e) => setData('search', e.target.value)}
                                 className="w-full h-10 pl-9 pr-7 text-sm font-medium bg-transparent border-0 focus:outline-hidden focus:ring-0 text-slate-900 dark:text-white placeholder:text-slate-400"
@@ -141,7 +137,7 @@ export default function PremiumFilters({
                                     }`}
                                 >
                                     <SlidersHorizontal className="h-3.5 w-3.5 mr-1" />
-                                    <span>{t('filters') || 'Filtr'}</span>
+                                    <span>{t('filter')}</span>
                                     {activeFiltersCount > 0 && (
                                         <span className="ml-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-indigo-600 text-[10px] font-extrabold text-white">
                                             {activeFiltersCount}
@@ -163,7 +159,7 @@ export default function PremiumFilters({
                                             <SlidersHorizontal className="h-4 w-4" />
                                         </div>
                                         <SheetTitle className="text-base font-bold text-slate-900 dark:text-white">
-                                            {t('filters') || 'Filtrlar'}
+                                            {t('filters')}
                                         </SheetTitle>
                                     </div>
                                     {activeFiltersCount > 0 && (
@@ -175,7 +171,7 @@ export default function PremiumFilters({
                                             className="h-8 px-2.5 text-xs text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg cursor-pointer"
                                         >
                                             <RotateCcw className="h-3 w-3 mr-1" />
-                                            {t('clear') || 'Tozalash'}
+                                            {t('clear')}
                                         </Button>
                                     )}
                                 </SheetHeader>
@@ -186,17 +182,17 @@ export default function PremiumFilters({
                                     {roles && roles.length > 0 && (
                                         <div className="space-y-1.5">
                                             <label className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-                                                <Shield className="h-3.5 w-3.5 text-indigo-500" /> {t('role') || 'Rol'}
+                                                <Shield className="h-3.5 w-3.5 text-indigo-500" /> {t('role')}
                                             </label>
                                             <Select
                                                 value={String(data.role || '0')}
                                                 onValueChange={(val) => setData('role', val === '0' ? '' : val)}
                                             >
                                                 <SelectTrigger className="h-11 w-full rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-sm font-semibold">
-                                                    <SelectValue placeholder={t('all') || 'Barchasi'} />
+                                                    <SelectValue placeholder={t('all')} />
                                                 </SelectTrigger>
                                                 <SelectContent className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                                                    <SelectItem value="0">{t('all') || 'Barchasi'}</SelectItem>
+                                                    <SelectItem value="0">{t('all')}</SelectItem>
                                                     {roles.map((r) => (
                                                         <SelectItem key={r.id} value={r.name}>
                                                             {r.name}
@@ -211,17 +207,17 @@ export default function PremiumFilters({
                                     {isAdmin && teachers && teachers.length > 0 && (
                                         <div className="space-y-1.5">
                                             <label className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-                                                <GraduationCap className="h-3.5 w-3.5 text-indigo-500" /> {t('teacher') || "O'qituvchi"}
+                                                <GraduationCap className="h-3.5 w-3.5 text-indigo-500" /> {t('teacher')}
                                             </label>
                                             <Select
                                                 value={String(data.teacher_id || '0')}
                                                 onValueChange={(val) => setData('teacher_id', val === '0' ? '' : val)}
                                             >
                                                 <SelectTrigger className="h-11 w-full rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-sm font-semibold">
-                                                    <SelectValue placeholder={t('all') || 'Barchasi'} />
+                                                    <SelectValue placeholder={t('all')} />
                                                 </SelectTrigger>
                                                 <SelectContent className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                                                    <SelectItem value="0">{t('all') || 'Barchasi'}</SelectItem>
+                                                    <SelectItem value="0">{t('all')}</SelectItem>
                                                     {teachers.map((tItem) => (
                                                         <SelectItem key={tItem.id} value={String(tItem.id)}>
                                                             {tItem.name}
@@ -236,17 +232,17 @@ export default function PremiumFilters({
                                     {isAdmin && users && users.length > 0 && (
                                         <div className="space-y-1.5">
                                             <label className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-                                                <UserIcon className="h-3.5 w-3.5 text-blue-500" /> {t('user') || 'Foydalanuvchi'}
+                                                <UserIcon className="h-3.5 w-3.5 text-blue-500" /> {t('user')}
                                             </label>
                                             <Select
                                                 value={String(data.user_id || '0')}
                                                 onValueChange={(val) => setData('user_id', val === '0' ? '' : val)}
                                             >
                                                 <SelectTrigger className="h-11 w-full rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-sm font-semibold">
-                                                    <SelectValue placeholder={t('all') || 'Barchasi'} />
+                                                    <SelectValue placeholder={t('all')} />
                                                 </SelectTrigger>
                                                 <SelectContent className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                                                    <SelectItem value="0">{t('all') || 'Barchasi'}</SelectItem>
+                                                    <SelectItem value="0">{t('all')}</SelectItem>
                                                     {users.map((u) => (
                                                         <SelectItem key={u.id} value={String(u.id)}>
                                                             {u.name}
@@ -261,17 +257,17 @@ export default function PremiumFilters({
                                     {tests && tests.length > 0 && (
                                         <div className="space-y-1.5">
                                             <label className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-                                                <BookOpen className="h-3.5 w-3.5 text-emerald-500" /> {t('test') || 'Test'}
+                                                <BookOpen className="h-3.5 w-3.5 text-emerald-500" /> {t('test')}
                                             </label>
                                             <Select
                                                 value={String(data.test_id || '0')}
                                                 onValueChange={(val) => setData('test_id', val === '0' ? '' : val)}
                                             >
                                                 <SelectTrigger className="h-11 w-full rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-sm font-semibold">
-                                                    <SelectValue placeholder={t('all') || 'Barchasi'} />
+                                                    <SelectValue placeholder={t('all')} />
                                                 </SelectTrigger>
                                                 <SelectContent className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                                                    <SelectItem value="0">{t('all') || 'Barchasi'}</SelectItem>
+                                                    <SelectItem value="0">{t('all')}</SelectItem>
                                                     {tests.map((tItem) => (
                                                         <SelectItem key={tItem.id} value={String(tItem.id)}>
                                                             {tItem.name}
@@ -282,31 +278,37 @@ export default function PremiumFilters({
                                         </div>
                                     )}
 
-                                    {/* Date Range */}
+                                    {/* Date Range with Native Mobile Date Pickers */}
                                     <div className="space-y-1.5">
                                         <label className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-                                            <Calendar className="h-3.5 w-3.5 text-indigo-500" /> {t('date_range') || "Sana oralig'i"}
+                                            <Calendar className="h-3.5 w-3.5 text-indigo-500" /> {t('date_range')}
                                         </label>
                                         <div className="grid grid-cols-2 gap-2">
-                                            <DatePicker
-                                                selected={data.from ? new Date(data.from) : null}
-                                                onChange={(date: Date | null) => setData('from', date ? format(date, 'yyyy-MM-dd') : '')}
-                                                placeholderText={t('from_date') || 'Dan'}
-                                                className="w-full h-11 px-3 text-sm font-medium rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 dark:text-white"
-                                            />
-                                            <DatePicker
-                                                selected={data.to ? new Date(data.to) : null}
-                                                onChange={(date: Date | null) => setData('to', date ? format(date, 'yyyy-MM-dd') : '')}
-                                                placeholderText={t('to_date') || 'Gacha'}
-                                                className="w-full h-11 px-3 text-sm font-medium rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 dark:text-white"
-                                            />
+                                            <div className="space-y-1">
+                                                <span className="text-[11px] font-semibold text-slate-400">{t('from_date')}</span>
+                                                <input
+                                                    type="date"
+                                                    value={data.from || ''}
+                                                    onChange={(e) => setData('from', e.target.value)}
+                                                    className="w-full h-11 px-3 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                                                />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <span className="text-[11px] font-semibold text-slate-400">{t('to_date')}</span>
+                                                <input
+                                                    type="date"
+                                                    value={data.to || ''}
+                                                    onChange={(e) => setData('to', e.target.value)}
+                                                    className="w-full h-11 px-3 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
                                     {/* Per Page */}
                                     <div className="space-y-1.5">
                                         <label className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-                                            <ListOrdered className="h-3.5 w-3.5 text-indigo-500" /> {t('per_page') || 'Sahifada'}
+                                            <ListOrdered className="h-3.5 w-3.5 text-indigo-500" /> {t('per_page')}
                                         </label>
                                         <Select value={String(data.per_page || '10')} onValueChange={(val) => setData('per_page', Number(val))}>
                                             <SelectTrigger className="h-11 w-full rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 dark:text-white text-sm font-semibold">
@@ -327,10 +329,10 @@ export default function PremiumFilters({
                                     <Button
                                         type="button"
                                         onClick={handleMobileSubmit}
-                                        className="w-full h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md active:scale-98 cursor-pointer transition-all"
+                                        className="w-full h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md active:scale-98 cursor-pointer transition-all flex items-center justify-center gap-2"
                                     >
-                                        <Check className="h-4 w-4 mr-1.5" />
-                                        {t('apply_filters') || "Qo'llash va Qidirish"}
+                                        <Check className="h-4 w-4" />
+                                        <span>{t('apply_filters')}</span>
                                     </Button>
                                 </SheetFooter>
                             </SheetContent>
@@ -343,7 +345,7 @@ export default function PremiumFilters({
                             className="h-10 px-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shrink-0 shadow-xs active:scale-95 cursor-pointer transition-all"
                         >
                             <Search className="h-3.5 w-3.5 sm:mr-1" />
-                            <span className="hidden sm:inline">{t('search') || 'Qidirish'}</span>
+                            <span className="hidden sm:inline">{t('search')}</span>
                         </Button>
                     </div>
                 </form>
@@ -429,7 +431,7 @@ export default function PremiumFilters({
                             onClick={clearFilters}
                             className="text-xs text-rose-500 font-semibold hover:underline shrink-0 px-1 cursor-pointer"
                         >
-                            {t('clear_all') || 'Tozalash'}
+                            {t('clear_all')}
                         </button>
                     </div>
                 )}
@@ -446,7 +448,7 @@ export default function PremiumFilters({
                             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400" />
                             <input
                                 type="text"
-                                placeholder={placeholder || t('search_placeholder') || 'Qidirish...'}
+                                placeholder={placeholder || t('search_placeholder')}
                                 value={data.search || ''}
                                 onChange={(e) => setData('search', e.target.value)}
                                 className="w-full h-11 pl-11 pr-8 text-sm font-medium bg-transparent border-0 focus:outline-hidden focus:ring-0 text-slate-900 dark:text-white placeholder:text-slate-400"
@@ -473,11 +475,11 @@ export default function PremiumFilters({
                                     <SelectTrigger className="h-10 w-auto min-w-[120px] rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-sm font-semibold px-3">
                                         <div className="flex items-center gap-1.5 truncate">
                                             <Shield className="h-4 w-4 text-indigo-500 shrink-0" />
-                                            <SelectValue placeholder={t('role') || 'Rol'} />
+                                            <SelectValue placeholder={t('role')} />
                                         </div>
                                     </SelectTrigger>
                                     <SelectContent className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                                        <SelectItem value="0">{t('all') || 'Barchasi'}</SelectItem>
+                                        <SelectItem value="0">{t('all')}</SelectItem>
                                         {roles.map((r) => (
                                             <SelectItem key={r.id} value={r.name}>
                                                 {r.name}
@@ -496,11 +498,11 @@ export default function PremiumFilters({
                                     <SelectTrigger className="h-10 w-auto min-w-[130px] max-w-[180px] rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-sm font-semibold px-3">
                                         <div className="flex items-center gap-1.5 truncate">
                                             <GraduationCap className="h-4 w-4 text-indigo-500 shrink-0" />
-                                            <SelectValue placeholder={t('teacher') || "O'qituvchi"} />
+                                            <SelectValue placeholder={t('teacher')} />
                                         </div>
                                     </SelectTrigger>
                                     <SelectContent className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                                        <SelectItem value="0">{t('all') || 'Barchasi'}</SelectItem>
+                                        <SelectItem value="0">{t('all')}</SelectItem>
                                         {teachers.map((tItem) => (
                                             <SelectItem key={tItem.id} value={String(tItem.id)}>
                                                 {tItem.name}
@@ -519,11 +521,11 @@ export default function PremiumFilters({
                                     <SelectTrigger className="h-10 w-auto min-w-[130px] max-w-[180px] rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-sm font-semibold px-3">
                                         <div className="flex items-center gap-1.5 truncate">
                                             <UserIcon className="h-4 w-4 text-blue-500 shrink-0" />
-                                            <SelectValue placeholder={t('user') || 'Foydalanuvchi'} />
+                                            <SelectValue placeholder={t('user')} />
                                         </div>
                                     </SelectTrigger>
                                     <SelectContent className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                                        <SelectItem value="0">{t('all') || 'Barchasi'}</SelectItem>
+                                        <SelectItem value="0">{t('all')}</SelectItem>
                                         {users.map((u) => (
                                             <SelectItem key={u.id} value={String(u.id)}>
                                                 {u.name}
@@ -542,11 +544,11 @@ export default function PremiumFilters({
                                     <SelectTrigger className="h-10 w-auto min-w-[130px] max-w-[180px] rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-sm font-semibold px-3">
                                         <div className="flex items-center gap-1.5 truncate">
                                             <BookOpen className="h-4 w-4 text-emerald-500 shrink-0" />
-                                            <SelectValue placeholder={t('test') || 'Test'} />
+                                            <SelectValue placeholder={t('test')} />
                                         </div>
                                     </SelectTrigger>
                                     <SelectContent className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                                        <SelectItem value="0">{t('all') || 'Barchasi'}</SelectItem>
+                                        <SelectItem value="0">{t('all')}</SelectItem>
                                         {tests.map((tItem) => (
                                             <SelectItem key={tItem.id} value={String(tItem.id)}>
                                                 {tItem.name}
@@ -569,7 +571,7 @@ export default function PremiumFilters({
                                 }`}
                             >
                                 <Filter className="h-4 w-4 mr-1.5" />
-                                <span>{t('filters') || 'Filtrlar'}</span>
+                                <span>{t('filters')}</span>
                                 {isDesktopExpanded ? <ChevronUp className="h-3.5 w-3.5 ml-1" /> : <ChevronDown className="h-3.5 w-3.5 ml-1" />}
                             </Button>
 
@@ -579,7 +581,7 @@ export default function PremiumFilters({
                                 size="sm"
                                 className="h-10 px-5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-xs active:scale-95 cursor-pointer transition-all"
                             >
-                                {t('search') || 'Qidirish'}
+                                {t('search')}
                             </Button>
 
                             {/* Reset Filter Button */}
@@ -590,7 +592,7 @@ export default function PremiumFilters({
                                     size="sm"
                                     onClick={clearFilters}
                                     className="h-10 px-3 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl text-sm cursor-pointer"
-                                    title={t('clear_filters') || 'Filtrlarni tozalash'}
+                                    title={t('clear_filters')}
                                 >
                                     <X className="h-4 w-4" />
                                 </Button>
@@ -603,27 +605,33 @@ export default function PremiumFilters({
                         <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 animate-in fade-in duration-200">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                                    <Calendar className="h-4 w-4 text-indigo-500" /> {t('date_range') || "Sana oralig'i"}
+                                    <Calendar className="h-4 w-4 text-indigo-500" /> {t('date_range')}
                                 </label>
-                                <div className="flex items-center gap-2">
-                                    <DatePicker
-                                        selected={data.from ? new Date(data.from) : null}
-                                        onChange={(date: Date | null) => setData('from', date ? format(date, 'yyyy-MM-dd') : '')}
-                                        placeholderText={t('from_date') || 'Dan'}
-                                        className="w-full h-10 px-3 text-sm font-medium rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 dark:text-white"
-                                    />
-                                    <DatePicker
-                                        selected={data.to ? new Date(data.to) : null}
-                                        onChange={(date: Date | null) => setData('to', date ? format(date, 'yyyy-MM-dd') : '')}
-                                        placeholderText={t('to_date') || 'Gacha'}
-                                        className="w-full h-10 px-3 text-sm font-medium rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 dark:text-white"
-                                    />
+                                <div className="grid grid-cols-2 gap-2">
+                                    <div className="space-y-1">
+                                        <span className="text-[11px] font-semibold text-slate-400">{t('from_date')}</span>
+                                        <input
+                                            type="date"
+                                            value={data.from || ''}
+                                            onChange={(e) => setData('from', e.target.value)}
+                                            className="w-full h-10 px-3 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <span className="text-[11px] font-semibold text-slate-400">{t('to_date')}</span>
+                                        <input
+                                            type="date"
+                                            value={data.to || ''}
+                                            onChange={(e) => setData('to', e.target.value)}
+                                            className="w-full h-10 px-3 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                                        />
+                                    </div>
                                 </div>
                             </div>
 
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                                    <ListOrdered className="h-4 w-4 text-indigo-500" /> {t('per_page') || 'Sahifada'}
+                                    <ListOrdered className="h-4 w-4 text-indigo-500" /> {t('per_page')}
                                 </label>
                                 <Select value={String(data.per_page || '10')} onValueChange={(val) => setData('per_page', Number(val))}>
                                     <SelectTrigger className="h-10 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 dark:text-white text-sm font-semibold">

@@ -564,7 +564,8 @@
         "leave_blank_to_keep": "Leave blank to keep current password",
         "joined": "Joined",
         "activity": "Activity",
-        "create_test_limit": "Create Test Limit"
+        "create_test_limit": "Create Test Limit",
+        "no_users_found": "No users found"
     },
     "attempt_show": {
         "assessment_report": "Assessment Report",
@@ -1023,7 +1024,7 @@
     "salary": "Salary",
     "salary_payment": "Salary payment",
     "save": "Save",
-    "saving": "Saving",
+    "saving": "Saving...",
     "score": "Score",
     "script": "Script",
     "search": "Search",
@@ -1302,5 +1303,16 @@
     "mock_tests": "Mock Tests",
     "create_test": "Create Test",
     "tests_description": "List of all available Speaking practice tests",
-    "tests_subtitle": "List of all available Speaking practice tests"
+    "tests_subtitle": "List of all available Speaking practice tests",
+    "from_date": "From date",
+    "to_date": "To date",
+    "apply_filters": "Apply filters",
+    "clear_all": "Clear all",
+    "previous": "Previous",
+    "contact": "Contact",
+    "actions": "Actions",
+    "select_theme": "Select theme:",
+    "confirm_logout": "Are you sure you want to log out?",
+    "quick_actions": "Quick actions",
+    "logout": "Log out"
 }
