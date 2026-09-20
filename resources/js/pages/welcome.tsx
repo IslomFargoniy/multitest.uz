@@ -2,6 +2,12 @@ import { AppBottomNav } from '@/components/app-bottom-nav';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import Hero from '@/components/Home/Hero';
+import CEFRLevels from '@/components/Home/CEFRLevels';
+import ScoringRubric from '@/components/Home/ScoringRubric';
+import FeaturedTests from '@/components/Home/FeaturedTests';
+import Testimonial from '@/components/Home/Testimonials';
+import FAQSection from '@/components/Home/FAQSection';
+import DownloadCTA from '@/components/Home/DownloadCTA';
 import CreateAttemptModal from '@/components/mock/create-attempt-modal';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Mock, User } from '@/types';
@@ -56,9 +62,9 @@ export default function Welcome() {
         return (
             <div className="fixed inset-0 flex flex-col items-center justify-center bg-background z-50">
                 <div className="relative mb-8">
-                    <img 
-                        src="/images/logo/logo.png" 
-                        alt="Logo" 
+                    <img
+                        src="/images/logo/logo.png"
+                        alt="Logo"
                         className="h-24 w-24 rounded-3xl object-cover animate-pulse shadow-2xl"
                     />
                     <div className="absolute -inset-4 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
@@ -84,22 +90,41 @@ export default function Welcome() {
                 <meta property="og:title" content={t('welcome.seo_title')} />
                 <meta property="og:description" content={t('welcome.seo_description')} />
                 <meta property="og:type" content="website" />
-                <link rel="preconnect" href="https://fonts.bunny.net" />
-                <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
             </Head>
-            
-            <div className="min-h-screen bg-background text-foreground">
-                {!isMobile && <Header />}
-                
-                <main>
-                    {!mock && <Hero />}
 
-                    {mock && (
-                        <div className={`flex items-center justify-center ${isMobile ? 'p-4' : 'mt-20'}`}>
-                            <div className="tma-card w-full max-w-sm relative overflow-hidden group">
+            <div className="min-h-screen bg-background text-foreground selection:bg-indigo-500 selection:text-white">
+                {!isMobile && <Header />}
+
+                <main>
+                    {!mock ? (
+                        <>
+                            {/* 1. Hero Section with Live AI Visualizer */}
+                            <Hero />
+
+                            {/* 2. UzBMB CEFR Exam 3-Part Structure & B1/B2/C1 Scale */}
+                            <CEFRLevels />
+
+                            {/* 3. AI Scoring Rubric & Instant Feedback Demo */}
+                            <ScoringRubric />
+
+                            {/* 4. Real Mock Tests Catalog */}
+                            <FeaturedTests />
+
+                            {/* 5. Student Reviews & Verified Results */}
+                            <Testimonial />
+
+                            {/* 6. Google-Indexed FAQ Accordion */}
+                            <FAQSection />
+
+                            {/* 7. Telegram Bot, Android App & Ecosystem CTA */}
+                            <DownloadCTA />
+                        </>
+                    ) : (
+                        <div className={`flex items-center justify-center ${isMobile ? 'p-4' : 'mt-20 py-16'}`}>
+                            <div className="tma-card w-full max-w-md relative overflow-hidden group border border-slate-200/80 bg-white p-6 shadow-xl rounded-3xl dark:border-slate-800 dark:bg-slate-900">
                                 {/* Decorative Gradient */}
                                 <div className="absolute top-0 right-0 -mr-16 -mt-16 h-32 w-32 rounded-full bg-primary/10 blur-3xl transition-all group-hover:bg-primary/20" />
-                                
+
                                 <div className="relative flex flex-col">
                                     {/* Status Badges */}
                                     <div className="mb-4 flex gap-2">

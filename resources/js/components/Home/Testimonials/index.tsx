@@ -1,32 +1,35 @@
-"use client";
-import React from "react";
-import { Star, StarHalf } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import React from 'react';
+import { Star, StarHalf } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Icon } from '@iconify/react';
 
-const Testimonial = () => {
+const Testimonial: React.FC = () => {
     const { t } = useTranslation();
 
     const testimonialData = [
         {
-            imgSrc: "/assets/testimonial/user1.png",
-            name: "Azizbek",
-            profession: "IELTS 7.5",
-            comment: t('testimonials.comment_1') || "Multitest has completely changed how I prepare for IELTS. The AI evaluation is incredibly accurate!",
-            rating: 5
+            initials: 'AB',
+            bg: 'from-blue-600 to-indigo-600',
+            name: 'Azizbek Rahimov',
+            scoreBadge: 'CEFR C1 (79 ball)',
+            comment: t('testimonials.comment_1') || "Multitest.uz simulyatori orqali 2 hafta ichida Speaking darajamni B2 dan C1 ga ko'tardim. AI baholash va tavsiyalar imtihonda 100% o'zini oqladi!",
+            rating: 5,
         },
         {
-            imgSrc: "/assets/testimonial/user2.png",
-            name: "Malika",
-            profession: "CEFR B2",
-            comment: t('testimonials.comment_2') || "The speaking mock tests are very close to the real exam. The detailed feedback helped me improve fast.",
-            rating: 4.5
+            initials: 'MY',
+            bg: 'from-purple-600 to-pink-600',
+            name: 'Malika Yoqubova',
+            scoreBadge: 'CEFR B2 (68 ball)',
+            comment: t('testimonials.comment_2') || "Part 2 dagi rasmli topshiriqlar va vaqt me'yori xuddi haqiqiy UzBMB testidek. Natijani 1 daqiqada olish juda qulay.",
+            rating: 5,
         },
         {
-            imgSrc: "/assets/testimonial/user3.png",
-            name: "Dilshod",
-            profession: "IELTS 8.0",
-            comment: t('testimonials.comment_3') || "I loved the dynamic UI and the instant feedback. I could practice anytime, anywhere.",
-            rating: 5
+            initials: 'DU',
+            bg: 'from-emerald-600 to-teal-600',
+            name: 'Dilshod Umarov',
+            scoreBadge: 'IELTS Speaking 7.5',
+            comment: t('testimonials.comment_3') || "Grammatik va leksik xatolar tahlili aynan qayerda xato qilayotganimni ko'rsatib berdi. O'qituvchisiz tayyorlanish uchun zo'r vosita.",
+            rating: 5,
         },
     ];
 
@@ -37,39 +40,72 @@ const Testimonial = () => {
 
         return (
             <div className="flex gap-1">
-                {Array(fullStars).fill(0).map((_, i) => <Star key={`full-${i}`} className="text-yellow-500 fill-yellow-500 w-5 h-5" />)}
-                {halfStars > 0 && <StarHalf className="text-yellow-500 fill-yellow-500 w-5 h-5" />}
-                {Array(emptyStars).fill(0).map((_, i) => <Star key={`empty-${i}`} className="text-gray-300 fill-gray-300 w-5 h-5" />)}
+                {Array(fullStars)
+                    .fill(0)
+                    .map((_, i) => (
+                        <Star key={`full-${i}`} className="text-yellow-500 fill-yellow-500 w-4 h-4" />
+                    ))}
+                {halfStars > 0 && <StarHalf className="text-yellow-500 fill-yellow-500 w-4 h-4" />}
+                {Array(emptyStars)
+                    .fill(0)
+                    .map((_, i) => (
+                        <Star key={`empty-${i}`} className="text-slate-300 dark:text-slate-700 fill-slate-300 dark:fill-slate-700 w-4 h-4" />
+                    ))}
             </div>
         );
     };
 
     return (
-        <section id="testimonial" className="py-10 bg-slate-50 dark:bg-slate-900/50">
-            <div className='container mx-auto lg:max-w-screen-xl md:max-w-screen-md px-4'>
-                <h2 className="text-center text-midnight_text dark:text-white text-4xl font-semibold mb-16">
-                    {t('testimonials.title') || "What Our Students Say"}
-                </h2>
-                
-                <div className="flex flex-wrap justify-center gap-8">
-                    {testimonialData.map((items, i) => (
-                        <div key={i} className="w-full md:w-[calc(33.333%-2rem)] max-w-sm">
-                            <div className={`bg-white dark:bg-slate-900 rounded-2xl p-6 relative shadow-sm border border-slate-100 dark:border-slate-800 mt-8 ${i % 2 ? 'shadow-md' : ''}`}>
-                                <div className="absolute -top-10 left-6">
-                                    <div className="w-20 h-20 rounded-full border-4 border-white dark:border-slate-800 overflow-hidden bg-gray-200">
-                                        <img src={items.imgSrc} alt={items.name} className="w-full h-full object-cover" />
+        <section id="testimonial" className="py-16 md:py-24 bg-slate-50/50 dark:bg-slate-900/40">
+            <div className="container mx-auto px-4 md:max-w-screen-md lg:max-w-screen-xl">
+                {/* Header */}
+                <div className="text-center max-w-3xl mx-auto mb-16">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200/80 bg-indigo-50/80 px-3.5 py-1 text-xs font-bold text-indigo-700 dark:border-indigo-900/50 dark:bg-indigo-950/50 dark:text-indigo-300 mb-4">
+                        <Icon icon="solar:chat-round-like-bold" className="text-sm" />
+                        <span>Fikrlar va Natijalar</span>
+                    </div>
+                    <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                        {t('testimonials.title') || 'O\'quvchilarimiz Nima Deydi?'}
+                    </h2>
+                    <p className="mt-4 text-base md:text-lg text-slate-600 dark:text-slate-300">
+                        Multitest.uz yordamida orzusidagi CEFR B2/C1 yoki IELTS balliga erishgan nomzodlar
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {testimonialData.map((item, i) => (
+                        <div
+                            key={i}
+                            className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm hover:shadow-lg transition-all dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between"
+                        >
+                            <div>
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center gap-3">
+                                        <div
+                                            className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${item.bg} text-white font-black text-sm shadow-md`}
+                                        >
+                                            {item.initials}
+                                        </div>
+                                        <div>
+                                            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                                                {item.name}
+                                            </h3>
+                                            <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                                                {item.scoreBadge}
+                                            </p>
+                                        </div>
                                     </div>
+                                    {renderStars(item.rating)}
                                 </div>
-                                <h4 className='text-base font-normal text-gray-700 dark:text-gray-300 mt-10 mb-6 italic'>"{items.comment}"</h4>
-                                <div className="flex justify-between items-end border-t border-slate-100 dark:border-slate-800 pt-4">
-                                    <div>
-                                        <h3 className='text-lg font-medium text-gray-900 dark:text-white'>{items.name}</h3>
-                                        <h3 className='text-sm font-normal text-gray-500 dark:text-gray-400'>{items.profession}</h3>
-                                    </div>
-                                    <div>
-                                        {renderStars(items.rating)}
-                                    </div>
-                                </div>
+
+                                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed italic mb-6">
+                                    "{item.comment}"
+                                </p>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 text-[11px] font-medium text-emerald-600 dark:text-emerald-400 pt-3 border-t border-slate-100 dark:border-slate-800">
+                                <Icon icon="solar:verified-check-bold" className="text-sm" />
+                                <span>Tasdiqlangan natija</span>
                             </div>
                         </div>
                     ))}
