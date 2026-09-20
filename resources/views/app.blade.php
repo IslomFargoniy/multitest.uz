@@ -85,15 +85,15 @@
         <!-- Structured Data / JSON-LD -->
         <script type="application/ld+json">
         {
-          "@context": "https://schema.org",
-          "@graph": [
+          "@@context": "https://schema.org",
+          "@@graph": [
             {
-              "@type": "EducationalOrganization",
-              "@id": "https://multitest.uz/#organization",
+              "@@type": "EducationalOrganization",
+              "@@id": "https://multitest.uz/#organization",
               "name": "Multitest.uz",
               "url": "https://multitest.uz",
               "logo": {
-                "@type": "ImageObject",
+                "@@type": "ImageObject",
                 "url": "https://multitest.uz/images/logo/logo.png",
                 "width": "512",
                 "height": "512"
@@ -105,65 +105,65 @@
               ]
             },
             {
-              "@type": "WebSite",
-              "@id": "https://multitest.uz/#website",
+              "@@type": "WebSite",
+              "@@id": "https://multitest.uz/#website",
               "url": "https://multitest.uz",
               "name": "Multitest.uz",
               "publisher": {
-                "@id": "https://multitest.uz/#organization"
+                "@@id": "https://multitest.uz/#organization"
               },
               "potentialAction": {
-                "@type": "SearchAction",
+                "@@type": "SearchAction",
                 "target": "https://multitest.uz/test?search={search_term_string}",
                 "query-input": "required name=search_term_string"
               }
             },
             {
-              "@type": "WebApplication",
-              "@id": "https://multitest.uz/#webapp",
+              "@@type": "WebApplication",
+              "@@id": "https://multitest.uz/#webapp",
               "name": "Multitest.uz CEFR & IELTS Speaking AI Simulator",
               "url": "https://multitest.uz",
               "applicationCategory": "EducationalApplication",
               "operatingSystem": "All",
               "offers": {
-                "@type": "Offer",
+                "@@type": "Offer",
                 "price": "0",
                 "priceCurrency": "UZS"
               }
             },
             {
-              "@type": "FAQPage",
-              "@id": "https://multitest.uz/#faq",
+              "@@type": "FAQPage",
+              "@@id": "https://multitest.uz/#faq",
               "mainEntity": [
                 {
-                  "@type": "Question",
+                  "@@type": "Question",
                   "name": "Multitest.uz orqali qanday qilib bepul mock test topshirish mumkin?",
                   "acceptedAnswer": {
-                    "@type": "Answer",
+                    "@@type": "Answer",
                     "text": "Platformada ro'yxatdan o'tganingizdan so'ng, istalgan ochiq CEFR yoki IELTS Speaking testini tanlab, to'g'ridan-to'g'ri brauzer yoki mobil ilovada mikrofon orqali testni topshirishingiz mumkin."
                   }
                 },
                 {
-                  "@type": "Question",
+                  "@@type": "Question",
                   "name": "AI baholash tizimi qanchalik aniq va ishonchli?",
                   "acceptedAnswer": {
-                    "@type": "Answer",
+                    "@@type": "Answer",
                     "text": "Bizning AI baholash tizimimiz UzBMB (DTM) va CEFR rasmiy mezonlari (Fluency, Lexical Resource, Grammar, Pronunciation) asosida ishlaydi va 95%+ aniqlikda real imtihon ballini ko'rsatadi."
                   }
                 },
                 {
-                  "@type": "Question",
+                  "@@type": "Question",
                   "name": "Multilevel (Milliy sertifikat) Speaking imtihoni qanday qismlardan iborat?",
                   "acceptedAnswer": {
-                    "@type": "Answer",
+                    "@@type": "Answer",
                     "text": "UzBMB Multilevel Speaking 3 ta asosiy qismdan iborat: Part 1 (Suhbat va umumiy savollar), Part 2 (Rasm va vaziyat solishtirish), Part 3 (Mavzu bo'yicha chuqur munozara)."
                   }
                 },
                 {
-                  "@type": "Question",
+                  "@@type": "Question",
                   "name": "Telegram bot orqali kirsa bo'ladimi?",
                   "acceptedAnswer": {
-                    "@type": "Answer",
+                    "@@type": "Answer",
                     "text": "Ha, @MultitestUzBot orqali bir tugma bilan Telegram WebApp rejimida yoki OTP kod orqali tizimga kirishingiz mumkin."
                   }
                 }
