@@ -11,7 +11,16 @@ const FeaturedTests: React.FC = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch(route('landing-page-tests'))
+        let endpoint = '/landing-page-tests';
+        try {
+            if (typeof route === 'function' && route().has('landing-page-tests')) {
+                endpoint = route('landing-page-tests');
+            }
+        } catch (_) {
+            endpoint = '/landing-page-tests';
+        }
+
+        fetch(endpoint)
             .then((res) => res.json())
             .then((res) => {
                 setTests(res.data ?? res ?? []);
