@@ -1,5 +1,6 @@
 import AttemptPartAccordion from '@/components/attempt/AttemptPartAccordion';
 import EvaluateAttemptModal from '@/components/attempt/evaluate-attempt-modal';
+import ShareableCertificateModal from '@/components/attempt/ShareableCertificateModal';
 import AppLayout from '@/layouts/app-layout';
 import { type Attempt, Auth, type BreadcrumbItem } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
@@ -45,18 +46,21 @@ export default function AttemptShow() {
                                 </p>
                             </div>
 
-                            <div className="flex shrink-0 items-center gap-3">
+                            <div className="flex shrink-0 items-center gap-3 flex-wrap">
                                 {attempt.score !== null && attempt.id && (
-                                    <a
-                                        href={route('attempt.certificate', { attempt: attempt.id })}
-                                        target="_blank"
-                                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/10 px-6 py-3 text-sm font-bold text-white transition-all hover:bg-white/20"
-                                    >
-                                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
-                                        {t('attempt_show.download_pdf')}
-                                    </a>
+                                    <>
+                                        <ShareableCertificateModal attempt={attempt} />
+                                        <a
+                                            href={route('attempt.certificate', { attempt: attempt.id })}
+                                            target="_blank"
+                                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/10 px-6 py-3 text-sm font-bold text-white transition-all hover:bg-white/20"
+                                        >
+                                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            {t('attempt_show.download_pdf')}
+                                        </a>
+                                    </>
                                 )}
                                 {(isAdmin || isTeacher) && (
                                     <button

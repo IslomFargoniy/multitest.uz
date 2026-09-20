@@ -733,6 +733,42 @@
         "stat_satisfaction": "4.9 / 5",
         "stat_satisfaction_label": "Оценка пользователей"
     },
+    "landing_calculator": {
+        "badge": "Интерактивный Инструмент",
+        "title": "Рассчитайте Свой Балл и Уровень CEFR",
+        "subtitle": "Укажите примерные баллы по модулям, чтобы узнать общий уровень CEFR и официальные льготы",
+        "listening": "Listening (Аудирование)",
+        "reading": "Reading (Чтение)",
+        "writing": "Writing (Письмо)",
+        "speaking": "Speaking (Говорение)",
+        "overall_score": "Общий балл CEFR",
+        "predicted_level": "Прогнозируемый уровень",
+        "privilege_title": "Предоставляемые льготы",
+        "c1_privilege": "100% максимальный балл при поступлении в вузы + 50% надбавка к зарплате учителям",
+        "b2_privilege": "100% максимальный балл при поступлении в бакалавриат и магистратуру",
+        "b1_privilege": "Подходит для колледжей и базовых требований к уровню языка",
+        "a2_privilege": "Базовый уровень — тренируйтесь в симуляторе Speaking для повышения балла",
+        "practice_cta": "Улучшить навык Speaking"
+    },
+    "certificate_modal": {
+        "share_certificate": "Поделиться Сертификатом",
+        "title": "Официальный Сертификат Оценки",
+        "subtitle": "Результат анализа искусственного интеллекта по стандарту UzBMB (ГЦТ)",
+        "candidate": "Кандидат",
+        "exam_date": "Дата сдачи",
+        "overall_result": "Общий Результат",
+        "verified_by": "Подтверждено Multitest AI",
+        "download_img": "Скачать изображение (PNG)",
+        "share_telegram": "Поделиться в Telegram",
+        "copied_link": "Ссылка скопирована в буфер обмена!",
+        "share_story": "Скачать для Instagram Stories"
+    },
+    "simulator": {
+        "prep_phase": "ВРЕМЯ НА ПОДГОТОВКУ",
+        "prep_hint": "Сформулируйте мысли и сделайте заметки с ключевыми словами.",
+        "recording_phase": "ИДЕТ ЗАПИСЬ РЕЧИ (ГОВОРИТЕ)",
+        "mic_active": "Микрофон активен"
+    },
     "skills": {
         "skills_analysis": "Анализ навыков",
         "fluency": "Беглость речи",

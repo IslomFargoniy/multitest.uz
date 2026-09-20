@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import Hero from '@/components/Home/Hero';
 import CEFRLevels from '@/components/Home/CEFRLevels';
+import ScoreCalculator from '@/components/Home/ScoreCalculator';
 import ScoringRubric from '@/components/Home/ScoringRubric';
 import FeaturedTests from '@/components/Home/FeaturedTests';
 import Testimonial from '@/components/Home/Testimonials';
@@ -104,7 +105,10 @@ export default function Welcome() {
                             {/* 2. UzBMB CEFR Exam 3-Part Structure & B1/B2/C1 Scale */}
                             <CEFRLevels />
 
-                            {/* 3. AI Scoring Rubric & Instant Feedback Demo */}
+                            {/* 3. Interactive CEFR Score & Level Calculator */}
+                            <ScoreCalculator />
+
+                            {/* 4. AI Scoring Rubric & Instant Feedback Demo */}
                             <ScoringRubric />
 
                             {/* 4. Real Mock Tests Catalog */}

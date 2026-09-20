@@ -733,6 +733,42 @@
         "stat_satisfaction": "4.9 / 5",
         "stat_satisfaction_label": "User Satisfaction"
     },
+    "landing_calculator": {
+        "badge": "Interactive Tool",
+        "title": "Calculate Your CEFR Score & Level",
+        "subtitle": "Enter your estimated scores across modules to see your overall CEFR level and official benefits",
+        "listening": "Listening",
+        "reading": "Reading",
+        "writing": "Writing",
+        "speaking": "Speaking",
+        "overall_score": "Overall CEFR Score",
+        "predicted_level": "Predicted Level",
+        "privilege_title": "Privilege & Opportunities",
+        "c1_privilege": "100% maximum score in university entrance exams + 50% teacher salary bonus",
+        "b2_privilege": "100% maximum score in Bachelor & Master admissions (official exemption)",
+        "b1_privilege": "Suitable for college and basic proficiency requirements",
+        "a2_privilege": "Elementary level — practice in Speaking simulator to boost your score",
+        "practice_cta": "Improve Speaking Score"
+    },
+    "certificate_modal": {
+        "share_certificate": "Share Certificate",
+        "title": "Official Assessment Certificate",
+        "subtitle": "AI evaluation report strictly aligned with UzBMB and CEFR standards",
+        "candidate": "Candidate",
+        "exam_date": "Date",
+        "overall_result": "Overall Result",
+        "verified_by": "Verified by Multitest AI",
+        "download_img": "Download Image (PNG)",
+        "share_telegram": "Share on Telegram",
+        "copied_link": "Link copied to clipboard!",
+        "share_story": "Download for Instagram Story"
+    },
+    "simulator": {
+        "prep_phase": "PREPARATION TIME",
+        "prep_hint": "Organize your ideas and take notes on key vocabulary.",
+        "recording_phase": "RECORDING IN PROGRESS (SPEAK NOW)",
+        "mic_active": "Microphone Active"
+    },
     "skills": {
         "skills_analysis": "Skills Analysis",
         "fluency": "Fluency",
