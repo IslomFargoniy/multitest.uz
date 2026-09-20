@@ -262,6 +262,11 @@ export interface AttemptPart {
     attempt?: Attempt;
     attempt_answers?: AttemptAnswer[];
     ai_score_avg?: number;
+    ai_fluency_score?: number;
+    ai_lexical_score?: number;
+    ai_grammar_score?: number;
+    ai_pronunciation_score?: number;
+    [key: string]: unknown;
 }
 
 export interface AttemptAnswer {
