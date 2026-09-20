@@ -1,5 +1,5 @@
 import '../css/app.css';
-import './i18n';
+import i18n from './i18n';
 import "react-datepicker/dist/react-datepicker.css";
 import 'react-time-picker/dist/TimePicker.css';
 
@@ -12,21 +12,32 @@ import { initTelegramWebApp } from './hooks/use-telegram';
 
 initTelegramWebApp();
 
+// Auto-reload on deployment chunk version mismatches (Vite preload error)
+window.addEventListener('vite:preloadError', () => {
+    window.location.reload();
+});
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 import { TelegramThemeProvider } from './components/telegram-theme-provider';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
-    resolve: (name) => resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob('./pages/**/*.tsx')),
+    resolve: (name) => {
+        const pages = import.meta.glob('./pages/**/*.tsx');
+        return resolvePageComponent(`./pages/${name}.tsx`, pages).catch((err) => {
+            if (err?.message?.includes('Failed to fetch dynamically imported module') || err?.name === 'TypeError') {
+                window.location.reload();
+            }
+            throw err;
+        });
+    },
     setup({ el, App, props }) {
         const root = createRoot(el);
 
         // Sync i18n language with server-side locale...
         if (props.initialPage.props.locale) {
-            import('./i18n').then(({ default: i18n }) => {
-                i18n.changeLanguage(props.initialPage.props.locale as string);
-            });
+            i18n.changeLanguage(props.initialPage.props.locale as string);
         }
 
         root.render(
@@ -40,7 +51,6 @@ createInertiaApp({
         color: '#4B5563'
     }
 });
-
 
 // This will set light / dark mode on load...
 initializeTheme();
