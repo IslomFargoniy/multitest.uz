@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { useTranslation } from 'react-i18next';
-import { Attempt } from '@/types';
+import { Attempt, AttemptPart } from '@/types';
 import { toast } from 'sonner';
 
 interface ShareableCertificateModalProps {
@@ -12,7 +12,6 @@ const ShareableCertificateModal: React.FC<ShareableCertificateModalProps> = ({ a
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
-    const certificateRef = useRef<HTMLDivElement>(null);
 
     const score = attempt.score ?? attempt.ai_score_avg ?? 0;
 
@@ -26,7 +25,7 @@ const ShareableCertificateModal: React.FC<ShareableCertificateModalProps> = ({ a
     // Calculate sub-criteria averages if available in attempt_parts
     const criteriaScores = () => {
         let fluency = 0, lexical = 0, grammar = 0, pronunciation = 0, count = 0;
-        attempt.attempt_parts?.forEach((p) => {
+        attempt.attempt_parts?.forEach((p: AttemptPart) => {
             if (p.ai_fluency_score) fluency += Number(p.ai_fluency_score);
             if (p.ai_lexical_score) lexical += Number(p.ai_lexical_score);
             if (p.ai_grammar_score) grammar += Number(p.ai_grammar_score);
@@ -189,7 +188,6 @@ const ShareableCertificateModal: React.FC<ShareableCertificateModalProps> = ({ a
 
                         {/* Certificate Visual Preview Card */}
                         <div
-                            ref={certificateRef}
                             className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-6 sm:p-8 text-white shadow-xl border border-indigo-500/30"
                         >
                             {/* Watermark Logo */}
