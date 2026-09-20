@@ -52,6 +52,12 @@ fun AuthScreen(
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
+        val intentData = (context as? android.app.Activity)?.intent?.data
+        val incomingOtp = intentData?.getQueryParameter("otp") ?: intentData?.getQueryParameter("code")
+        if (!incomingOtp.isNullOrBlank()) {
+            viewModel.onOtpChanged(incomingOtp.trim())
+        }
+
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is AuthUiEvent.NavigateToMain -> onNavigateToMain()
@@ -189,7 +195,7 @@ fun AuthScreen(
 
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "@multitestuzbot",
+                            text = "@MultitestUzBot",
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurface

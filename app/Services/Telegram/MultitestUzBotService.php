@@ -3,7 +3,9 @@
 namespace App\Services\Telegram;
 
 use App\Models\Mock;
+use App\Models\Otp;
 use App\Models\User\User;
+use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
 use Telegram\Bot\Keyboard\Keyboard;
 
@@ -17,22 +19,83 @@ class MultitestUzBotService
     }
 
     /**
-     * Handle bot commands (/start, /help, /mocks)
+     * Handle bot commands (/start, /code, /help, /mocks, etc.)
      */
-    public function handleCommand(array $update, string $command, int|string $chatId): void
+    public function handleCommand(array $update, string $text, int|string $chatId): void
     {
-        $parts = explode(' ', $update['message']['text']);
-        $command = strtolower($parts[0]); // '/start'
-        $params = array_slice($parts, 1); // ['12345']
+        $parts = explode(' ', trim($text));
+        $command = strtolower($parts[0] ?? '');
+        $param = strtolower($parts[1] ?? '');
 
-        match ($command) {
-            '/start' => $this->sendWelcomeMessage($update, $chatId),
-            '/code', '/login', '/otp' => $this->handleOtpRequest($update, $chatId),
-            '/help' => $this->sendHelpMessage($chatId),
-            '/mocks' => $this->sendMockMessage($chatId),
-            '/ref' => $this->sendRefMessage($chatId),
-            default => $this->sendUnknownCommand($chatId),
-        };
+        // 1. Deep linking or specific login requests
+        if ($command === '/start' && in_array($param, ['code', 'login', 'otp', 'android', 'app'])) {
+            $this->handleOtpRequest($update, $chatId);
+            return;
+        }
+
+        // 2. Standard command match
+        switch ($command) {
+            case '/start':
+                $this->sendWelcomeMessage($update, $chatId);
+                break;
+            case '/code':
+            case '/login':
+            case '/otp':
+            case '/android':
+            case 'kod':
+            case 'kirish':
+            case 'parol':
+            case 'code':
+            case 'login':
+            case 'otp':
+                $this->handleOtpRequest($update, $chatId);
+                break;
+            case '/help':
+                $this->sendHelpMessage($chatId);
+                break;
+            case '/mocks':
+                $this->sendMockMessage($chatId);
+                break;
+            case '/ref':
+                $this->sendRefMessage($chatId);
+                break;
+            default:
+                $this->sendWelcomeMessage($update, $chatId);
+                break;
+        }
+    }
+
+    /**
+     * Handle Telegram Inline Button callbacks (callback_query)
+     */
+    public function handleCallbackQuery(array $update, string $data, int|string $chatId, ?string $callbackQueryId = null): void
+    {
+        if ($callbackQueryId) {
+            try {
+                $this->telegram->answerCallbackQuery([
+                    'callback_query_id' => $callbackQueryId,
+                    'text' => '✅ Kod yangilandi',
+                ]);
+            } catch (\Throwable $e) {
+                Log::warning('Telegram answerCallbackQuery failed: ' . $e->getMessage());
+            }
+        }
+
+        switch ($data) {
+            case 'get_otp':
+            case 'refresh_otp':
+                $this->handleOtpRequest($update, $chatId);
+                break;
+            case 'mocks':
+                $this->sendMockMessage($chatId);
+                break;
+            case 'help':
+                $this->sendHelpMessage($chatId);
+                break;
+            default:
+                $this->handleOtpRequest($update, $chatId);
+                break;
+        }
     }
 
     /**
@@ -40,30 +103,19 @@ class MultitestUzBotService
      */
     public function handleOtpRequest(array $update, int|string $chatId): void
     {
-        $from = $update['message']['from'] ?? [];
-        $user = User::query()->updateOrCreate(
-            ['telegram_id' => $chatId],
-            [
-                'name' => trim(($from['first_name'] ?? '') . ' ' . ($from['last_name'] ?? '')) ?: 'User',
-                'username' => $from['username'] ?? null,
-                'avatar' => $from['photo_url'] ?? null,
-            ]
-        );
-
-        if ($user->wasRecentlyCreated) {
-            $user->assignRole('Student');
-        }
+        $from = $update['message']['from'] ?? ($update['callback_query']['from'] ?? []);
+        $user = $this->getOrCreateUser($chatId, $from);
 
         $this->createAndSendOtp($user, $chatId, ['android' => true]);
     }
 
     /**
-     * Generate and send 6-digit OTP code to user
+     * Generate and send 6-digit OTP code to user with 1-tap copy
      */
     public function createAndSendOtp(User $user, int|string $chatId, array $flags = []): string
     {
-        // 1. Check existing active 6-digit OTP
-        $otp = \App\Models\Otp::query()
+        // Check existing active 6-digit OTP
+        $otp = Otp::query()
             ->where('user_id', $user->id)
             ->where('expired', false)
             ->where('expired_at', '>', now())
@@ -73,19 +125,19 @@ class MultitestUzBotService
         if ($otp && strlen((string)$otp->code) === 6) {
             $code = (string) $otp->code;
         } else {
-            \App\Models\Otp::query()
+            Otp::query()
                 ->where('user_id', $user->id)
                 ->where('expired', false)
                 ->update(['expired' => true]);
 
             do {
                 $code = (string) random_int(100000, 999999);
-            } while (\App\Models\Otp::query()->where('code', $code)->where('expired', false)->where('expired_at', '>', now())->exists());
+            } while (Otp::query()->where('code', $code)->where('expired', false)->where('expired_at', '>', now())->exists());
 
-            \App\Models\Otp::query()->create([
+            Otp::query()->create([
                 'user_id' => $user->id,
                 'code' => $code,
-                'expired_at' => now()->addMinutes(2),
+                'expired_at' => now()->addMinutes(10), // 10 minutes validity
                 'expired' => false,
                 'is_android' => $flags['android'] ?? true,
                 'is_ios' => $flags['ios'] ?? false,
@@ -94,119 +146,110 @@ class MultitestUzBotService
             ]);
         }
 
-        $platform = ($flags['ios'] ?? false) ? "iOS" : "Android";
+        $userName = htmlspecialchars($user->name ?: 'Foydalanuvchi', ENT_QUOTES, 'UTF-8');
 
-        try {
-            $this->telegram->sendMessage([
-                'chat_id' => $chatId,
-                'text' => "🔐 *{$platform} Tasdiqlash kodi*\n\n" .
-                          "👉 `{$code}`\n\n" .
-                          "⏳ Ushbu kod 2 daqiqa davomida amal qiladi.\n" .
-                          "MultiTest ilovasiga qaytib kodni kiriting.",
-                'parse_mode' => 'Markdown',
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('Telegram OTP send error: ' . $e->getMessage());
-        }
+        $message = "👋 <b>Assalomu alaykum, {$userName}!</b>\n\n" .
+                   "📱 <b>MultiTest Android ilovasiga kirish kodingiz:</b>\n\n" .
+                   "👉 <code>{$code}</code>\n\n" .
+                   "<i>(Kodni nusxalash uchun ustiga bir marta bosing)</i>\n\n" .
+                   "⏳ <b>Amal qilish muddati:</b> 10 daqiqa.\n" .
+                   "MultiTest ilovasiga qaytib, ushbu kodni kiriting.";
+
+        $keyboard = Keyboard::make()->inline();
+        $keyboard->row([
+            Keyboard::inlineButton([
+                'text' => '📱 MultiTest Ilovasida ochish',
+                'url' => "multitest://auth?otp={$code}",
+            ]),
+        ]);
+        $keyboard->row([
+            Keyboard::inlineButton([
+                'text' => '🔄 Yangi kod olish',
+                'callback_data' => 'get_otp',
+            ]),
+            Keyboard::inlineButton([
+                'text' => '🎓 Web ilova',
+                'web_app' => ['url' => 'https://multitest.uz/test'],
+            ]),
+        ]);
+
+        $this->sendSafeHtmlMessage($chatId, $message, $keyboard);
 
         return $code;
     }
 
     /**
-     * /help command
-     */
-    protected function sendHelpMessage(int|string $chatId): void
-    {
-        $this->telegram->sendMessage([
-            'chat_id' => $chatId,
-            'text' => "📘 Mavjud buyruqlar:\n/start - MultiTestni ochish\n/code - Android ilova uchun kirish kodi olish\n/mocks - Mock imtihonlar\n/ref - Referral havolangiz",
-        ]);
-    }
-
-    /**
-     * Unknown command handler
-     */
-    protected function sendUnknownCommand(int|string $chatId): void
-    {
-        $this->telegram->sendMessage([
-            'chat_id' => $chatId,
-            'text' => "Unknown command 😅. Type /help for available options.",
-        ]);
-    }
-
-    /**
-     * /start command — Welcome with WebApp button
+     * /start command — Welcome with WebApp button and instant OTP code
      */
     public function sendWelcomeMessage($update, int|string $chatId): void
     {
+        $from = $update['message']['from'] ?? ($update['callback_query']['from'] ?? []);
+        $text = $update['message']['text'] ?? '';
 
-        $from = $update['message']['from'] ?? [];
-
-        $ref_telegram_id = isset($update['message']['text']) && str_starts_with($update['message']['text'], '/start ')
-            ? trim(str_replace('/start ', '', $update['message']['text']))
+        $ref_telegram_id = str_starts_with($text, '/start ') && is_numeric(trim(str_replace('/start ', '', $text)))
+            ? trim(str_replace('/start ', '', $text))
             : null;
+
+        $user = $this->getOrCreateUser($chatId, $from, $ref_telegram_id);
+
+        // Try setting persistent menu button (graceful fallback)
+        $this->setPersistentMenuButton();
+
+        // Send OTP directly on welcome
+        $this->createAndSendOtp($user, $chatId, ['android' => true]);
+
+        // Register default bot commands
+        $this->registerBotCommandsSafely();
+    }
+
+    /**
+     * Get or create User model from Telegram data
+     */
+    protected function getOrCreateUser(int|string $chatId, array $from, ?string $refTelegramId = null): User
+    {
+        $fullName = trim(($from['first_name'] ?? '') . ' ' . ($from['last_name'] ?? ''));
+        if (empty($fullName)) {
+            $fullName = $from['username'] ?? 'User';
+        }
 
         $user = User::query()
             ->updateOrCreate(
                 ['telegram_id' => $chatId],
-                [
-                    'name' => ($from['first_name'] ?? '') . ' ' . ($from['last_name'] ?? ''),
+                array_filter([
+                    'name' => $fullName,
                     'username' => $from['username'] ?? null,
                     'avatar' => $from['photo_url'] ?? null,
-                    'ref_telegram_id' => $ref_telegram_id,
-                ]
+                    'ref_telegram_id' => $refTelegramId,
+                ], fn($v) => !is_null($v))
             );
 
-        // Assign default role only if the user was just created
         if ($user->wasRecentlyCreated) {
             $user->assignRole('Student');
         }
 
-        // 1. Set persistent “Open Multitest” button at the bottom (outside bot chat)
-        $this->setPersistentMenuButton();
+        return $user;
+    }
 
-        // 2. Inline keyboard inside message
-        $keyboard = Keyboard::make()
-            ->inline()
-            ->row([
-                Keyboard::inlineButton([
-                    'text' => 'Open Multitest 🎓',
-                    'web_app' => ['url' => 'https://multitest.uz/test'],
-                ]),
-            ]);
+    /**
+     * /help command
+     */
+    public function sendHelpMessage(int|string $chatId): void
+    {
+        $text = "📘 <b>MultiTest Bot Buyruqlari:</b>\n\n" .
+                "🔑 <b>/code</b> — Android ilova uchun 6 xonali tasdiqlash kodi\n" .
+                "🎓 <b>/start</b> — MultiTest platformasini ochish\n" .
+                "🧪 <b>/mocks</b> — Faol mock testlar ro'yxati\n" .
+                "👥 <b>/ref</b> — Shaxsiy referral havolangiz";
 
-        $this->sendSafeMessage(
-            $chatId,
-            "👋 Welcome to Multitest!\nClick below to open the app:",
-            $keyboard
-        );
-
-        if (!$ref_telegram_id) {
-            $this->sendRefMessage($chatId);
-        }
-
-        $this->telegram->setMyCommands([
-            'commands' => [
-                [
-                    'command' => 'start',
-                    'description' => 'Open Multitest.uz 🎓'
-                ],
-                [
-                    'command' => 'mocks',
-                    'description' => 'Open active mock tests'
-                ],
-                [
-                    'command' => 'ref',
-                    'description' => 'Get your referral link'
-                ],
-                [
-                    'command' => 'help',
-                    'description' => 'Show help and available commands'
-                ],
-            ],
+        $keyboard = Keyboard::make()->inline();
+        $keyboard->row([
+            Keyboard::inlineButton([
+                'text' => '🔑 Kirish kodini olish (OTP)',
+                'callback_data' => 'get_otp',
+            ]),
         ]);
 
-
+        $this->sendSafeHtmlMessage($chatId, $text, $keyboard);
     }
 
     /**
@@ -216,7 +259,7 @@ class MultitestUzBotService
     {
         $user = User::where('telegram_id', $chatId)->first();
         if (!$user) {
-            $this->sendSafeMessage($chatId, "❗ Iltimos, avvalo Multitest botiga /start buyrug'i orqali kiring.");
+            $this->sendSafeHtmlMessage($chatId, "❗ Iltimos, avvalo botga /start buyrug'i orqali kiring.");
             return;
         }
 
@@ -228,7 +271,14 @@ class MultitestUzBotService
             ->get(['name', 'slug']);
 
         if ($mocks->isEmpty()) {
-            $this->sendSafeMessage($chatId, "😕 Hozircha faol mock testlar mavjud emas.");
+            $keyboard = Keyboard::make()->inline();
+            $keyboard->row([
+                Keyboard::inlineButton([
+                    'text' => '🎓 Barcha testlarni ko\'rish',
+                    'web_app' => ['url' => 'https://multitest.uz/test'],
+                ]),
+            ]);
+            $this->sendSafeHtmlMessage($chatId, "😕 Hozircha faol mock testlar mavjud emas.", $keyboard);
             return;
         }
 
@@ -245,38 +295,24 @@ class MultitestUzBotService
             ]);
         }
 
-        $this->sendSafeMessage(
+        $this->sendSafeHtmlMessage(
             $chatId,
-            "🧠 Quyidagi faol mock testlardan birini tanlang:",
+            "🧠 <b>Quyidagi faol mock testlardan birini tanlang:</b>",
             $keyboard
         );
     }
 
+    /**
+     * /ref command — Referral link
+     */
     public function sendRefMessage(int|string $chatId): void
     {
-        $this->sendSafeMessage(
-            $chatId,
-            "Your referral link: https://t.me/MultitestUzBot?start={$chatId}"
-        );
-    }
+        $refUrl = "https://t.me/MultitestUzBot?start={$chatId}";
+        $text = "👥 <b>Sizning referral havolangiz:</b>\n\n" .
+                "👉 <code>{$refUrl}</code>\n\n" .
+                "Ushbu havola orqali do'stlaringizni taklif qiling!";
 
-    /**
-     * Safe message sender (catches Telegram API errors)
-     */
-    protected function sendSafeMessage(int|string $chatId, string $text, Keyboard $keyboard = null): void
-    {
-        try {
-            $params = [
-                'chat_id' => $chatId,
-                'text' => $text,
-            ];
-            if ($keyboard) {
-                $params['reply_markup'] = $keyboard;
-            }
-            $this->telegram->sendMessage($params);
-        } catch (\Exception $e) {
-            \Log::error('Telegram sendMessage error: ' . $e->getMessage());
-        }
+        $this->sendSafeHtmlMessage($chatId, $text);
     }
 
     /**
@@ -291,8 +327,8 @@ class MultitestUzBotService
             return;
         }
 
-        $studentName = $attempt->mockStudent?->name ?? $attempt->user?->name ?? 'Talaba';
-        $testName = $attempt->mock?->name ?? $attempt->test?->name ?? 'Imtihon';
+        $studentName = htmlspecialchars($attempt->mockStudent?->name ?? $attempt->user?->name ?? 'Talaba', ENT_QUOTES, 'UTF-8');
+        $testName = htmlspecialchars($attempt->mock?->name ?? $attempt->test?->name ?? 'Imtihon', ENT_QUOTES, 'UTF-8');
         $score = $attempt->score ?? ($attempt->ai_score_avg ? number_format($attempt->ai_score_avg, 1) : 'Tayyor');
         $tabViolations = $attempt->tab_switch_count ?? 0;
         $attemptUrl = route('attempt.show', $attempt->id);
@@ -321,35 +357,69 @@ class MultitestUzBotService
             ]),
         ]);
 
+        $this->sendSafeHtmlMessage($telegramId, $text, $keyboard);
+    }
+
+    /**
+     * Safe message sender using HTML parse mode
+     */
+    protected function sendSafeHtmlMessage(int|string $chatId, string $text, ?Keyboard $keyboard = null): void
+    {
         try {
-            $this->telegram->sendMessage([
-                'chat_id' => $telegramId,
+            $params = [
+                'chat_id' => $chatId,
                 'text' => $text,
                 'parse_mode' => 'HTML',
-                'reply_markup' => $keyboard,
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('Failed to send telegram attempt result notification: ' . $e->getMessage());
+                'disable_web_page_preview' => true,
+            ];
+            if ($keyboard) {
+                $params['reply_markup'] = $keyboard;
+            }
+            $this->telegram->sendMessage($params);
+        } catch (\Throwable $e) {
+            Log::error('Telegram sendMessage error: ' . $e->getMessage());
         }
     }
 
     /**
-     * 🔹 Add persistent web app button (like Telegram Wallet)
+     * Safely register bot commands with Telegram
+     */
+    protected function registerBotCommandsSafely(): void
+    {
+        try {
+            $commands = [
+                ['command' => 'start', 'description' => 'MultiTest platformasini ochish 🎓'],
+                ['command' => 'code', 'description' => 'Android ilova kirish kodi (OTP) 🔑'],
+                ['command' => 'mocks', 'description' => 'Faol mock testlar 🧪'],
+                ['command' => 'ref', 'description' => 'Referral havola olish 👥'],
+                ['command' => 'help', 'description' => 'Yordam va qo\'llanma 📘'],
+            ];
+
+            $this->telegram->setMyCommands([
+                'commands' => json_encode($commands),
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Failed to register bot commands: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Set persistent web app button (graceful fallback)
      */
     public function setPersistentMenuButton(): void
     {
         try {
-            $this->telegram->setChatMenuButton([
-                'menu_button' => [
+            $this->telegram->post('setChatMenuButton', [
+                'menu_button' => json_encode([
                     'type' => 'web_app',
                     'text' => 'Open Multitest 🎓',
                     'web_app' => [
                         'url' => 'https://multitest.uz',
                     ],
-                ],
+                ]),
             ]);
-        } catch (\Exception $e) {
-            \Log::error('Failed to set persistent menu button: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            Log::info('Note: setChatMenuButton optional call: ' . $e->getMessage());
         }
     }
 }
