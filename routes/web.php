@@ -8,8 +8,10 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 Route::post('/webapp-login', [\App\Http\Controllers\Auth\TelegramAuthController::class, 'login']);
 Route::post('/mock-student/enter', [\App\Http\Controllers\MockStudentController::class, 'enter'])->name('mock-student.enter');
 
-//Route::any('/bot/webhook', [\App\Http\Controllers\Telegram\TelegramController::class, 'handle']);
 Route::any('/bot/MultitestUzBot/webhook', [\App\Http\Controllers\Telegram\MultitestUzBotController::class, 'handle']);
+
+// 🗺️ SEO Sitemap
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home.index');
 
