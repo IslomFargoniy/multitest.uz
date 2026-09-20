@@ -26,7 +26,7 @@ const Hero = () => {
     }, [isPlayingDemo]);
 
     return (
-        <section id="home-section" className="relative overflow-hidden bg-gradient-to-b from-indigo-50/50 via-background to-background pt-8 pb-16 dark:from-indigo-950/20 dark:via-background dark:to-background md:pt-16 md:pb-24">
+        <section id="home-section" className="relative overflow-hidden bg-gradient-to-b from-indigo-50/50 via-background to-background pt-28 sm:pt-32 md:pt-36 lg:pt-40 pb-16 dark:from-indigo-950/20 dark:via-background dark:to-background md:pb-24">
             {/* Background Glow Orbs */}
             <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 rounded-full bg-gradient-to-br from-indigo-400/20 to-purple-500/20 blur-3xl dark:from-indigo-600/10 dark:to-purple-800/10" />
             <div className="pointer-events-none absolute top-1/3 -right-20 -z-10 h-80 w-80 rounded-full bg-pink-400/10 blur-3xl dark:bg-pink-600/5" />
