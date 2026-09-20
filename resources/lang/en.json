@@ -680,6 +680,7 @@
         "alltime_hourly": "All Time (Hourly)",
         "weekly": "Weekly"
     },
+    "statistics": "Statistics",
     "deleted_successfully": "Deleted successfully",
     "delete_failed": "Deletion failed",
     "part": "Part",
