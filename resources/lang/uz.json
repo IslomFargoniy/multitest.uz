@@ -733,6 +733,42 @@
         "stat_satisfaction": "4.9 / 5",
         "stat_satisfaction_label": "Foydalanuvchi bahosi"
     },
+    "landing_calculator": {
+        "badge": "Interaktiv Vosita",
+        "title": "CEFR Darajangizni Hisoblang",
+        "subtitle": "Har bir modul bo'yicha taxminiy ballaringizni kiriting va umumiy CEFR darajangiz hamda imtiyozlarni aniqlang",
+        "listening": "Listening (Tinglab tushunish)",
+        "reading": "Reading (O'qish)",
+        "writing": "Writing (Yozish)",
+        "speaking": "Speaking (Gapirish)",
+        "overall_score": "Umumiy CEFR Bali",
+        "predicted_level": "Taxminiy Daraja",
+        "privilege_title": "Sizga beriladigan imtiyoz",
+        "c1_privilege": "OTM kirish imtihonida 100% maksimal ball + Pedagoglarga 50% oylik ustama",
+        "b2_privilege": "Bakalavriat va Magistratura uchun 100% maksimal ball (imtiyoz)",
+        "b1_privilege": "O'rta-maxsus ta'lim va asosiy talablar uchun mos",
+        "a2_privilege": "Boshlang'ich daraja — ballni oshirish uchun Speaking simulyatorida mashq qiling",
+        "practice_cta": "Speaking darajasini oshirish"
+    },
+    "certificate_modal": {
+        "share_certificate": "Sertifikatni Ulashish",
+        "title": "Rasmiy Baholash Sertifikati",
+        "subtitle": "UzBMB (DTM) standarti bo'yicha sun'iy intellekt tahlili natijasi",
+        "candidate": "Nomzod",
+        "exam_date": "Sana",
+        "overall_result": "Umumiy Natija",
+        "verified_by": "Multitest AI tomonidan tasdiqlangan",
+        "download_img": "Rasm qilib yuklab olish (PNG)",
+        "share_telegram": "Telegramda ulashish",
+        "copied_link": "Havola nusxalandi!",
+        "share_story": "Instagram Story uchun yuklab olish"
+    },
+    "simulator": {
+        "prep_phase": "TAYYORGARLIK VAQTI",
+        "prep_hint": "Fikrlaringizni tartibga soling va asosiy kalit so'zlarni eslab oling.",
+        "recording_phase": "OVOZ YOZILMOQDA (GAPIRING)",
+        "mic_active": "Mikrofon faol"
+    },
     "skills": {
         "skills_analysis": "Ko'nikmalar tahlili",
         "fluency": "Ravonlik",

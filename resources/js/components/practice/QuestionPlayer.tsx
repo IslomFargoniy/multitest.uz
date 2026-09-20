@@ -444,7 +444,7 @@ export default function QuestionPlayer({ attempt_part }: any) {
                         <CircularTimer timeLeft={timer} totalTime={totalTime} phase={phase} />
                     </div>
                     {/* Smaller mic pod below */}
-                    <RecordingPod phase={phase} />
+                    <RecordingPod phase={phase} stream={streamRef.current} />
                     <div className="mt-6 w-full space-y-3">
                         <div className="rounded-xl border border-border bg-card p-2.5 shadow-sm">
 
@@ -468,8 +468,71 @@ export default function QuestionPlayer({ attempt_part }: any) {
     );
 }
 
-// Sub-components (RecordingPod and PhaseBadge) stay the same as your original design
-function RecordingPod({ phase }: { phase: string }) {
+// Sub-components (RecordingPod and PhaseBadge)
+function LiveAudioMeter({ stream }: { stream: MediaStream | null }) {
+    const [level, setLevel] = useState(0);
+
+    useEffect(() => {
+        if (!stream) return;
+        let audioCtx: AudioContext | null = null;
+        let analyser: AnalyserNode | null = null;
+        let source: MediaStreamAudioSourceNode | null = null;
+        let animId: number;
+
+        try {
+            audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 64;
+            source = audioCtx.createMediaStreamSource(stream);
+            source.connect(analyser);
+
+            const dataArray = new Uint8Array(analyser.frequencyBinCount);
+            const checkVolume = () => {
+                if (!analyser) return;
+                analyser.getByteFrequencyData(dataArray);
+                let sum = 0;
+                for (let i = 0; i < dataArray.length; i++) {
+                    sum += dataArray[i];
+                }
+                const avg = sum / dataArray.length;
+                setLevel(Math.min(100, Math.round((avg / 128) * 100)));
+                animId = requestAnimationFrame(checkVolume);
+            };
+            checkVolume();
+        } catch (e) {
+            console.error('AudioContext error:', e);
+        }
+
+        return () => {
+            if (animId) cancelAnimationFrame(animId);
+            if (source) source.disconnect();
+            if (audioCtx && audioCtx.state !== 'closed') audioCtx.close();
+        };
+    }, [stream]);
+
+    return (
+        <div className="flex items-center gap-1.5 py-1 px-3 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300">
+                Mikrofon:
+            </span>
+            <div className="flex items-center gap-0.5 h-3">
+                {[20, 40, 60, 80, 100].map((threshold, idx) => (
+                    <div
+                        key={idx}
+                        className={`w-1 rounded-full transition-all duration-75 ${
+                            level >= threshold || (level > 10 && idx === 0)
+                                ? 'bg-emerald-500 h-3'
+                                : 'bg-slate-200 dark:bg-slate-700 h-1.5'
+                        }`}
+                    />
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function RecordingPod({ phase, stream }: { phase: string; stream?: MediaStream | null }) {
     const { t } = useTranslation();
     if (phase === 'uploading') {
         return (
@@ -488,8 +551,8 @@ function RecordingPod({ phase }: { phase: string }) {
     }
     if (phase === 'recording') {
         return (
-            <div className="flex flex-col items-center">
-                <div className="relative mb-3">
+            <div className="flex flex-col items-center space-y-2">
+                <div className="relative">
                     <div className="absolute inset-0 animate-ping rounded-full bg-red-400 opacity-20"></div>
                     <div className="absolute -inset-2 animate-pulse rounded-full bg-red-100 opacity-40"></div>
                     <div className="relative flex h-16 w-16 items-center justify-center rounded-full border-4 border-white bg-red-600 text-white shadow-xl">
@@ -497,18 +560,24 @@ function RecordingPod({ phase }: { phase: string }) {
                     </div>
                 </div>
                 <span className="animate-pulse text-xs font-black tracking-[0.2em] text-red-600 uppercase">
-                    {t('question_player.recording_live')}
+                    {t('simulator.recording_phase', 'OVOZ YOZILMOQDA (GAPIRING)')}
                 </span>
+                <LiveAudioMeter stream={stream || null} />
             </div>
         );
     }
     if (phase === 'ready') {
         return (
-            <div className="flex flex-col items-center">
-                <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full border-4 border-white bg-amber-500 text-white shadow-xl">
+            <div className="flex flex-col items-center space-y-1.5">
+                <div className="mb-1 flex h-16 w-16 items-center justify-center rounded-full border-4 border-white bg-amber-500 text-white shadow-xl">
                     <Timer size={28} strokeWidth={2.5} />
                 </div>
-                <span className="text-xs font-black tracking-[0.2em] text-amber-600 uppercase">{t('question_player.get_ready')}</span>
+                <span className="text-xs font-black tracking-[0.2em] text-amber-600 uppercase">
+                    {t('simulator.prep_phase', 'TAYYORGARLIK VAQTI')}
+                </span>
+                <p className="text-[11px] text-slate-500 max-w-[200px] leading-tight">
+                    {t('simulator.prep_hint', 'Fikrlaringizni tartibga soling va qoralamaga yozing.')}
+                </p>
             </div>
         );
     }
@@ -525,7 +594,6 @@ function RecordingPod({ phase }: { phase: string }) {
     return (
         <div className="flex flex-col items-center">
             <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full border-2 border-border bg-card text-muted-foreground shadow-sm">
-
                 <Volume2 size={28} />
             </div>
             <span className="text-xs font-black tracking-[0.2em] text-slate-400 uppercase">{t('question_player.playing_audio')}</span>
