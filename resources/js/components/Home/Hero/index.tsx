@@ -2,7 +2,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { getImagePrefix } from '@/utils/util';
 import { Icon } from '@iconify/react';
 import { Link, usePage } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { SharedData } from '@/types';
 
@@ -11,19 +11,96 @@ const Hero = () => {
     const isMobile = useIsMobile();
     const { auth } = usePage<SharedData>().props;
 
-    // Interactive audio preview state
+    // Real audio player state
+    const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isPlayingDemo, setIsPlayingDemo] = useState(false);
-    const [audioProgress, setAudioProgress] = useState(35);
+    const [audioProgress, setAudioProgress] = useState(0);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(26);
 
-    useEffect(() => {
-        let interval: NodeJS.Timeout;
-        if (isPlayingDemo) {
-            interval = setInterval(() => {
-                setAudioProgress((prev) => (prev >= 100 ? 0 : prev + 5));
-            }, 300);
+    const formatTime = (seconds: number) => {
+        if (!seconds || isNaN(seconds)) return '0:00';
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    };
+
+    const togglePlayAudio = () => {
+        if (!audioRef.current) {
+            const audio = new Audio('/en/audio/part-2-voice.mp3');
+            audioRef.current = audio;
+
+            audio.addEventListener('timeupdate', () => {
+                if (audio.duration) {
+                    setCurrentTime(audio.currentTime);
+                    setAudioProgress((audio.currentTime / audio.duration) * 100);
+                }
+            });
+
+            audio.addEventListener('loadedmetadata', () => {
+                if (audio.duration) {
+                    setDuration(audio.duration);
+                }
+            });
+
+            audio.addEventListener('ended', () => {
+                setIsPlayingDemo(false);
+                setAudioProgress(0);
+                setCurrentTime(0);
+            });
+
+            audio.addEventListener('pause', () => {
+                setIsPlayingDemo(false);
+            });
+
+            audio.addEventListener('play', () => {
+                setIsPlayingDemo(true);
+            });
         }
-        return () => clearInterval(interval);
-    }, [isPlayingDemo]);
+
+        const audio = audioRef.current;
+        if (audio.paused) {
+            audio.play().then(() => {
+                setIsPlayingDemo(true);
+            }).catch((err) => {
+                console.error('Audio play error:', err);
+                setIsPlayingDemo(false);
+            });
+        } else {
+            audio.pause();
+            setIsPlayingDemo(false);
+        }
+    };
+
+    const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!audioRef.current) {
+            togglePlayAudio();
+            return;
+        }
+        const rect = e.currentTarget.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const percentage = Math.max(0, Math.min(1, clickX / rect.width));
+        const audio = audioRef.current;
+        if (audio.duration) {
+            audio.currentTime = percentage * audio.duration;
+            setAudioProgress(percentage * 100);
+            setCurrentTime(audio.currentTime);
+            if (audio.paused) {
+                audio.play().catch(() => {});
+            }
+        }
+    };
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.src = '';
+                audioRef.current = null;
+            }
+        };
+    }, []);
 
     return (
         <section id="home-section" className="relative overflow-hidden bg-gradient-to-b from-indigo-50/50 via-background to-background pt-28 sm:pt-32 md:pt-36 lg:pt-40 pb-16 dark:from-indigo-950/20 dark:via-background dark:to-background md:pb-24">
@@ -163,33 +240,59 @@ const Hero = () => {
 
                                 {/* Simulated Audio Wave Visualizer */}
                                 <div className="mt-5 flex flex-col items-center justify-center rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/50 to-purple-50/50 p-5 dark:border-indigo-950 dark:from-indigo-950/30 dark:to-purple-950/30">
-                                    <div className="mb-3 flex items-center gap-2">
-                                        <button
-                                            type="button"
-                                            onClick={() => setIsPlayingDemo(!isPlayingDemo)}
-                                            className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg transition-transform hover:scale-105 active:scale-95 cursor-pointer"
-                                        >
-                                            <Icon icon={isPlayingDemo ? "solar:pause-bold" : "solar:play-bold"} className="text-xl ml-0.5" />
-                                        </button>
-                                        <div className="text-left pl-2">
-                                            <p className="text-xs font-bold text-slate-800 dark:text-slate-200">{t('hero.card_audio_sample', 'Ovoz namunasi')}</p>
-                                            <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('hero.card_click_listen', 'Tinglash uchun bosing')}</p>
+                                    <div className="mb-3 flex items-center justify-between w-full px-1">
+                                        <div className="flex items-center gap-3">
+                                            <button
+                                                type="button"
+                                                onClick={togglePlayAudio}
+                                                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/30 transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+                                                title={isPlayingDemo ? "To'xtatish" : "Tinglash"}
+                                            >
+                                                <Icon icon={isPlayingDemo ? "solar:pause-bold" : "solar:play-bold"} className="text-xl ml-0.5" />
+                                            </button>
+                                            <div className="text-left">
+                                                <p className="text-xs font-bold text-slate-800 dark:text-slate-200">{t('hero.card_audio_sample', 'Ovoz namunasi')}</p>
+                                                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                                    {isPlayingDemo ? (
+                                                        <span className="text-indigo-600 dark:text-indigo-400 font-semibold animate-pulse">Tinglanmoqda...</span>
+                                                    ) : (
+                                                        t('hero.card_click_listen', 'Tinglash uchun bosing')
+                                                    )}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <span className="font-mono text-xs font-bold text-slate-600 dark:text-slate-300">
+                                                {formatTime(currentTime)} / {formatTime(duration)}
+                                            </span>
                                         </div>
                                     </div>
 
-                                    {/* Animated Waveform Bars */}
-                                    <div className="flex h-12 w-full items-center justify-center gap-1">
-                                        {[40, 65, 80, 45, 95, 70, 85, 30, 90, 60, 75, 50, 100, 65, 85, 40, 90, 70, 55, 30].map((h, i) => (
-                                             <div
-                                                 key={i}
-                                                 style={{ height: `${isPlayingDemo ? Math.max(15, (h * (audioProgress / 100)) % 100) : h * 0.4}%` }}
-                                                 className={`w-1 rounded-full transition-all duration-200 ${
-                                                     (i / 20) * 100 <= audioProgress && isPlayingDemo
-                                                         ? 'bg-gradient-to-t from-indigo-600 to-purple-500'
-                                                         : 'bg-slate-300 dark:bg-slate-700'
-                                                 }`}
-                                             />
-                                         ))}
+                                    {/* Animated Waveform Bars with Click-to-Seek */}
+                                    <div
+                                        onClick={handleSeek}
+                                        className="flex h-12 w-full items-center justify-center gap-1 cursor-pointer py-1 group/wave"
+                                        title="Ovozni istalgan joyiga o'tkazish"
+                                    >
+                                        {[40, 65, 80, 45, 95, 70, 85, 30, 90, 60, 75, 50, 100, 65, 85, 40, 90, 70, 55, 30].map((h, i) => {
+                                             const barPercent = (i / 20) * 100;
+                                             const isPlayed = barPercent <= audioProgress;
+                                             return (
+                                                 <div
+                                                     key={i}
+                                                     style={{
+                                                         height: isPlayingDemo
+                                                             ? `${Math.max(20, (h * (0.6 + 0.4 * Math.sin((currentTime * 6) + i)))) % 100}%`
+                                                             : `${h * 0.45}%`,
+                                                     }}
+                                                     className={`w-1 rounded-full transition-all duration-150 group-hover/wave:opacity-90 ${
+                                                         isPlayed
+                                                             ? 'bg-gradient-to-t from-indigo-600 to-purple-500 shadow-xs'
+                                                             : 'bg-slate-300 dark:bg-slate-700'
+                                                     }`}
+                                                 />
+                                             );
+                                         })}
                                      </div>
                                  </div>
 
