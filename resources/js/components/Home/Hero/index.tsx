@@ -44,16 +44,16 @@ const Hero = () => {
 
                         {/* Main Heading */}
                         <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl md:text-5xl lg:text-6xl dark:text-white leading-[1.15]">
-                            UzBMB CEFR & IELTS{' '}
+                            {t('hero.title_prefix', 'UzBMB CEFR & IELTS ')}
                             <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
-                                Speaking AI
-                            </span>{' '}
-                            Simulyatori
+                                {t('hero.title_accent', 'Speaking AI')}
+                            </span>
+                            {t('hero.title_suffix', ' Simulyatori')}
                         </h1>
 
                         {/* Description */}
                         <p className="max-w-2xl text-base leading-relaxed text-slate-600 dark:text-slate-300 sm:text-lg">
-                            {t('hero.description')} Part 1, Part 2 va Part 3 bo'yicha to'liq ovozli imtihon topshiring va 60 soniyada sun'iy intellektdan rasmiy B1, B2 yoki C1 ballingizni oling.
+                            {t('hero.description')}
                         </p>
 
                         {/* CTA Buttons */}
@@ -63,7 +63,7 @@ const Hero = () => {
                                 className="group inline-flex items-center gap-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 px-7 py-3.5 text-base font-bold text-white shadow-xl shadow-indigo-500/25 transition-all hover:scale-105 hover:shadow-indigo-500/35 active:scale-95"
                             >
                                 <Icon icon="solar:play-circle-bold" className="text-2xl transition-transform group-hover:rotate-12" />
-                                <span>Mock Testni Boshlash</span>
+                                <span>{t('hero.start_mock', 'Mock Testni Boshlash')}</span>
                             </Link>
 
                             <a
@@ -71,7 +71,7 @@ const Hero = () => {
                                 className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white/80 px-6 py-3.5 text-base font-bold text-slate-700 shadow-sm backdrop-blur-sm transition-all hover:bg-slate-100 hover:text-indigo-600 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-indigo-400"
                             >
                                 <Icon icon="solar:document-text-bold" className="text-xl" />
-                                <span>Imtihon Formati</span>
+                                <span>{t('hero.exam_format', 'Imtihon Formati')}</span>
                             </a>
                         </div>
 
@@ -82,8 +82,8 @@ const Hero = () => {
                                     <Icon icon="solar:shield-check-bold" className="text-lg" />
                                 </div>
                                 <div className="text-xs">
-                                    <p className="font-bold text-slate-900 dark:text-white">98.5% Aniqlik</p>
-                                    <p className="text-slate-500 dark:text-slate-400">UzBMB standarti</p>
+                                    <p className="font-bold text-slate-900 dark:text-white">{t('hero.accuracy', '98.5% Aniqlik')}</p>
+                                    <p className="text-slate-500 dark:text-slate-400">{t('hero.accuracy_desc', 'UzBMB standarti')}</p>
                                 </div>
                             </div>
 
@@ -92,8 +92,8 @@ const Hero = () => {
                                     <Icon icon="solar:bolt-bold" className="text-lg" />
                                 </div>
                                 <div className="text-xs">
-                                    <p className="font-bold text-slate-900 dark:text-white">60 Soniyada</p>
-                                    <p className="text-slate-500 dark:text-slate-400">Lahzali baho</p>
+                                    <p className="font-bold text-slate-900 dark:text-white">{t('hero.instant_time', '60 Soniyada')}</p>
+                                    <p className="text-slate-500 dark:text-slate-400">{t('hero.instant_desc', 'Lahzali baho')}</p>
                                 </div>
                             </div>
 
@@ -102,8 +102,8 @@ const Hero = () => {
                                     <Icon icon="solar:medal-ribbon-star-bold" className="text-lg" />
                                 </div>
                                 <div className="text-xs">
-                                    <p className="font-bold text-slate-900 dark:text-white">B1 • B2 • C1</p>
-                                    <p className="text-slate-500 dark:text-slate-400">To'liq darajalar</p>
+                                    <p className="font-bold text-slate-900 dark:text-white">{t('hero.levels_title', 'B1 • B2 • C1')}</p>
+                                    <p className="text-slate-500 dark:text-slate-400">{t('hero.levels_desc', 'To\'liq darajalar')}</p>
                                 </div>
                             </div>
                         </div>
@@ -118,8 +118,8 @@ const Hero = () => {
                                     <Icon icon="solar:cup-star-bold" className="text-sm" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase">So'nggi Natija</p>
-                                    <p className="text-xs font-black text-emerald-600 dark:text-emerald-400">CEFR C1 (78 ball)</p>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase">{t('hero.card_latest_result', 'So\'nggi Natija')}</p>
+                                    <p className="text-xs font-black text-emerald-600 dark:text-emerald-400">{t('hero.card_result_val', 'CEFR C1 (78 ball)')}</p>
                                 </div>
                             </div>
 
@@ -128,8 +128,8 @@ const Hero = () => {
                                     <Icon icon="solar:microphone-3-bold" className="text-sm" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase">AI Baholash</p>
-                                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200">98% Aniq Transkript</p>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase">{t('hero.card_ai_eval', 'AI Baholash')}</p>
+                                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200">{t('hero.card_ai_eval_sub', '98% Aniq Transkript')}</p>
                                 </div>
                             </div>
 
@@ -142,22 +142,22 @@ const Hero = () => {
                                             DTM
                                         </div>
                                         <div>
-                                            <h4 className="text-sm font-bold text-slate-900 dark:text-white">Multilevel Speaking Mock</h4>
-                                            <p className="text-xs text-indigo-600 font-medium dark:text-indigo-400">Part 2: Comparison & Solution</p>
+                                            <h4 className="text-sm font-bold text-slate-900 dark:text-white">{t('hero.card_mock_title', 'Multilevel Speaking Mock')}</h4>
+                                            <p className="text-xs text-indigo-600 font-medium dark:text-indigo-400">{t('hero.card_mock_part', 'Part 2: Comparison & Solution')}</p>
                                         </div>
                                     </div>
                                     <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                                        Jonli Sinov
+                                        {t('hero.card_live_badge', 'Jonli Sinov')}
                                     </span>
                                 </div>
 
                                 {/* Simulated Question Card */}
                                 <div className="mt-5 rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/50">
                                     <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
-                                        Topshiriq 2
+                                        {t('hero.card_task_title', 'Topshiriq 2')}
                                     </p>
                                     <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-                                        "Compare these two ways of studying: online vs traditional classroom. Which one is more effective?"
+                                        {t('hero.card_task_content', '"Compare these two ways of studying: online vs traditional classroom. Which one is more effective?"')}
                                     </p>
                                 </div>
 
@@ -167,54 +167,54 @@ const Hero = () => {
                                         <button
                                             type="button"
                                             onClick={() => setIsPlayingDemo(!isPlayingDemo)}
-                                            className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg transition-transform hover:scale-105 active:scale-95"
+                                            className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg transition-transform hover:scale-105 active:scale-95 cursor-pointer"
                                         >
                                             <Icon icon={isPlayingDemo ? "solar:pause-bold" : "solar:play-bold"} className="text-xl ml-0.5" />
                                         </button>
                                         <div className="text-left pl-2">
-                                            <p className="text-xs font-bold text-slate-800 dark:text-slate-200">Ovoz namunasi</p>
-                                            <p className="text-[11px] text-slate-500 dark:text-slate-400">Tinglash uchun bosing</p>
+                                            <p className="text-xs font-bold text-slate-800 dark:text-slate-200">{t('hero.card_audio_sample', 'Ovoz namunasi')}</p>
+                                            <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('hero.card_click_listen', 'Tinglash uchun bosing')}</p>
                                         </div>
                                     </div>
 
                                     {/* Animated Waveform Bars */}
                                     <div className="flex h-12 w-full items-center justify-center gap-1">
                                         {[40, 65, 80, 45, 95, 70, 85, 30, 90, 60, 75, 50, 100, 65, 85, 40, 90, 70, 55, 30].map((h, i) => (
-                                            <div
-                                                key={i}
-                                                style={{ height: `${isPlayingDemo ? Math.max(15, (h * (audioProgress / 100)) % 100) : h * 0.4}%` }}
-                                                className={`w-1 rounded-full transition-all duration-200 ${
-                                                    (i / 20) * 100 <= audioProgress && isPlayingDemo
-                                                        ? 'bg-gradient-to-t from-indigo-600 to-purple-500'
-                                                        : 'bg-slate-300 dark:bg-slate-700'
-                                                }`}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
+                                             <div
+                                                 key={i}
+                                                 style={{ height: `${isPlayingDemo ? Math.max(15, (h * (audioProgress / 100)) % 100) : h * 0.4}%` }}
+                                                 className={`w-1 rounded-full transition-all duration-200 ${
+                                                     (i / 20) * 100 <= audioProgress && isPlayingDemo
+                                                         ? 'bg-gradient-to-t from-indigo-600 to-purple-500'
+                                                         : 'bg-slate-300 dark:bg-slate-700'
+                                                 }`}
+                                             />
+                                         ))}
+                                     </div>
+                                 </div>
 
-                                {/* Score Breakdown Snippet */}
-                                <div className="mt-5 grid grid-cols-4 gap-2 text-center">
-                                    <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
-                                        <p className="text-[10px] text-slate-400">Fluency</p>
-                                        <p className="text-xs font-extrabold text-indigo-600 dark:text-indigo-400">B2 (68)</p>
-                                    </div>
-                                    <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
-                                        <p className="text-[10px] text-slate-400">Lexicon</p>
-                                        <p className="text-xs font-extrabold text-purple-600 dark:text-purple-400">C1 (76)</p>
-                                    </div>
-                                    <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
-                                        <p className="text-[10px] text-slate-400">Grammar</p>
-                                        <p className="text-xs font-extrabold text-pink-600 dark:text-pink-400">B2 (70)</p>
-                                    </div>
-                                    <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
-                                        <p className="text-[10px] text-slate-400">Pronounce</p>
-                                        <p className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400">C1 (79)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                 {/* Score Breakdown Snippet */}
+                                 <div className="mt-5 grid grid-cols-4 gap-2 text-center">
+                                     <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
+                                         <p className="text-[10px] text-slate-400">{t('hero.card_fluency', 'Fluency')}</p>
+                                         <p className="text-xs font-extrabold text-indigo-600 dark:text-indigo-400">B2 (68)</p>
+                                     </div>
+                                     <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
+                                         <p className="text-[10px] text-slate-400">{t('hero.card_lexicon', 'Lexicon')}</p>
+                                         <p className="text-xs font-extrabold text-purple-600 dark:text-purple-400">C1 (76)</p>
+                                     </div>
+                                     <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
+                                         <p className="text-[10px] text-slate-400">{t('hero.card_grammar', 'Grammar')}</p>
+                                         <p className="text-xs font-extrabold text-pink-600 dark:text-pink-400">B2 (70)</p>
+                                     </div>
+                                     <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
+                                         <p className="text-[10px] text-slate-400">{t('hero.card_pronounce', 'Pronounce')}</p>
+                                         <p className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400">C1 (79)</p>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
                 </div>
             </div>
         </section>
