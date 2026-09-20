@@ -680,6 +680,7 @@
         "alltime_hourly": "За все время (Почасово)",
         "weekly": "Еженедельно"
     },
+    "statistics": "Статистика",
     "deleted_successfully": "Успешно удалено",
     "delete_failed": "Ошибка удаления",
     "part": "Часть",

@@ -168,7 +168,7 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
                                 <th className="px-4 py-3.5">{t('user') || 'Foydalanuvchi'}</th>
                                 <th className="px-4 py-3.5">{t('role') || 'Rollar'}</th>
                                 <th className="px-4 py-3.5">{t('created_at') || "Qo'shilgan"}</th>
-                                <th className="px-4 py-3.5">{t('stats') || 'Statistika'}</th>
+                                <th className="px-4 py-3.5">{t('user_management.activity') || 'Faollik'}</th>
                                 <th className="px-4 py-3.5">{t('contact') || 'Aloqa'}</th>
                                 <th className="px-4 py-3.5 text-right">{t('actions') || 'Amallar'}</th>
                             </tr>

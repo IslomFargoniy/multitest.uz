@@ -675,11 +675,9 @@
         "unique_attempt_users": "Noyob urinish qilganlar",
         "repeat_attempts": "Takroriy urinishlar",
         "daily_activity": "Kunlik faollik",
-        "users_and_attempts": "Foydalanuvchilar va urinishlar",
-        "today_hourly": "Bugun (Soatma-soat)",
-        "alltime_hourly": "Barcha vaqt (Soatma-soat)",
         "weekly": "Haftalik"
     },
+    "statistics": "Statistika",
     "deleted_successfully": "Muvaffaqiyatli o‘chirildi",
     "delete_failed": "O‘chirish muvaffaqiyatsiz",
     "part": "Qism",
