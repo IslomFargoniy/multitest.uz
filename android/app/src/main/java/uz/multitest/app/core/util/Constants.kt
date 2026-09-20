@@ -2,8 +2,8 @@ package uz.multitest.app.core.util
 
 object Constants {
     const val BASE_URL = "https://multitest.uz/api/"
-    const val TELEGRAM_BOT_USERNAME = "MultiTestUz_bot"
-    const val TELEGRAM_BOT_URL = "https://t.me/MultiTestUz_bot"
+    const val TELEGRAM_BOT_USERNAME = "MultitestUzBot"
+    const val TELEGRAM_BOT_URL = "https://t.me/MultitestUzBot?start=code"
     const val GOOGLE_WEB_CLIENT_ID = "615967000000-dummy.apps.googleusercontent.com"
     
     const val DATASTORE_NAME = "multitest_preferences"
