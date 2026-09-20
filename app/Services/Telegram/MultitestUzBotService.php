@@ -409,14 +409,14 @@ class MultitestUzBotService
     public function setPersistentMenuButton(): void
     {
         try {
-            $this->telegram->post('setChatMenuButton', [
-                'menu_button' => json_encode([
+            \Illuminate\Support\Facades\Http::post("https://api.telegram.org/bot" . config('services.telegram.bot_token') . "/setChatMenuButton", [
+                'menu_button' => [
                     'type' => 'web_app',
                     'text' => 'Open Multitest 🎓',
                     'web_app' => [
                         'url' => 'https://multitest.uz',
                     ],
-                ]),
+                ],
             ]);
         } catch (\Throwable $e) {
             Log::info('Note: setChatMenuButton optional call: ' . $e->getMessage());
