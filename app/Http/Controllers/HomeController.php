@@ -33,6 +33,22 @@ class HomeController extends Controller
 
     }
 
+    public function landingPageTests(Request $request)
+    {
+        $tests = \App\Models\Test::query()
+            ->where('is_public', true)
+            ->with(['language', 'parts'])
+            ->withCount('attempts')
+            ->orderByDesc('id')
+            ->take(6)
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $tests,
+        ]);
+    }
+
     public function dashboard(Request $request)
     {
         $user = User::query()

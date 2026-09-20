@@ -14,6 +14,7 @@ Route::any('/bot/MultitestUzBot/webhook', [\App\Http\Controllers\Telegram\Multit
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home.index');
+Route::get('/landing-page-tests', [\App\Http\Controllers\HomeController::class, 'landingPageTests'])->name('landing-page-tests');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
