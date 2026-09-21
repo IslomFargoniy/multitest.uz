@@ -178,7 +178,7 @@ class MultitestUzBotService
     }
 
     /**
-     * /start command — Welcome with WebApp button and instant OTP code
+     * /start command — Welcome with WebApp button (panel.prava24.uz style)
      */
     public function sendWelcomeMessage($update, int|string $chatId): void
     {
@@ -194,11 +194,35 @@ class MultitestUzBotService
         // Try setting persistent menu button (graceful fallback)
         $this->setPersistentMenuButton();
 
-        // Send OTP directly on welcome
-        $this->createAndSendOtp($user, $chatId, ['android' => true]);
-
         // Register default bot commands
         $this->registerBotCommandsSafely();
+
+        $userName = htmlspecialchars($user->name ?: 'Foydalanuvchi', ENT_QUOTES, 'UTF-8');
+
+        $welcomeText = "👋 <b>Assalomu alaykum, {$userName}!</b>\n\n" .
+                       "🎓 <b>MultiTest</b> — Speaking va Mock Imtihonlar platformasining rasmiy botiga xush kelibsiz!\n\n" .
+                       "Ushbu bot orqali testlarni to'g'ridan-to'g'ri Telegram ichida (Web App) ishlashingiz yoki Android ilovasi uchun tasdiqlash kodini olishingiz mumkin.\n\n" .
+                       "👇 <b>Platformani ochish uchun quyidagi tugmani bosing:</b>";
+
+        $keyboard = Keyboard::make()->inline();
+        $keyboard->row([
+            Keyboard::inlineButton([
+                'text' => '🎓 MultiTest platformasini ochish',
+                'web_app' => ['url' => 'https://multitest.uz/test'],
+            ]),
+        ]);
+        $keyboard->row([
+            Keyboard::inlineButton([
+                'text' => '🔑 Android ilovaga kirish (OTP)',
+                'callback_data' => 'get_otp',
+            ]),
+            Keyboard::inlineButton([
+                'text' => '🧪 Mock testlar',
+                'callback_data' => 'mocks',
+            ]),
+        ]);
+
+        $this->sendSafeHtmlMessage($chatId, $welcomeText, $keyboard);
     }
 
     /**
