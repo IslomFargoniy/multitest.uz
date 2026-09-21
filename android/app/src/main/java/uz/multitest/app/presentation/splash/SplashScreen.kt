@@ -26,6 +26,10 @@ import uz.multitest.app.core.theme.IndigoAccent
 import uz.multitest.app.core.theme.IndigoPrimary
 import uz.multitest.app.core.theme.RosePink
 
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import uz.multitest.app.R
+
 @Composable
 fun SplashScreen(
     onNavigateToMain: () -> Unit,
@@ -73,21 +77,14 @@ fun SplashScreen(
         ) {
             Box(
                 modifier = Modifier
-                    .size(100.dp)
-                    .scale(scale)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.linearGradient(
-                            listOf(IndigoPrimary, IndigoAccent, RosePink)
-                        )
-                    ),
+                    .size(110.dp)
+                    .scale(scale),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Rounded.GraphicEq,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(52.dp)
+                Image(
+                    painter = painterResource(id = R.drawable.ic_logo),
+                    contentDescription = "MultiTest Logo",
+                    modifier = Modifier.fillMaxSize()
                 )
             }
 

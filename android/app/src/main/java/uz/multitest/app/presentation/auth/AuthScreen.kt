@@ -3,6 +3,7 @@ package uz.multitest.app.presentation.auth
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -140,26 +141,13 @@ fun AuthScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Branding Icon
-            Box(
+            // Branding Logo
+            Image(
+                painter = androidx.compose.ui.res.painterResource(id = uz.multitest.app.R.drawable.ic_logo),
+                contentDescription = "MultiTest Logo",
                 modifier = Modifier
-                    .size(76.dp)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.linearGradient(
-                            listOf(IndigoPrimary, IndigoAccent)
-                        )
-                    )
-                    .shadow(12.dp, CircleShape, spotColor = IndigoPrimary),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.GraphicEq,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(40.dp)
-                )
-            }
+                    .size(80.dp)
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
