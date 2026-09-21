@@ -48,5 +48,4 @@ class AttemptPart extends Model
     {
         return $this->hasMany(AttemptAnswer::class, 'attempt_part_id');
     }
-
 }
