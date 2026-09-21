@@ -32,17 +32,25 @@ data class AttemptDto(
 @Serializable
 data class AttemptPartDto(
     @SerialName("id") val id: Long,
-    @SerialName("attempt_id") val attemptId: Long,
-    @SerialName("part_id") val partId: Long,
+    @SerialName("attempt_id") val attemptId: Long? = null,
+    @SerialName("part_id") val partId: Long? = null,
     @SerialName("part") val part: PartDto? = null,
-    @SerialName("answers") val answers: List<AttemptAnswerDto> = emptyList()
+    @SerialName("answers") val answers: List<AttemptAnswerDto> = emptyList(),
+    @SerialName("attempt_answers") val attemptAnswers: List<AttemptAnswerDto> = emptyList()
 )
 
 @Serializable
 data class AttemptAnswerDto(
     @SerialName("id") val id: Long? = null,
-    @SerialName("question_id") val questionId: Long,
+    @SerialName("attempt_part_id") val attemptPartId: Long? = null,
+    @SerialName("question_id") val questionId: Long? = null,
     @SerialName("audio_path") val audioPath: String? = null,
+    @SerialName("audio_second") val audioSecond: Double? = null,
+    @SerialName("transcript") val transcript: String? = null,
+    @SerialName("review_ai") val reviewAi: String? = null,
+    @SerialName("review") val review: String? = null,
+    @SerialName("score_ai") val scoreAi: Double? = null,
+    @SerialName("score") val score: Double? = null,
     @SerialName("started_at") val startedAt: String? = null,
     @SerialName("finished_at") val finishedAt: String? = null
 )
