@@ -94,17 +94,30 @@ class AttemptController extends Controller
      */
     public function show($id)
     {
-        $attempt = Attempt::with([
-            'test.language',
-            'mock',
-            'attempt_parts.part.questions',
-            'attempt_parts.answers',
-        ])->where('user_id', Auth::id())->findOrFail($id);
+        try {
+            $attempt = Attempt::with([
+                'test.language',
+                'mock',
+                'attempt_parts.part.questions',
+                'attempt_parts.attempt_answers',
+            ])->where('user_id', Auth::id())->findOrFail($id);
 
-        return response()->json([
-            'success' => true,
-            'data' => $attempt,
-        ]);
+            return response()->json([
+                'success' => true,
+                'data' => $attempt,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Imtihon ma\'lumoti topilmadi.',
+            ], 404);
+        } catch (\Exception $e) {
+            Log::error('API Attempt show error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -189,16 +202,29 @@ class AttemptController extends Controller
      */
     public function finish($id)
     {
-        $attempt = Attempt::where('user_id', Auth::id())->findOrFail($id);
-        $attempt->update([
-            'finished_at' => now(),
-        ]);
+        try {
+            $attempt = Attempt::where('user_id', Auth::id())->findOrFail($id);
+            $attempt->update([
+                'finished_at' => now(),
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'data' => $attempt,
-            'message' => 'Imtihon yakunlandi.',
-        ]);
+            return response()->json([
+                'success' => true,
+                'data' => $attempt,
+                'message' => 'Imtihon yakunlandi.',
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Imtihon topilmadi.',
+            ], 404);
+        } catch (\Exception $e) {
+            Log::error('API Attempt finish error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
