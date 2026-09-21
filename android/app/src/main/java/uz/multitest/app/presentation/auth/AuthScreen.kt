@@ -11,10 +11,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.FlashOn
 import androidx.compose.material.icons.rounded.GraphicEq
-import androidx.compose.material.icons.rounded.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import kotlinx.coroutines.launch
+import uz.multitest.app.MainActivity
 import uz.multitest.app.core.theme.*
 import uz.multitest.app.core.util.Constants
 import uz.multitest.app.presentation.components.GradientButton
@@ -50,14 +51,21 @@ fun AuthScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val activity = context as? MainActivity
+
+    // Listen to deep links (both initial and onNewIntent)
+    val deepLinkOtp by activity?.deepLinkOtp?.collectAsStateWithLifecycle() ?: remember { mutableStateOf(null) }
+
+    LaunchedEffect(deepLinkOtp) {
+        deepLinkOtp?.let { otp ->
+            if (otp.isNotBlank()) {
+                viewModel.onOtpChanged(otp.trim())
+                activity?.consumeDeepLinkOtp()
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
-        val intentData = (context as? android.app.Activity)?.intent?.data
-        val incomingOtp = intentData?.getQueryParameter("otp") ?: intentData?.getQueryParameter("code")
-        if (!incomingOtp.isNullOrBlank()) {
-            viewModel.onOtpChanged(incomingOtp.trim())
-        }
-
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is AuthUiEvent.NavigateToMain -> onNavigateToMain()
@@ -68,12 +76,21 @@ fun AuthScreen(
 
     val openTelegramBot = {
         try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(Constants.TELEGRAM_BOT_URL)).apply {
+            // First attempt: direct telegram deep link protocol (opens Telegram app directly)
+            val tgIntent = Intent(Intent.ACTION_VIEW, Uri.parse("tg://resolve?domain=${Constants.TELEGRAM_BOT_USERNAME}&start=code")).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
-            context.startActivity(intent)
+            context.startActivity(tgIntent)
         } catch (e: Exception) {
-            Toast.makeText(context, "Telegram ilovasi topilmadi", Toast.LENGTH_SHORT).show()
+            try {
+                // Fallback: browser or other handlers
+                val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(Constants.TELEGRAM_BOT_URL)).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                context.startActivity(webIntent)
+            } catch (e2: Exception) {
+                Toast.makeText(context, "Telegram ilovasi yoki brauzer topilmadi", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -184,7 +201,7 @@ fun AuthScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.Send,
+                            imageVector = Icons.AutoMirrored.Rounded.Send,
                             contentDescription = null,
                             tint = Color.White,
                             modifier = Modifier.size(24.dp)

@@ -25,11 +25,18 @@ class MultitestUzBotService
     {
         $parts = explode(' ', trim($text));
         $command = strtolower($parts[0] ?? '');
-        $param = strtolower($parts[1] ?? '');
+        $payload = strtolower($parts[1] ?? '');
 
-        // 1. Deep linking or specific login requests
-        if ($command === '/start' && in_array($param, ['code', 'login', 'otp', 'android', 'app'])) {
-            $this->handleOtpRequest($update, $chatId);
+        // 1. Deep linking OTP requests (prava24 style)
+        if ($command === '/start' && in_array($payload, ['is_android_otp', 'is_ios_otp', 'is_email_otp', 'code', 'login', 'otp', 'android', 'app'])) {
+            $from = $update['message']['from'] ?? [];
+            $user = $this->getOrCreateUser($chatId, $from);
+            $isIos = $payload === 'is_ios_otp';
+            $this->createAndSendOtp($user, $chatId, [
+                'android' => !$isIos,
+                'ios' => $isIos,
+                'email' => $payload === 'is_email_otp',
+            ]);
             return;
         }
 
@@ -110,11 +117,11 @@ class MultitestUzBotService
     }
 
     /**
-     * Generate and send 6-digit OTP code to user with 1-tap copy
+     * Generate and send 6-digit OTP code to user with 1-tap copy (panel.prava24.uz style)
      */
     public function createAndSendOtp(User $user, int|string $chatId, array $flags = []): string
     {
-        // Check existing active 6-digit OTP
+        // 1. Avval userning aktiv 6 xonali OTP sini tekshiramiz
         $otp = Otp::query()
             ->where('user_id', $user->id)
             ->where('expired', false)
@@ -137,7 +144,7 @@ class MultitestUzBotService
             Otp::query()->create([
                 'user_id' => $user->id,
                 'code' => $code,
-                'expired_at' => now()->addMinutes(10), // 10 minutes validity
+                'expired_at' => now()->addMinutes(5), // 5 daqiqa
                 'expired' => false,
                 'is_android' => $flags['android'] ?? true,
                 'is_ios' => $flags['ios'] ?? false,
@@ -146,34 +153,26 @@ class MultitestUzBotService
             ]);
         }
 
-        $userName = htmlspecialchars($user->name ?: 'Foydalanuvchi', ENT_QUOTES, 'UTF-8');
+        $mobile = ($flags['ios'] ?? false) ? "iPhone" : "Android";
 
-        $message = "👋 <b>Assalomu alaykum, {$userName}!</b>\n\n" .
-                   "📱 <b>MultiTest Android ilovasiga kirish kodingiz:</b>\n\n" .
-                   "👉 <code>{$code}</code>\n\n" .
-                   "<i>(Kodni nusxalash uchun ustiga bir marta bosing)</i>\n\n" .
-                   "⏳ <b>Amal qilish muddati:</b> 10 daqiqa.\n" .
+        $message = "🔐 *{$mobile} Tasdiqlash kodi*\n\n" .
+                   "👉 `{$code}`\n\n" .
+                   "⏳ Kod 5 daqiqa davomida amal qiladi.\n" .
                    "MultiTest ilovasiga qaytib, ushbu kodni kiriting.";
 
         $keyboard = Keyboard::make()->inline();
         $keyboard->row([
             Keyboard::inlineButton([
                 'text' => '📱 MultiTest Ilovasida ochish',
-                'url' => "multitest://auth?otp={$code}",
+                'url' => "https://multitest.uz/app/open?otp={$code}",
             ]),
-        ]);
-        $keyboard->row([
             Keyboard::inlineButton([
-                'text' => '🔄 Yangi kod olish',
+                'text' => '🔄 Yangi kod',
                 'callback_data' => 'get_otp',
-            ]),
-            Keyboard::inlineButton([
-                'text' => '🎓 Web ilova',
-                'web_app' => ['url' => 'https://multitest.uz/test'],
             ]),
         ]);
 
-        $this->sendSafeHtmlMessage($chatId, $message, $keyboard);
+        $this->sendSafeMessage($chatId, $message, $keyboard, true);
 
         return $code;
     }
@@ -361,24 +360,55 @@ class MultitestUzBotService
     }
 
     /**
-     * Safe message sender using HTML parse mode
+     * Safe message sender supporting HTML or Markdown parse mode (panel.prava24.uz style)
      */
-    protected function sendSafeHtmlMessage(int|string $chatId, string $text, ?Keyboard $keyboard = null): void
-    {
+    protected function sendSafeMessage(
+        int|string $chatId,
+        string $text,
+        ?Keyboard $keyboard = null,
+        bool $markdown = false
+    ): void {
         try {
             $params = [
                 'chat_id' => $chatId,
                 'text' => $text,
-                'parse_mode' => 'HTML',
                 'disable_web_page_preview' => true,
             ];
             if ($keyboard) {
                 $params['reply_markup'] = $keyboard;
             }
+            if ($markdown) {
+                $params['parse_mode'] = 'Markdown';
+            } else {
+                $params['parse_mode'] = 'HTML';
+            }
             $this->telegram->sendMessage($params);
         } catch (\Throwable $e) {
             Log::error('Telegram sendMessage error: ' . $e->getMessage());
+            // Fallback: try sending plain message without keyboard if keyboard had issue
+            if ($keyboard) {
+                try {
+                    $plainParams = [
+                        'chat_id' => $chatId,
+                        'text' => $text,
+                        'disable_web_page_preview' => true,
+                    ];
+                    if ($markdown) {
+                        $plainParams['parse_mode'] = 'Markdown';
+                    } else {
+                        $plainParams['parse_mode'] = 'HTML';
+                    }
+                    $this->telegram->sendMessage($plainParams);
+                } catch (\Throwable $e2) {
+                    Log::error('Telegram sendMessage plain fallback error: ' . $e2->getMessage());
+                }
+            }
         }
+    }
+
+    protected function sendSafeHtmlMessage(int|string $chatId, string $text, ?Keyboard $keyboard = null): void
+    {
+        $this->sendSafeMessage($chatId, $text, $keyboard, false);
     }
 
     /**

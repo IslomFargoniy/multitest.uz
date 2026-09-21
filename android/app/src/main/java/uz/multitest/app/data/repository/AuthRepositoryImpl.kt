@@ -4,6 +4,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import uz.multitest.app.core.datastore.SessionManager
 import uz.multitest.app.core.network.ApiService
 import uz.multitest.app.core.network.NetworkResult
@@ -16,8 +19,19 @@ import javax.inject.Singleton
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val json: Json
 ) : AuthRepository {
+
+    private fun extractErrorMessage(errorBody: String?): String? {
+        if (errorBody.isNullOrBlank()) return null
+        return try {
+            val element = json.parseToJsonElement(errorBody)
+            element.jsonObject["message"]?.jsonPrimitive?.content
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     override fun loginWithOtp(otp: String): Flow<NetworkResult<UserDto>> = flow {
         emit(NetworkResult.Loading)
@@ -31,11 +45,12 @@ class AuthRepositoryImpl @Inject constructor(
                 sessionManager.saveUser(user)
                 emit(NetworkResult.Success(user))
             } else {
-                val errorMsg = response.body()?.message ?: "Login failed. Invalid OTP code."
+                val serverMsg = extractErrorMessage(response.errorBody()?.string())
+                val errorMsg = serverMsg ?: response.body()?.message ?: "OTP noto'g'ri yoki muddati o'tgan."
                 emit(NetworkResult.Error(errorMsg, response.code()))
             }
         } catch (e: Exception) {
-            emit(NetworkResult.Error(e.localizedMessage ?: "Network connection error"))
+            emit(NetworkResult.Error(e.localizedMessage ?: "Internet bilan aloqa yo'q"))
         }
     }.flowOn(Dispatchers.IO)
 
@@ -51,11 +66,12 @@ class AuthRepositoryImpl @Inject constructor(
                 sessionManager.saveUser(user)
                 emit(NetworkResult.Success(user))
             } else {
-                val errorMsg = response.body()?.message ?: "Google authentication failed"
+                val serverMsg = extractErrorMessage(response.errorBody()?.string())
+                val errorMsg = serverMsg ?: response.body()?.message ?: "Google autentifikatsiyasida xatolik"
                 emit(NetworkResult.Error(errorMsg, response.code()))
             }
         } catch (e: Exception) {
-            emit(NetworkResult.Error(e.localizedMessage ?: "Network connection error"))
+            emit(NetworkResult.Error(e.localizedMessage ?: "Internet bilan aloqa yo'q"))
         }
     }.flowOn(Dispatchers.IO)
 
@@ -68,10 +84,11 @@ class AuthRepositoryImpl @Inject constructor(
                 sessionManager.saveUser(user)
                 emit(NetworkResult.Success(user))
             } else {
-                emit(NetworkResult.Error(response.body()?.message ?: "Failed to fetch profile", response.code()))
+                val serverMsg = extractErrorMessage(response.errorBody()?.string())
+                emit(NetworkResult.Error(serverMsg ?: response.body()?.message ?: "Profil ma'lumotlarini yuklab bo'lmadi", response.code()))
             }
         } catch (e: Exception) {
-            emit(NetworkResult.Error(e.localizedMessage ?: "Network connection error"))
+            emit(NetworkResult.Error(e.localizedMessage ?: "Internet bilan aloqa yo'q"))
         }
     }.flowOn(Dispatchers.IO)
 
