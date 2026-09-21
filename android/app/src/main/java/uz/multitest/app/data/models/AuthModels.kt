@@ -3,6 +3,8 @@ package uz.multitest.app.data.models
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+import uz.multitest.app.core.network.FlexibleBooleanSerializer
+
 @Serializable
 data class LoginOtpRequest(
     @SerialName("otp") val otp: String
@@ -15,6 +17,7 @@ data class GoogleLoginRequest(
 
 @Serializable
 data class ApiResponse<T>(
+    @Serializable(with = FlexibleBooleanSerializer::class)
     @SerialName("success") val success: Boolean = false,
     @SerialName("data") val data: T? = null,
     @SerialName("message") val message: String? = null

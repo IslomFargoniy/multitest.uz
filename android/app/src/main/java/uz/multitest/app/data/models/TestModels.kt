@@ -2,12 +2,14 @@ package uz.multitest.app.data.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import uz.multitest.app.core.network.FlexibleBooleanSerializer
 
 @Serializable
 data class TestDto(
     @SerialName("id") val id: Long,
     @SerialName("name") val name: String,
     @SerialName("description") val description: String? = null,
+    @Serializable(with = FlexibleBooleanSerializer::class)
     @SerialName("is_public") val isPublic: Boolean = true,
     @SerialName("audio_path") val audioPath: String? = null,
     @SerialName("language") val language: LanguageDto? = null,
@@ -27,8 +29,8 @@ data class LanguageDto(
 @Serializable
 data class PartDto(
     @SerialName("id") val id: Long,
-    @SerialName("test_id") val testId: Long,
-    @SerialName("name") val name: String,
+    @SerialName("test_id") val testId: Long = 0,
+    @SerialName("name") val name: String = "",
     @SerialName("description") val description: String? = null,
     @SerialName("audio_path") val audioPath: String? = null,
     @SerialName("questions") val questions: List<QuestionDto> = emptyList()
@@ -37,8 +39,8 @@ data class PartDto(
 @Serializable
 data class QuestionDto(
     @SerialName("id") val id: Long,
-    @SerialName("part_id") val partId: Long,
-    @SerialName("textarea") val textarea: String = "",
+    @SerialName("part_id") val partId: Long = 0,
+    @SerialName("textarea") val textarea: String? = "",
     @SerialName("audio_path") val audioPath: String? = null,
     @SerialName("ready_second") val readySecond: Int = 15,
     @SerialName("answer_second") val answerSecond: Int = 45

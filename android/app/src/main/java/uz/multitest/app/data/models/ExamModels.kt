@@ -2,6 +2,7 @@ package uz.multitest.app.data.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import uz.multitest.app.core.network.FlexibleBooleanSerializer
 
 @Serializable
 data class StartAttemptRequest(
@@ -22,7 +23,7 @@ data class AttemptDto(
     @SerialName("mock_id") val mockId: Long? = null,
     @SerialName("started_at") val startedAt: String? = null,
     @SerialName("finished_at") val finishedAt: String? = null,
-    @SerialName("score") val score: Int? = null,
+    @SerialName("score") val score: Double? = null,
     @SerialName("test") val test: TestDto? = null,
     @SerialName("mock") val mock: MockDto? = null,
     @SerialName("attempt_parts") val attemptParts: List<AttemptPartDto> = emptyList()
@@ -52,5 +53,6 @@ data class MockDto(
     @SerialName("name") val name: String,
     @SerialName("code") val code: String? = null,
     @SerialName("slug") val slug: String? = null,
+    @Serializable(with = FlexibleBooleanSerializer::class)
     @SerialName("is_active") val isActive: Boolean = true
 )
