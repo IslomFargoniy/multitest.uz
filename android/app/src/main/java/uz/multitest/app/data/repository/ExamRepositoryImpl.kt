@@ -22,10 +22,24 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+
 @Singleton
 class ExamRepositoryImpl @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val json: Json
 ) : ExamRepository {
+
+    private fun extractErrorMessage(errorBody: String?): String? {
+        if (errorBody.isNullOrBlank()) return null
+        return try {
+            val element = json.parseToJsonElement(errorBody)
+            element.jsonObject["message"]?.jsonPrimitive?.content
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     override fun startAttempt(testId: Long, partIds: List<Long>?): Flow<NetworkResult<AttemptDto>> = flow {
         emit(NetworkResult.Loading)
@@ -34,10 +48,13 @@ class ExamRepositoryImpl @Inject constructor(
             if (response.isSuccessful && response.body()?.data != null) {
                 emit(NetworkResult.Success(response.body()!!.data!!))
             } else {
-                emit(NetworkResult.Error(response.body()?.message ?: "Failed to start attempt", response.code()))
+                val errorMsg = extractErrorMessage(response.errorBody()?.string())
+                    ?: response.body()?.message
+                    ?: "Imtihonni boshlashda xatolik"
+                emit(NetworkResult.Error(errorMsg, response.code()))
             }
         } catch (e: Exception) {
-            emit(NetworkResult.Error(e.localizedMessage ?: "Network connection error"))
+            emit(NetworkResult.Error(e.localizedMessage ?: "Internet bilan aloqa yo'q"))
         }
     }.flowOn(Dispatchers.IO)
 
@@ -48,10 +65,13 @@ class ExamRepositoryImpl @Inject constructor(
             if (response.isSuccessful && response.body()?.data != null) {
                 emit(NetworkResult.Success(response.body()!!.data!!))
             } else {
-                emit(NetworkResult.Error(response.body()?.message ?: "Failed to fetch attempt", response.code()))
+                val errorMsg = extractErrorMessage(response.errorBody()?.string())
+                    ?: response.body()?.message
+                    ?: "Imtihon ma'lumotlarini yuklashda xatolik"
+                emit(NetworkResult.Error(errorMsg, response.code()))
             }
         } catch (e: Exception) {
-            emit(NetworkResult.Error(e.localizedMessage ?: "Network connection error"))
+            emit(NetworkResult.Error(e.localizedMessage ?: "Internet bilan aloqa yo'q"))
         }
     }.flowOn(Dispatchers.IO)
 
