@@ -200,25 +200,14 @@ class MultitestUzBotService
         $userName = htmlspecialchars($user->name ?: 'Foydalanuvchi', ENT_QUOTES, 'UTF-8');
 
         $welcomeText = "👋 <b>Assalomu alaykum, {$userName}!</b>\n\n" .
-                       "🎓 <b>MultiTest</b> — Speaking va Mock Imtihonlar platformasining rasmiy botiga xush kelibsiz!\n\n" .
-                       "Ushbu bot orqali testlarni to'g'ridan-to'g'ri Telegram ichida (Web App) ishlashingiz yoki Android ilovasi uchun tasdiqlash kodini olishingiz mumkin.\n\n" .
-                       "👇 <b>Platformani ochish uchun quyidagi tugmani bosing:</b>";
+                       "🎯 <b>MultiTest — Speaking va Mock Imtihonlar Platformasi</b>\n\n" .
+                       "Ushbu bot orqali testlarni to'g'ridan-to'g'ri Telegram ichida topshirishingiz mumkin.\n\n" .
+                       "👇 <b>Testni boshlash uchun pastdagi tugmani bosing:</b>";
 
-        $keyboard = Keyboard::make()->inline();
-        $keyboard->row([
+        $keyboard = Keyboard::make()->inline()->row([
             Keyboard::inlineButton([
-                'text' => '🎓 MultiTest platformasini ochish',
+                'text' => '🎓 MultiTest ni ochish',
                 'web_app' => ['url' => 'https://multitest.uz/test'],
-            ]),
-        ]);
-        $keyboard->row([
-            Keyboard::inlineButton([
-                'text' => '🔑 Android ilovaga kirish (OTP)',
-                'callback_data' => 'get_otp',
-            ]),
-            Keyboard::inlineButton([
-                'text' => '🧪 Mock testlar',
-                'callback_data' => 'mocks',
             ]),
         ]);
 
