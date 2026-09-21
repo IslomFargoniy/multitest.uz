@@ -196,7 +196,7 @@ const Hero = () => {
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-bold text-slate-400 uppercase">{t('hero.card_latest_result', 'So\'nggi Natija')}</p>
-                                    <p className="text-xs font-black text-emerald-600 dark:text-emerald-400">{t('hero.card_result_val', 'CEFR C1 (78 ball)')}</p>
+                                    <p className="text-xs font-black text-emerald-600 dark:text-emerald-400">{t('hero.card_result_val', 'CEFR C1 (71 ball)')}</p>
                                 </div>
                             </div>
 
@@ -300,19 +300,19 @@ const Hero = () => {
                                  <div className="mt-5 grid grid-cols-4 gap-2 text-center">
                                      <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
                                          <p className="text-[10px] text-slate-400">{t('hero.card_fluency', 'Fluency')}</p>
-                                         <p className="text-xs font-extrabold text-indigo-600 dark:text-indigo-400">B2 (68)</p>
+                                         <p className="text-xs font-extrabold text-indigo-600 dark:text-indigo-400">B2 (58)</p>
                                      </div>
                                      <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
                                          <p className="text-[10px] text-slate-400">{t('hero.card_lexicon', 'Lexicon')}</p>
-                                         <p className="text-xs font-extrabold text-purple-600 dark:text-purple-400">C1 (76)</p>
+                                         <p className="text-xs font-extrabold text-purple-600 dark:text-purple-400">C1 (72)</p>
                                      </div>
                                      <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
                                          <p className="text-[10px] text-slate-400">{t('hero.card_grammar', 'Grammar')}</p>
-                                         <p className="text-xs font-extrabold text-pink-600 dark:text-pink-400">B2 (70)</p>
+                                         <p className="text-xs font-extrabold text-pink-600 dark:text-pink-400">B2 (62)</p>
                                      </div>
                                      <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
                                          <p className="text-[10px] text-slate-400">{t('hero.card_pronounce', 'Pronounce')}</p>
-                                         <p className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400">C1 (79)</p>
+                                         <p className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400">C1 (74)</p>
                                      </div>
                                  </div>
                              </div>

@@ -17,58 +17,49 @@ const ScoreCalculator: React.FC = () => {
     }, [listening, reading, writing, speaking]);
 
     const levelInfo = useMemo(() => {
-        if (overallScore >= 75) {
+        if (overallScore >= 65) {
             return {
                 level: 'C1',
                 color: 'from-emerald-500 to-teal-600',
                 textColor: 'text-emerald-600 dark:text-emerald-400',
                 badgeBg: 'bg-emerald-500/10 border-emerald-500/30',
-                privilege: t('landing_calculator.c1_privilege'),
-                status: 'Maksimal Natija',
+                privilege: t('landing_calculator.c1_privilege', '100% maksimal ball & Pedagoglarga 50% oylik ustama'),
+                status: 'C1 Daraja (65 – 75 ball)',
             };
-        } else if (overallScore >= 60) {
+        } else if (overallScore >= 51) {
             return {
                 level: 'B2',
                 color: 'from-indigo-600 to-purple-600',
                 textColor: 'text-indigo-600 dark:text-indigo-400',
                 badgeBg: 'bg-indigo-500/10 border-indigo-500/30',
-                privilege: t('landing_calculator.b2_privilege'),
-                status: 'Oliy Ta\'lim Imtiyozi',
+                privilege: t('landing_calculator.b2_privilege', 'OTM kirish imtihonlarida 100% maksimal ball & Magistratura talabi'),
+                status: 'B2 Daraja (51 – 64 ball)',
             };
-        } else if (overallScore >= 45) {
+        } else if (overallScore >= 38) {
             return {
                 level: 'B1',
                 color: 'from-amber-500 to-orange-600',
                 textColor: 'text-amber-600 dark:text-amber-400',
                 badgeBg: 'bg-amber-500/10 border-amber-500/30',
-                privilege: t('landing_calculator.b1_privilege'),
-                status: 'Yetarli Daraja',
+                privilege: t('landing_calculator.b1_privilege', 'OTM kirish imtihonlarida chet tili fanidan 75% ball beriladi'),
+                status: 'B1 Daraja (38 – 50 ball)',
             };
-        } else if (overallScore >= 30) {
+        } else {
             return {
                 level: 'A2',
                 color: 'from-slate-500 to-slate-700',
                 textColor: 'text-slate-600 dark:text-slate-400',
                 badgeBg: 'bg-slate-500/10 border-slate-500/30',
-                privilege: t('landing_calculator.a2_privilege'),
-                status: 'Boshlang\'ich',
-            };
-        } else {
-            return {
-                level: 'A1',
-                color: 'from-red-500 to-orange-500',
-                textColor: 'text-red-600 dark:text-red-400',
-                badgeBg: 'bg-red-500/10 border-red-500/30',
-                privilege: t('landing_calculator.a2_privilege'),
-                status: 'Tayyorgarlik Zarur',
+                privilege: t('landing_calculator.a2_privilege', '38 balldan past natijaga sertifikat berilmaydi'),
+                status: 'Sertifikatsiz (< 38 ball)',
             };
         }
     }, [overallScore, t]);
 
     const getScoreBadge = (score: number) => {
-        if (score >= 75) return { label: 'C1', bg: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' };
-        if (score >= 60) return { label: 'B2', bg: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300' };
-        if (score >= 45) return { label: 'B1', bg: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300' };
+        if (score >= 65) return { label: 'C1', bg: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' };
+        if (score >= 51) return { label: 'B2', bg: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300' };
+        if (score >= 38) return { label: 'B1', bg: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300' };
         return { label: 'A2', bg: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300' };
     };
 

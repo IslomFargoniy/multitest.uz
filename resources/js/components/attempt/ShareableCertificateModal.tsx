@@ -16,10 +16,10 @@ const ShareableCertificateModal: React.FC<ShareableCertificateModalProps> = ({ a
     const score = attempt.score ?? attempt.ai_score_avg ?? 0;
 
     const levelBadge = () => {
-        if (score >= 75) return { level: 'C1', color: 'bg-emerald-500 text-white', text: 'C1 (Advanced)' };
-        if (score >= 60) return { level: 'B2', color: 'bg-indigo-600 text-white', text: 'B2 (Vantage)' };
-        if (score >= 45) return { level: 'B1', color: 'bg-amber-500 text-white', text: 'B1 (Threshold)' };
-        return { level: 'A2', color: 'bg-slate-600 text-white', text: 'A2 (Waystage)' };
+        if (score >= 65) return { level: 'C1', color: 'bg-emerald-500 text-white', text: 'C1 (Advanced / 65-75)' };
+        if (score >= 51) return { level: 'B2', color: 'bg-indigo-600 text-white', text: 'B2 (Vantage / 51-64)' };
+        if (score >= 38) return { level: 'B1', color: 'bg-amber-500 text-white', text: 'B1 (Threshold / 38-50)' };
+        return { level: 'A2', color: 'bg-slate-600 text-white', text: 'A2 (Below B1 / <38)' };
     };
 
     // Calculate sub-criteria averages if available in attempt_parts

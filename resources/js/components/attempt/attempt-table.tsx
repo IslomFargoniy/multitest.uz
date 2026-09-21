@@ -130,7 +130,7 @@ const AttemptTable = ({ searchData, ...attempt }: AttemptTableProps) => {
                 {/* Right: Score Badge & Actions */}
                 <div className="flex flex-col items-end gap-1.5 shrink-0">
                     <div className={`flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-black ${
-                        item.score && item.score >= 7
+                        (item.score != null || item.ai_score_avg != null) && ((item.score ?? item.ai_score_avg ?? 0) >= 51 || ((item.score ?? item.ai_score_avg ?? 0) <= 9 && (item.score ?? item.ai_score_avg ?? 0) >= 6))
                             ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400'
                             : 'bg-slate-50 text-slate-500 dark:bg-slate-800/80 dark:text-slate-400'
                     }`}>
@@ -286,7 +286,7 @@ const AttemptTable = ({ searchData, ...attempt }: AttemptTableProps) => {
                                                     <div className="flex flex-col items-center gap-1.5">
                                                         <div
                                                             className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
-                                                                item.score && item.score >= 7
+                                                                (item.score != null || item.ai_score_avg != null) && ((item.score ?? item.ai_score_avg ?? 0) >= 51 || ((item.score ?? item.ai_score_avg ?? 0) <= 9 && (item.score ?? item.ai_score_avg ?? 0) >= 6))
                                                                     ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200/60'
                                                                     : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
                                                             }`}
