@@ -11,32 +11,32 @@ const CEFRLevels: React.FC = () => {
             part: 1 as const,
             badge: t('landing_cefr.part1_badge', 'Part 1'),
             title: t('landing_cefr.part1_title', 'Interview & Daily Topics'),
-            desc: t('landing_cefr.part1_desc', 'Shaxsiy hayot, qiziqishlar va kundalik mavzular bo\'yicha 4-5 ta savolga tezkor, tabiiy va ravon javob berish.'),
+            desc: t('landing_cefr.part1_desc', '1.1-qismda shaxsiy mavzularda 3 ta savol (har biriga 30 soniya). 1.2-qismda 2 ta rasmni solishtirish va savollarga javob berish (1 daqiqa tayyorgarlik, 2 daqiqa javob).'),
             duration: t('landing_cefr.part1_duration', '3-4 daqiqa'),
-            questionsCount: '4-5 ta savol',
-            focus: 'Ravonlik va tabiiy intonatsiya',
+            questionsCount: t('landing_cefr.part1_count', '3 ta savol + 2 ta rasm'),
+            focus: t('landing_cefr.part1_focus', 'Kundalik muloqot va taqqoslash'),
             icon: 'solar:user-speak-rounded-bold-duotone',
             color: 'from-blue-500 to-indigo-600',
         },
         {
             part: 2 as const,
             badge: t('landing_cefr.part2_badge', 'Part 2'),
-            title: t('landing_cefr.part2_title', 'Picture Description & Solution'),
-            desc: t('landing_cefr.part2_desc', 'Berilgan 2 ta rasm yoki vaziyatni taqqoslash, farqlarini topish va muammoga yechim taklif qilish (1 daqiqa tayyorgarlik, 2 daqiqa nutq).'),
-            duration: t('landing_cefr.part2_duration', '3-4 daqiqa'),
-            questionsCount: '2 ta rasm + yechim',
-            focus: 'Solishtirish va mantiqiy xulosalar',
+            title: t('landing_cefr.part2_title', 'Picture Presentation & Solution'),
+            desc: t('landing_cefr.part2_desc', 'Rasm yoki vaziyatga oid 3 ta savol asosida bog\'langan nutq so\'zlash va muammoga yechim taklif qilish (1 daqiqa tayyorgarlik, 2 daqiqa nutq).'),
+            duration: t('landing_cefr.part2_duration', '3 daqiqa'),
+            questionsCount: t('landing_cefr.part2_count', '1 ta vaziyat + 3 ta savol'),
+            focus: t('landing_cefr.part2_focus', 'Taqdimot va mantiqiy xulosalar'),
             icon: 'solar:gallery-wide-bold-duotone',
             color: 'from-purple-500 to-pink-600',
         },
         {
             part: 3 as const,
             badge: t('landing_cefr.part3_badge', 'Part 3'),
-            title: t('landing_cefr.part3_title', 'Deep Discussion & Analysis'),
-            desc: t('landing_cefr.part3_desc', 'Murakkab ijtimoiy, ilmiy yoki falsafiy mavzularda chuqur munozara, sabab-oqibat tahlili va asosli argumentlar keltirish.'),
-            duration: t('landing_cefr.part3_duration', '4-5 daqiqa'),
-            questionsCount: '3-4 ta analitik savol',
-            focus: 'Akademik lug\'at va argumentatsiya',
+            title: t('landing_cefr.part3_title', 'Discussion & Argumentation'),
+            desc: t('landing_cefr.part3_desc', 'Berilgan dolzarb mavzu bo\'yicha \'for\' (yoqlash) va \'against\' (qarshilik) dalillarini keltirib, muvozanatli va asosli nutq so\'zlash (1 daqiqa tayyorgarlik, 2 daqiqa nutq).'),
+            duration: t('landing_cefr.part3_duration', '3 daqiqa'),
+            questionsCount: t('landing_cefr.part3_count', 'Murakkab mavzu + argumentlar'),
+            focus: t('landing_cefr.part3_focus', 'Akademik lug\'at va dalillar'),
             icon: 'solar:chat-round-bold-duotone',
             color: 'from-emerald-500 to-teal-600',
         },
@@ -45,27 +45,27 @@ const CEFRLevels: React.FC = () => {
     const levels = [
         {
             code: 'B1',
-            score: '45 - 59 ball',
-            title: t('landing_cefr.b1_title', 'B1 Daraja (45 - 59 ball)'),
-            desc: t('landing_cefr.b1_desc', 'Tanish va kundalik mavzularda o\'z fikrini ifoda qila oladi. Grammatika va so\'z boyligi asosiy muloqot uchun yetarli.'),
-            benefits: 'Asosiy muloqot va o\'rta maxsus ta\'lim talablari',
+            score: '38 – 50 ball',
+            title: t('landing_cefr.b1_title', 'B1 Daraja (38 – 50 ball)'),
+            desc: t('landing_cefr.b1_desc', 'Tanish va kundalik mavzularda o\'z fikrini ifoda qila oladi. Grammatika va so\'z boyligi asosiy muloqot uchun yetarli darajada.'),
+            benefits: t('landing_cefr.b1_benefit', 'OTM kirish imtihonlarida chet tili fanidan 75% ball beriladi'),
             badgeBg: 'bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400',
         },
         {
             code: 'B2',
-            score: '60 - 74 ball',
-            title: t('landing_cefr.b2_title', 'B2 Daraja (60 - 74 ball)'),
-            desc: t('landing_cefr.b2_desc', 'Murakkab g\'oyalarni tushunadi va erkin muloqot qiladi. Oliy ta\'lim va ish joylarida imtiyoz beruvchi asosiy daraja.'),
-            benefits: 'OTM kirish imtihonlarida maksimal ball & magistratura talabi',
+            score: '51 – 64 ball',
+            title: t('landing_cefr.b2_title', 'B2 Daraja (51 – 64 ball)'),
+            desc: t('landing_cefr.b2_desc', 'Murakkab mavzularni tushunadi va ravon muloqot qiladi. Bakalavriat va Magistratura uchun asosiy imtiyozli daraja.'),
+            benefits: t('landing_cefr.b2_benefit', 'OTM kirish imtihonlarida 100% maksimal ball & Magistratura talabi'),
             badgeBg: 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20 dark:text-indigo-400',
             isPopular: true,
         },
         {
             code: 'C1',
-            score: '75+ ball',
-            title: t('landing_cefr.c1_title', 'C1 Daraja (75+ ball)'),
-            desc: t('landing_cefr.c1_desc', 'Professional, akademik va har qanday murakkab mavzuda erkin, aniq va uslubiy jihatdan mukammal so\'zlash darajasi.'),
-            benefits: 'O\'qituvchilarga 50% ustama & xalqaro magistratura',
+            score: '65 – 75 ball',
+            title: t('landing_cefr.c1_title', 'C1 Daraja (65 – 75 ball)'),
+            desc: t('landing_cefr.c1_desc', 'Professional, akademik va har qanday murakkab mavzuda ravon, aniq va uslubiy jihatdan mukammal so\'zlash darajasi.'),
+            benefits: t('landing_cefr.c1_benefit', 'OTMga 100% maksimal ball & Pedagoglarga 50% oylik ustama'),
             badgeBg: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400',
         },
     ];
@@ -137,7 +137,7 @@ const CEFRLevels: React.FC = () => {
                             {t('landing_cefr.levels_title', 'Baholash Shkalasi va Darajalar')}
                         </h3>
                         <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-                            UzBMB (Milliy sertifikat) mezonlariga ko'ra Speaking va umumiy ballarning darajalarga taqsimoti
+                            {t('landing_cefr.levels_subtitle', 'UzBMB (Milliy sertifikat) rasmiy mezonlariga ko\'ra Speaking va umumiy ballarning darajalarga taqsimoti (maksimal 75 ball)')}
                         </p>
                     </div>
 
@@ -153,7 +153,7 @@ const CEFRLevels: React.FC = () => {
                             >
                                 {lvl.isPopular && (
                                     <span className="absolute -top-3 right-4 rounded-full bg-indigo-600 px-3 py-0.5 text-[10px] font-black uppercase text-white shadow-sm">
-                                        Eng Ko'p Talab Qilinadi
+                                        {t('landing_cefr.most_demanded', 'Eng Ko\'p Talab Qilinadi')}
                                     </span>
                                 )}
 

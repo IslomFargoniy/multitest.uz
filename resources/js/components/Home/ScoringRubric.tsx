@@ -9,29 +9,29 @@ const ScoringRubric: React.FC = () => {
         {
             icon: 'solar:chat-line-bold',
             title: t('landing_scoring.fluency_title', 'Fluency & Coherence'),
-            desc: t('landing_scoring.fluency_desc', 'Nutqning uzluksizligi, to\'xtalishsiz gapirish, logik bog\'liqlik va konnektorlardan to\'g\'ri foydalanish.'),
-            badge: '25% Salmoq',
+            desc: t('landing_scoring.fluency_desc', 'Nutqning ravonligi, tabiiy uzluksizligi, to\'xtalishsiz gapirish va mantiqiy bog\'lovchilardan to\'g\'ri foydalanish.'),
+            badge: t('landing_scoring.weight_badge', '25% Salmoq'),
             color: 'text-indigo-600 bg-indigo-50 border-indigo-200 dark:bg-indigo-950/50 dark:border-indigo-900/50 dark:text-indigo-400',
         },
         {
             icon: 'solar:book-bookmark-bold',
             title: t('landing_scoring.lexical_title', 'Lexical Resource'),
-            desc: t('landing_scoring.lexical_desc', 'So\'z boyligi, sinonimlar, idiomatik ifodalar, akademik terminlar va kollokatsiyalarning xilma-xilligi.'),
-            badge: '25% Salmoq',
+            desc: t('landing_scoring.lexical_desc', 'Mavzuga oid boy so\'z boyligi, sinonimlar, idiomatik ifodalar, akademik terminlar va kollokatsiyalarning xilma-xilligi.'),
+            badge: t('landing_scoring.weight_badge', '25% Salmoq'),
             color: 'text-purple-600 bg-purple-50 border-purple-200 dark:bg-purple-950/50 dark:border-purple-900/50 dark:text-purple-400',
         },
         {
             icon: 'solar:code-file-bold',
             title: t('landing_scoring.grammar_title', 'Grammatical Range & Accuracy'),
             desc: t('landing_scoring.grammar_desc', 'Murakkab gap tuzilmalari, zamonlarning to\'g\'ri qo\'llanilishi va grammatik xatolar sonining minimal bo\'lishi.'),
-            badge: '25% Salmoq',
+            badge: t('landing_scoring.weight_badge', '25% Salmoq'),
             color: 'text-pink-600 bg-pink-50 border-pink-200 dark:bg-pink-950/50 dark:border-pink-900/50 dark:text-pink-400',
         },
         {
             icon: 'solar:soundwave-bold',
-            title: t('landing_scoring.pronunciation_title', 'Pronunciation & Accent'),
-            desc: t('landing_scoring.pronunciation_desc', 'Har bir tovushning to\'g\'ri artikulyatsiyasi, so\'z urg\'ulari, intonatsiya va nutqning tushunarliligi.'),
-            badge: '25% Salmoq',
+            title: t('landing_scoring.pronunciation_title', 'Pronunciation & Intonation'),
+            desc: t('landing_scoring.pronunciation_desc', 'Har bir tovushning to\'g\'ri artikulyatsiyasi, so\'z va gap urg\'ulari, tabiiy intonatsiya hamda nutqning tushunarliligi.'),
+            badge: t('landing_scoring.weight_badge', '25% Salmoq'),
             color: 'text-emerald-600 bg-emerald-50 border-emerald-200 dark:bg-emerald-950/50 dark:border-emerald-900/50 dark:text-emerald-400',
         },
     ];
@@ -49,7 +49,7 @@ const ScoringRubric: React.FC = () => {
                         {t('landing_scoring.title', 'Sun\'iy Intellekt Qanday Baholaydi?')}
                     </h2>
                     <p className="mt-4 text-base md:text-lg text-slate-600 dark:text-slate-300">
-                        {t('landing_scoring.subtitle', 'Xalqaro CEFR va UzBMB mezonlari asosida ishlab chiqilgan neyron tarmoq sizning har bir jumlani sinchkovlik bilan tekshiradi')}
+                        {t('landing_scoring.subtitle', 'Rasmiy UzBMB va CEFR mezonlari asosida ishlab chiqilgan model nutqingizni 4 ta asosiy mezon bo\'yicha baholaydi')}
                     </p>
                 </div>
 
@@ -95,7 +95,7 @@ const ScoringRubric: React.FC = () => {
                                     </div>
                                 </div>
                                 <span className="rounded-xl bg-emerald-500/10 px-3 py-1 text-xs font-black text-emerald-600 border border-emerald-500/20">
-                                    CEFR B2+ (72)
+                                    CEFR C1 (71 ball)
                                 </span>
                             </div>
 
@@ -104,37 +104,37 @@ const ScoringRubric: React.FC = () => {
                                 <div>
                                     <div className="flex justify-between text-xs font-bold mb-1">
                                         <span className="text-slate-700 dark:text-slate-300">Fluency & Coherence</span>
-                                        <span className="text-indigo-600 font-black">74 / 75 (C1)</span>
+                                        <span className="text-indigo-600 font-black">72 / 75 (C1)</span>
                                     </div>
                                     <div className="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                                        <div className="h-full rounded-full bg-indigo-600 w-[95%]" />
+                                        <div className="h-full rounded-full bg-indigo-600 w-[96%]" />
                                     </div>
                                 </div>
 
                                 <div>
                                     <div className="flex justify-between text-xs font-bold mb-1">
                                         <span className="text-slate-700 dark:text-slate-300">Lexical Resource</span>
-                                        <span className="text-purple-600 font-black">68 / 75 (B2)</span>
+                                        <span className="text-purple-600 font-black">68 / 75 (C1)</span>
                                     </div>
                                     <div className="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                                        <div className="h-full rounded-full bg-purple-600 w-[80%]" />
+                                        <div className="h-full rounded-full bg-purple-600 w-[90%]" />
                                     </div>
                                 </div>
 
                                 <div>
                                     <div className="flex justify-between text-xs font-bold mb-1">
                                         <span className="text-slate-700 dark:text-slate-300">Grammatical Accuracy</span>
-                                        <span className="text-pink-600 font-black">70 / 75 (B2)</span>
+                                        <span className="text-pink-600 font-black">70 / 75 (C1)</span>
                                     </div>
                                     <div className="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                                        <div className="h-full rounded-full bg-pink-600 w-[85%]" />
+                                        <div className="h-full rounded-full bg-pink-600 w-[93%]" />
                                     </div>
                                 </div>
 
                                 <div>
                                     <div className="flex justify-between text-xs font-bold mb-1">
-                                        <span className="text-slate-700 dark:text-slate-300">Pronunciation</span>
-                                        <span className="text-emerald-600 font-black">76 / 75 (C1)</span>
+                                        <span className="text-slate-700 dark:text-slate-300">Pronunciation & Intonation</span>
+                                        <span className="text-emerald-600 font-black">74 / 75 (C1)</span>
                                     </div>
                                     <div className="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                                         <div className="h-full rounded-full bg-emerald-600 w-[98%]" />
@@ -149,7 +149,7 @@ const ScoringRubric: React.FC = () => {
                                     <p className="text-xs font-bold text-slate-800 dark:text-slate-200">AI Tavsiyasi</p>
                                 </div>
                                 <p className="text-[11px] leading-relaxed text-slate-600 dark:text-slate-300">
-                                    "Part 2 da rasmlarni taqqoslashda 'whereas', 'in contrast' kabi bog'lovchilardan unumli foydalandingiz. C1 darajaga chiqish uchun Part 3 da idiomatik kollokatsiyalarni ko'proq ishlating."
+                                    "Part 1.2 da rasmlarni taqqoslashda 'whereas', 'in contrast' kabi bog'lovchilardan to'g'ri foydalandingiz. C1 darajangizni yanada mustahkamlash uchun Part 3 munozarasida akademik kollokatsiyalarni kengaytiring."
                                 </p>
                             </div>
                         </div>
