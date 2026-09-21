@@ -27,6 +27,7 @@ import uz.multitest.app.presentation.components.ErrorStateView
 import uz.multitest.app.presentation.components.GradientButton
 import uz.multitest.app.presentation.components.LoadingStateView
 import uz.multitest.app.presentation.components.MultiTestCard
+import uz.multitest.app.presentation.components.parseHtmlToPlainText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -156,7 +157,7 @@ fun TestDetailScreen(
                             if (!test.description.isNullOrBlank()) {
                                 Spacer(modifier = Modifier.height(14.dp))
                                 Text(
-                                    text = test.description,
+                                    text = parseHtmlToPlainText(test.description),
                                     style = MaterialTheme.typography.bodyMedium.copy(
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -168,20 +169,16 @@ fun TestDetailScreen(
                     // Parts Selection Section
                     item {
                         Text(
-                            text = "Bo'limlarni tanlang (${test.parts.size} ta mavjud):",
-                            style = MaterialTheme.typography.titleSmall.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onBackground
-                            ),
-                            modifier = Modifier.padding(vertical = 4.dp)
+                            text = "Bo'limlarni tanlang",
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp)
                         )
                     }
 
                     items(test.parts, key = { it.id }) { part ->
-                        val isSelected = uiState.selectedPartIds.contains(part.id)
                         PartSelectionItem(
                             part = part,
-                            isSelected = isSelected,
+                            isSelected = uiState.selectedPartIds.contains(part.id),
                             onToggle = { viewModel.togglePartSelection(part.id) }
                         )
                     }
@@ -208,14 +205,14 @@ private fun PartSelectionItem(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (isSelected) {
-                IndigoPrimary.copy(alpha = 0.12f)
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
             } else {
                 MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
             }
         ),
         border = if (isSelected) {
             CardDefaults.outlinedCardBorder().copy(
-                brush = androidx.compose.ui.graphics.SolidColor(IndigoPrimary),
+                brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary),
                 width = 1.5.dp
             )
         } else null
@@ -230,7 +227,7 @@ private fun PartSelectionItem(
                 checked = isSelected,
                 onCheckedChange = { onToggle() },
                 colors = CheckboxDefaults.colors(
-                    checkedColor = IndigoPrimary,
+                    checkedColor = MaterialTheme.colorScheme.primary,
                     checkmarkColor = Color.White
                 )
             )
@@ -248,7 +245,7 @@ private fun PartSelectionItem(
                 if (!part.description.isNullOrBlank()) {
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
-                        text = part.description,
+                        text = parseHtmlToPlainText(part.description),
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         ),
