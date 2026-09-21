@@ -170,7 +170,7 @@ private fun TestListItem(
 
                 if (!test.description.isNullOrEmpty()) {
                     Text(
-                        text = test.description,
+                        text = uz.multitest.app.presentation.components.parseHtmlToPlainText(test.description),
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         ),

@@ -260,7 +260,7 @@ private fun PartIntroView(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = partDescription,
+                text = parseHtmlToPlainText(partDescription),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     lineHeight = 22.sp
@@ -347,16 +347,23 @@ private fun QuestionActiveView(
 
             // Question Box
             MultiTestCard(shape = RoundedCornerShape(20.dp)) {
-                Text(
-                    text = questionText.ifBlank { "Savolni tinglang va javob bering" },
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        lineHeight = 26.sp
-                    ),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                if (questionText.isNotBlank()) {
+                    HtmlContentView(
+                        html = questionText,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                } else {
+                    Text(
+                        text = "Savolni tinglang va javob bering",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            lineHeight = 26.sp
+                        ),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
 
