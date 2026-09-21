@@ -20,7 +20,8 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 
 @Singleton
 class SessionManager @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val json: Json
 ) {
     private val tokenKey = stringPreferencesKey(Constants.KEY_AUTH_TOKEN)
     private val userKey = stringPreferencesKey(Constants.KEY_USER_DATA)
@@ -34,9 +35,9 @@ class SessionManager @Inject constructor(
     }
 
     val userFlow: Flow<UserDto?> = context.dataStore.data.map { preferences ->
-        preferences[userKey]?.let { json ->
+        preferences[userKey]?.let { jsonStr ->
             try {
-                Json.decodeFromString<UserDto>(json)
+                json.decodeFromString<UserDto>(jsonStr)
             } catch (e: Exception) {
                 null
             }
@@ -51,14 +52,14 @@ class SessionManager @Inject constructor(
 
     suspend fun saveUser(user: UserDto) {
         context.dataStore.edit { preferences ->
-            preferences[userKey] = Json.encodeToString(user)
+            preferences[userKey] = json.encodeToString(user)
         }
     }
 
     suspend fun saveAuth(token: String, user: UserDto) {
         context.dataStore.edit { preferences ->
             preferences[tokenKey] = token
-            preferences[userKey] = Json.encodeToString(user)
+            preferences[userKey] = json.encodeToString(user)
         }
     }
 
