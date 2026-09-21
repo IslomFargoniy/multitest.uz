@@ -7,6 +7,18 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+import java.util.Properties
+import java.io.FileInputStream
+
+val versionPropsFile = File(rootDir, "version.properties")
+val versionProps = Properties().apply {
+    if (versionPropsFile.exists()) {
+        load(FileInputStream(versionPropsFile))
+    }
+}
+val vCode = versionProps.getProperty("VERSION_CODE", "1").toInt()
+val vName = versionProps.getProperty("VERSION_NAME", "1.0.0")
+
 android {
     namespace = "uz.multitest.app"
     compileSdk = 35
@@ -15,8 +27,8 @@ android {
         applicationId = "uz.multitest.app"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = vCode
+        versionName = vName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
