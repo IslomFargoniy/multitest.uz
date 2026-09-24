@@ -166,11 +166,12 @@ fun OtpInputField(
                 }
             }
         ),
-        modifier = modifier.focusRequester(focusRequester),
+        modifier = modifier.fillMaxWidth().focusRequester(focusRequester),
         decorationBox = {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+                horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 for (i in 0 until length) {
                     val isFocused = otpValue.length == i
@@ -178,12 +179,16 @@ fun OtpInputField(
 
                     Box(
                         modifier = Modifier
-                            .size(width = 46.dp, height = 56.dp)
+                            .weight(1f)
+                            .height(54.dp)
                             .clip(RoundedCornerShape(12.dp))
-                            .background(MaterialTheme.colorScheme.surface)
+                            .background(
+                                if (isFocused) MaterialTheme.colorScheme.surface
+                                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f)
+                            )
                             .border(
                                 width = if (isFocused) 2.dp else 1.dp,
-                                color = if (isFocused) IndigoPrimary else MaterialTheme.colorScheme.outlineVariant,
+                                color = if (isFocused) IndigoPrimary else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
                                 shape = RoundedCornerShape(12.dp)
                             ),
                         contentAlignment = Alignment.Center
