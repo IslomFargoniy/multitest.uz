@@ -96,6 +96,23 @@ class SpeakingExamViewModel @Inject constructor(
                     is PlayerState.Playing -> {
                         _uiState.update { it.copy(isAudioPromptPlaying = true) }
                     }
+                    is PlayerState.Completed -> {
+                        _uiState.update { it.copy(isAudioPromptPlaying = false) }
+                        // If question audio finished during preparation and there's no extra ready countdown, start recording
+                        val currentQuestion = getCurrentQuestion()
+                        if (_uiState.value.phase == ExamPhase.PREPARATION && (currentQuestion?.readySecond ?: 0) <= 0) {
+                            timerJob?.cancel()
+                            startQuestionRecording()
+                        }
+                    }
+                    is PlayerState.Error -> {
+                        _uiState.update { it.copy(isAudioPromptPlaying = false) }
+                        val currentQuestion = getCurrentQuestion()
+                        if (_uiState.value.phase == ExamPhase.PREPARATION && (currentQuestion?.readySecond ?: 0) <= 0) {
+                            timerJob?.cancel()
+                            startQuestionRecording()
+                        }
+                    }
                     else -> {
                         _uiState.update { it.copy(isAudioPromptPlaying = false) }
                     }
@@ -185,30 +202,61 @@ class SpeakingExamViewModel @Inject constructor(
             return
         }
 
-        val readySeconds = question.readySecond.coerceAtLeast(3)
-        _uiState.update {
-            it.copy(
-                phase = ExamPhase.PREPARATION,
-                secondsRemaining = readySeconds,
-                totalSeconds = readySeconds
-            )
-        }
-
-        // Play question audio prompt if available
-        question.audioPath?.let { audioUrl ->
-            if (audioUrl.isNotBlank()) {
-                audioPlayerManager.play(audioUrl)
-            }
-        }
-
         currentQuestionStartTime = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
 
-        timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-            for (sec in readySeconds downTo 1) {
-                _uiState.update { it.copy(secondsRemaining = sec) }
-                delay(1000L)
+        val hasAudio = !question.audioPath.isNullOrBlank()
+        val readySeconds = question.readySecond
+
+        // Play question audio prompt
+        if (hasAudio) {
+            audioPlayerManager.play(question.audioPath!!)
+        }
+
+        if (readySeconds > 0) {
+            _uiState.update {
+                it.copy(
+                    phase = ExamPhase.PREPARATION,
+                    secondsRemaining = readySeconds,
+                    totalSeconds = readySeconds
+                )
             }
+
+            timerJob?.cancel()
+            timerJob = viewModelScope.launch {
+                for (sec in readySeconds downTo 1) {
+                    _uiState.update { it.copy(secondsRemaining = sec) }
+                    delay(1000L)
+                }
+                audioPlayerManager.stop()
+                startQuestionRecording()
+            }
+        } else {
+            // For questions with no prep countdown (e.g. Part 1 where audio plays then recording starts immediately):
+            // Fallback timer of 15 seconds in case audio fails or is delayed
+            val fallbackSeconds = if (hasAudio) 15 else 3
+            _uiState.update {
+                it.copy(
+                    phase = ExamPhase.PREPARATION,
+                    secondsRemaining = fallbackSeconds,
+                    totalSeconds = fallbackSeconds
+                )
+            }
+
+            timerJob?.cancel()
+            timerJob = viewModelScope.launch {
+                for (sec in fallbackSeconds downTo 1) {
+                    _uiState.update { it.copy(secondsRemaining = sec) }
+                    delay(1000L)
+                }
+                audioPlayerManager.stop()
+                startQuestionRecording()
+            }
+        }
+    }
+
+    fun startRecordingNow() {
+        if (_uiState.value.phase == ExamPhase.PREPARATION) {
+            timerJob?.cancel()
             audioPlayerManager.stop()
             startQuestionRecording()
         }
@@ -216,6 +264,7 @@ class SpeakingExamViewModel @Inject constructor(
 
     private fun startQuestionRecording() {
         val question = getCurrentQuestion() ?: return
+        audioPlayerManager.stop()
         val answerSeconds = question.answerSecond.coerceAtLeast(10)
 
         // Start voice recording
@@ -225,7 +274,8 @@ class SpeakingExamViewModel @Inject constructor(
             it.copy(
                 phase = ExamPhase.RECORDING,
                 secondsRemaining = answerSeconds,
-                totalSeconds = answerSeconds
+                totalSeconds = answerSeconds,
+                isAudioPromptPlaying = false
             )
         }
 
