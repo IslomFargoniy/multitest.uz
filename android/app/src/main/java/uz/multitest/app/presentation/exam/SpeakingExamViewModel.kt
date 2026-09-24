@@ -22,6 +22,7 @@ import javax.inject.Inject
 enum class ExamPhase {
     LOADING,
     PART_INTRO,
+    QUESTION_AUDIO,
     PREPARATION,
     RECORDING,
     UPLOADING,
@@ -96,21 +97,10 @@ class SpeakingExamViewModel @Inject constructor(
                     is PlayerState.Playing -> {
                         _uiState.update { it.copy(isAudioPromptPlaying = true) }
                     }
-                    is PlayerState.Completed -> {
+                    is PlayerState.Completed, is PlayerState.Error -> {
                         _uiState.update { it.copy(isAudioPromptPlaying = false) }
-                        // If question audio finished during preparation and there's no extra ready countdown, start recording
-                        val currentQuestion = getCurrentQuestion()
-                        if (_uiState.value.phase == ExamPhase.PREPARATION && (currentQuestion?.readySecond ?: 0) <= 0) {
-                            timerJob?.cancel()
-                            startQuestionRecording()
-                        }
-                    }
-                    is PlayerState.Error -> {
-                        _uiState.update { it.copy(isAudioPromptPlaying = false) }
-                        val currentQuestion = getCurrentQuestion()
-                        if (_uiState.value.phase == ExamPhase.PREPARATION && (currentQuestion?.readySecond ?: 0) <= 0) {
-                            timerJob?.cancel()
-                            startQuestionRecording()
+                        if (_uiState.value.phase == ExamPhase.QUESTION_AUDIO) {
+                            onAudioFinishedOrSkipped()
                         }
                     }
                     else -> {
@@ -192,10 +182,10 @@ class SpeakingExamViewModel @Inject constructor(
 
     fun proceedFromPartIntroToQuestions() {
         audioPlayerManager.stop()
-        startQuestionPreparation()
+        startQuestionFlow()
     }
 
-    private fun startQuestionPreparation() {
+    private fun startQuestionFlow() {
         val question = getCurrentQuestion()
         if (question == null) {
             uploadCurrentPartAnswers()
@@ -205,57 +195,62 @@ class SpeakingExamViewModel @Inject constructor(
         currentQuestionStartTime = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
 
         val hasAudio = !question.audioPath.isNullOrBlank()
-        val readySeconds = question.readySecond
 
-        // Play question audio prompt
         if (hasAudio) {
+            _uiState.update {
+                it.copy(
+                    phase = ExamPhase.QUESTION_AUDIO,
+                    secondsRemaining = 0,
+                    totalSeconds = 0,
+                    isAudioPromptPlaying = true
+                )
+            }
             audioPlayerManager.play(question.audioPath!!)
+
+            // Safety timeout (45s) in case audio stream fails to fire onComplete
+            timerJob?.cancel()
+            timerJob = viewModelScope.launch {
+                delay(45_000L)
+                if (_uiState.value.phase == ExamPhase.QUESTION_AUDIO) {
+                    onAudioFinishedOrSkipped()
+                }
+            }
+        } else {
+            onAudioFinishedOrSkipped()
         }
+    }
+
+    private fun onAudioFinishedOrSkipped() {
+        timerJob?.cancel()
+        audioPlayerManager.stop()
+
+        val question = getCurrentQuestion() ?: return
+        val readySeconds = question.readySecond
 
         if (readySeconds > 0) {
             _uiState.update {
                 it.copy(
                     phase = ExamPhase.PREPARATION,
                     secondsRemaining = readySeconds,
-                    totalSeconds = readySeconds
+                    totalSeconds = readySeconds,
+                    isAudioPromptPlaying = false
                 )
             }
 
-            timerJob?.cancel()
             timerJob = viewModelScope.launch {
                 for (sec in readySeconds downTo 1) {
                     _uiState.update { it.copy(secondsRemaining = sec) }
                     delay(1000L)
                 }
-                audioPlayerManager.stop()
                 startQuestionRecording()
             }
         } else {
-            // For questions with no prep countdown (e.g. Part 1 where audio plays then recording starts immediately):
-            // Fallback timer of 15 seconds in case audio fails or is delayed
-            val fallbackSeconds = if (hasAudio) 15 else 3
-            _uiState.update {
-                it.copy(
-                    phase = ExamPhase.PREPARATION,
-                    secondsRemaining = fallbackSeconds,
-                    totalSeconds = fallbackSeconds
-                )
-            }
-
-            timerJob?.cancel()
-            timerJob = viewModelScope.launch {
-                for (sec in fallbackSeconds downTo 1) {
-                    _uiState.update { it.copy(secondsRemaining = sec) }
-                    delay(1000L)
-                }
-                audioPlayerManager.stop()
-                startQuestionRecording()
-            }
+            startQuestionRecording()
         }
     }
 
     fun startRecordingNow() {
-        if (_uiState.value.phase == ExamPhase.PREPARATION) {
+        if (_uiState.value.phase == ExamPhase.QUESTION_AUDIO || _uiState.value.phase == ExamPhase.PREPARATION) {
             timerJob?.cancel()
             audioPlayerManager.stop()
             startQuestionRecording()
@@ -319,7 +314,7 @@ class SpeakingExamViewModel @Inject constructor(
 
         if (nextQuestionIdx < partQuestions.size) {
             _uiState.update { it.copy(currentQuestionIndex = nextQuestionIdx) }
-            startQuestionPreparation()
+            startQuestionFlow()
         } else {
             // Part finished -> Upload
             uploadCurrentPartAnswers()
@@ -387,7 +382,7 @@ class SpeakingExamViewModel @Inject constructor(
     }
 
     fun onAppBackgrounded() {
-        if (_uiState.value.phase == ExamPhase.PREPARATION || _uiState.value.phase == ExamPhase.RECORDING) {
+        if (_uiState.value.phase == ExamPhase.QUESTION_AUDIO || _uiState.value.phase == ExamPhase.PREPARATION || _uiState.value.phase == ExamPhase.RECORDING) {
             _uiState.update { it.copy(violationCount = it.violationCount + 1) }
             viewModelScope.launch {
                 examRepository.recordViolation(attemptId)

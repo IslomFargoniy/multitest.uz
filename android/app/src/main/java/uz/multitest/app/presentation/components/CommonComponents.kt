@@ -23,7 +23,10 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.material.icons.rounded.VolumeUp
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -250,6 +253,76 @@ fun AudioWaveformVisualizer(
                             )
                         }
                     )
+            )
+        }
+    }
+}
+
+@Composable
+fun AudioListeningCircle(
+    modifier: Modifier = Modifier,
+    size: Dp = 140.dp
+) {
+    val infiniteTransition = rememberInfiniteTransition(label = "listening_pulse")
+    val pulseScale by infiniteTransition.animateFloat(
+        initialValue = 0.94f,
+        targetValue = 1.06f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(800, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulse_scale"
+    )
+    val rotation by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(3000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "rotation"
+    )
+
+    Box(
+        modifier = modifier.size(size),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            progress = { 1f },
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            strokeWidth = 8.dp,
+        )
+        CircularProgressIndicator(
+            progress = { 0.75f },
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer { rotationZ = rotation },
+            color = IndigoPrimary,
+            strokeWidth = 8.dp,
+            strokeCap = StrokeCap.Round
+        )
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.graphicsLayer {
+                scaleX = pulseScale
+                scaleY = pulseScale
+            }
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.VolumeUp,
+                contentDescription = null,
+                tint = IndigoPrimary,
+                modifier = Modifier.size(38.dp)
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = "Tinglang",
+                style = MaterialTheme.typography.labelSmall.copy(
+                    color = IndigoPrimary,
+                    fontWeight = FontWeight.Bold
+                )
             )
         }
     }

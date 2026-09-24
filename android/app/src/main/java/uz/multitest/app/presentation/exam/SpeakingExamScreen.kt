@@ -162,13 +162,30 @@ fun SpeakingExamScreen(
                     )
                 }
 
+                ExamPhase.QUESTION_AUDIO -> {
+                    QuestionActiveView(
+                        questionIndex = uiState.currentQuestionIndex + 1,
+                        totalQuestions = totalQuestions,
+                        questionText = currentQuestion?.textarea ?: "",
+                        isAudioPhase = true,
+                        isPreparation = false,
+                        isAudioPromptPlaying = true,
+                        secondsRemaining = 0,
+                        totalSeconds = 0,
+                        amplitude = 0f,
+                        onStartRecordingNow = { viewModel.startRecordingNow() },
+                        onFinishEarly = {}
+                    )
+                }
+
                 ExamPhase.PREPARATION -> {
                     QuestionActiveView(
                         questionIndex = uiState.currentQuestionIndex + 1,
                         totalQuestions = totalQuestions,
                         questionText = currentQuestion?.textarea ?: "",
+                        isAudioPhase = false,
                         isPreparation = true,
-                        isAudioPromptPlaying = uiState.isAudioPromptPlaying,
+                        isAudioPromptPlaying = false,
                         secondsRemaining = uiState.secondsRemaining,
                         totalSeconds = uiState.totalSeconds,
                         amplitude = 0f,
@@ -182,6 +199,7 @@ fun SpeakingExamScreen(
                         questionIndex = uiState.currentQuestionIndex + 1,
                         totalQuestions = totalQuestions,
                         questionText = currentQuestion?.textarea ?: "",
+                        isAudioPhase = false,
                         isPreparation = false,
                         isAudioPromptPlaying = false,
                         secondsRemaining = uiState.secondsRemaining,
@@ -305,6 +323,7 @@ private fun QuestionActiveView(
     questionIndex: Int,
     totalQuestions: Int,
     questionText: String,
+    isAudioPhase: Boolean,
     isPreparation: Boolean,
     isAudioPromptPlaying: Boolean,
     secondsRemaining: Int,
@@ -325,7 +344,7 @@ private fun QuestionActiveView(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Question Badge & Audio Playing Indicator
+            // Question Badge & Phase Indicator
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -345,7 +364,7 @@ private fun QuestionActiveView(
                     )
                 }
 
-                if (isAudioPromptPlaying) {
+                if (isAudioPhase) {
                     Surface(
                         shape = RoundedCornerShape(12.dp),
                         color = IndigoPrimary.copy(alpha = 0.15f)
@@ -369,17 +388,60 @@ private fun QuestionActiveView(
                             )
                         }
                     }
+                } else if (isPreparation) {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = CoralOrange.copy(alpha = 0.15f)
+                    ) {
+                        Text(
+                            text = "Tayyorgarlik",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                color = CoralOrange,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                        )
+                    }
+                } else {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = RosePink.copy(alpha = 0.15f)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(RosePink)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = "Yozilmoqda",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    color = RosePink,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        }
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Countdown Timer
-            CountdownTimerCircle(
-                currentSeconds = secondsRemaining,
-                totalSeconds = totalSeconds,
-                isPreparation = isPreparation
-            )
+            // Timer / Audio Center Element
+            if (isAudioPhase) {
+                AudioListeningCircle()
+            } else {
+                CountdownTimerCircle(
+                    currentSeconds = secondsRemaining,
+                    totalSeconds = totalSeconds,
+                    isPreparation = isPreparation
+                )
+            }
 
             Spacer(modifier = Modifier.height(28.dp))
 
@@ -412,7 +474,7 @@ private fun QuestionActiveView(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
-            if (!isPreparation) {
+            if (!isAudioPhase && !isPreparation) {
                 AudioWaveformVisualizer(
                     amplitude = amplitude,
                     isRecording = true
@@ -464,7 +526,7 @@ private fun QuestionActiveView(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    text = if (isAudioPromptPlaying) "Savol o'qilmoqda. Tayyor bo'lsangiz boshlashingiz mumkin." else "Tayyorgarlik vaqti tugagach ovozingiz avtomatik yozib olinadi",
+                    text = if (isAudioPhase) "Savol o'qilmoqda. Tayyor bo'lsangiz to'g'ridan-to'g'ri boshlashingiz mumkin." else "Tayyorgarlik vaqti tugagach ovozingiz avtomatik yozib olinadi",
                     style = MaterialTheme.typography.bodySmall.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
