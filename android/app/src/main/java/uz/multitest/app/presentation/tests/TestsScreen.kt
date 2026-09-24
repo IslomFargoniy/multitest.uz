@@ -191,7 +191,7 @@ private fun TestListItem(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "${test.parts.size} ta qism",
+                        text = "${test.totalPartsCount} ta bo'lim",
                         style = MaterialTheme.typography.labelSmall.copy(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Medium

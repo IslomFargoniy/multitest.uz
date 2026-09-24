@@ -86,7 +86,7 @@ class ResultViewModel @Inject constructor(
     }
 
     fun togglePlayAudio(audioUrl: String) {
-        val fullUrl = if (audioUrl.startsWith("http")) audioUrl else "https://multitest.uz/storage/$audioUrl"
+        val fullUrl = audioPlayerManager.normalizeUrl(audioUrl)
         if (_uiState.value.currentlyPlayingAudioUrl == fullUrl && _uiState.value.isPlaying) {
             audioPlayerManager.pause()
         } else {

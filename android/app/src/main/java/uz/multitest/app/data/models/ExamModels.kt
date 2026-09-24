@@ -23,7 +23,11 @@ data class AttemptDto(
     @SerialName("mock_id") val mockId: Long? = null,
     @SerialName("started_at") val startedAt: String? = null,
     @SerialName("finished_at") val finishedAt: String? = null,
+    @SerialName("evaluated_at") val evaluatedAt: String? = null,
     @SerialName("score") val score: Double? = null,
+    @SerialName("ai_score_avg") val aiScoreAvg: Double? = null,
+    @SerialName("tab_switch_count") val tabSwitchCount: Int = 0,
+    @SerialName("review") val review: String? = null,
     @SerialName("test") val test: TestDto? = null,
     @SerialName("mock") val mock: MockDto? = null,
     @SerialName("attempt_parts") val attemptParts: List<AttemptPartDto> = emptyList()
@@ -37,13 +41,16 @@ data class AttemptPartDto(
     @SerialName("part") val part: PartDto? = null,
     @SerialName("answers") val answers: List<AttemptAnswerDto> = emptyList(),
     @SerialName("attempt_answers") val attemptAnswers: List<AttemptAnswerDto> = emptyList()
-)
+) {
+    val allAnswers: List<AttemptAnswerDto> get() = if (attemptAnswers.isNotEmpty()) attemptAnswers else answers
+}
 
 @Serializable
 data class AttemptAnswerDto(
     @SerialName("id") val id: Long? = null,
     @SerialName("attempt_part_id") val attemptPartId: Long? = null,
     @SerialName("question_id") val questionId: Long? = null,
+    @SerialName("question") val question: QuestionDto? = null,
     @SerialName("audio_path") val audioPath: String? = null,
     @SerialName("audio_second") val audioSecond: Double? = null,
     @SerialName("transcript") val transcript: String? = null,

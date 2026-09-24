@@ -491,3 +491,28 @@ fun EmptyStateView(
         }
     }
 }
+
+fun formatExamDateTime(isoString: String?): String {
+    if (isoString.isNullOrBlank()) return "Vaqt ko'rsatilmagan"
+    return try {
+        val clean = isoString.substringBefore('.').replace("Z", "").replace("T", " ").trim()
+        val inputFormat = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).apply {
+            timeZone = java.util.TimeZone.getTimeZone("UTC")
+        }
+        val date = inputFormat.parse(clean)
+        if (date != null) {
+            val outputFormat = java.text.SimpleDateFormat("dd-MMMM, yyyy • HH:mm", java.util.Locale("uz")).apply {
+                timeZone = java.util.TimeZone.getDefault()
+            }
+            outputFormat.format(date)
+        } else {
+            isoString.take(16).replace("T", " ")
+        }
+    } catch (e: Exception) {
+        try {
+            isoString.take(16).replace("T", " ")
+        } catch (e2: Exception) {
+            isoString
+        }
+    }
+}

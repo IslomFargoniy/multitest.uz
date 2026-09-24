@@ -433,7 +433,7 @@ private fun TestCardItem(
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = "${test.parts.size} ta bo'lim",
+                text = "${test.totalPartsCount} ta bo'lim",
                 style = MaterialTheme.typography.bodySmall.copy(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -490,14 +490,15 @@ private fun RecentAttemptItem(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = attempt.startedAt?.take(10) ?: "Yaqinda topshirilgan",
+                    text = uz.multitest.app.presentation.components.formatExamDateTime(attempt.startedAt),
                     style = MaterialTheme.typography.bodySmall.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 )
             }
 
-            if (attempt.score != null) {
+            val displayScore = attempt.score ?: attempt.aiScoreAvg
+            if (displayScore != null) {
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
@@ -505,14 +506,14 @@ private fun RecentAttemptItem(
                         .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
                     Text(
-                        text = "${attempt.score} ball",
+                        text = if (attempt.score != null) "${attempt.score} ball" else "${String.format("%.1f", displayScore)} ball",
                         style = MaterialTheme.typography.labelMedium.copy(
                             fontWeight = FontWeight.Bold,
                             color = EmeraldGreen
                         )
                     )
                 }
-            } else {
+            } else if (attempt.finishedAt != null) {
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
@@ -520,10 +521,25 @@ private fun RecentAttemptItem(
                         .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
                     Text(
-                        text = "Davom etish",
+                        text = "Tekshirilmoqda",
                         style = MaterialTheme.typography.labelMedium.copy(
                             fontWeight = FontWeight.Bold,
                             color = CoralOrange
+                        )
+                    )
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(IndigoPrimary.copy(alpha = 0.15f))
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Text(
+                        text = "Davom etish",
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = IndigoPrimary
                         )
                     )
                 }

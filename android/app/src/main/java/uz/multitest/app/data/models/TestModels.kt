@@ -13,8 +13,11 @@ data class TestDto(
     @SerialName("is_public") val isPublic: Boolean = true,
     @SerialName("audio_path") val audioPath: String? = null,
     @SerialName("language") val language: LanguageDto? = null,
-    @SerialName("parts") val parts: List<PartDto> = emptyList()
-)
+    @SerialName("parts") val parts: List<PartDto> = emptyList(),
+    @SerialName("parts_count") val partsCount: Int? = null
+) {
+    val totalPartsCount: Int get() = partsCount ?: parts.size
+}
 
 @Serializable
 data class LanguageDto(

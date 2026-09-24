@@ -95,12 +95,17 @@ class AttemptController extends Controller
     public function show($id)
     {
         try {
-            $attempt = Attempt::with([
-                'test.language',
-                'mock',
-                'attempt_parts.part.questions',
-                'attempt_parts.attempt_answers',
-            ])->where('user_id', Auth::id())->findOrFail($id);
+            $attempt = Attempt::query()
+                ->select('attempts.*')
+                ->withAiScoreAvg()
+                ->with([
+                    'test.language',
+                    'mock',
+                    'attempt_parts.part.questions',
+                    'attempt_parts.attempt_answers.question',
+                ])
+                ->where('user_id', Auth::id())
+                ->findOrFail($id);
 
             return response()->json([
                 'success' => true,
@@ -233,9 +238,12 @@ class AttemptController extends Controller
     public function myAttempts(Request $request)
     {
         $attempts = Attempt::query()
+            ->select('attempts.*')
+            ->withAiScoreAvg()
             ->with([
                 'test.language',
                 'mock',
+                'attempt_parts.attempt_answers',
             ])
             ->where('user_id', Auth::id())
             ->latest()

@@ -27,6 +27,17 @@ class UserController extends Controller
         $totalAttempts = Attempt::where('user_id', $user->id)->count();
         $completedAttempts = Attempt::where('user_id', $user->id)->whereNotNull('finished_at')->count();
         $averageScore = Attempt::where('user_id', $user->id)->whereNotNull('score')->avg('score');
+        if (!$averageScore) {
+            $avgAi = \Illuminate\Support\Facades\DB::table('attempts')
+                ->join('attempt_parts', 'attempts.id', '=', 'attempt_parts.attempt_id')
+                ->join('attempt_answers', 'attempt_parts.id', '=', 'attempt_answers.attempt_part_id')
+                ->where('attempts.user_id', $user->id)
+                ->whereNotNull('attempt_answers.score_ai')
+                ->avg('attempt_answers.score_ai');
+            if ($avgAi) {
+                $averageScore = $avgAi;
+            }
+        }
 
         return response()->json([
             'success' => true,
