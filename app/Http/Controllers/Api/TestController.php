@@ -17,7 +17,8 @@ class TestController extends Controller
         $languageId = $request->input('language_id');
 
         $tests = Test::query()
-            ->with(['language'])
+            ->with(['language', 'parts'])
+            ->withCount('parts')
             ->where('is_public', true)
             ->when($search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%")

@@ -100,18 +100,41 @@ private fun HistoryAttemptCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = attempt.name ?: attempt.test?.name ?: "Speaking Test",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = attempt.name ?: attempt.test?.name ?: "Speaking Test",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    if (attempt.mock != null) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Surface(
+                            shape = RoundedCornerShape(6.dp),
+                            color = IndigoPrimary.copy(alpha = 0.15f)
+                        ) {
+                            Text(
+                                text = "MOCK",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    color = IndigoPrimary,
+                                    fontWeight = FontWeight.Black,
+                                    fontSize = 9.sp
+                                ),
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(4.dp))
+
                 Text(
-                    text = attempt.startedAt ?: "Topshirilgan",
+                    text = uz.multitest.app.presentation.components.formatExamDateTime(attempt.startedAt),
                     style = MaterialTheme.typography.bodySmall.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -120,7 +143,8 @@ private fun HistoryAttemptCard(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            if (attempt.score != null) {
+            val displayScore = attempt.score ?: attempt.aiScoreAvg
+            if (displayScore != null) {
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
@@ -128,10 +152,25 @@ private fun HistoryAttemptCard(
                         .padding(horizontal = 14.dp, vertical = 8.dp)
                 ) {
                     Text(
-                        text = "${attempt.score} ball",
+                        text = if (attempt.score != null) "${attempt.score} Ball" else "${String.format("%.1f", displayScore)} (AI)",
                         style = MaterialTheme.typography.labelLarge.copy(
                             fontWeight = FontWeight.ExtraBold,
                             color = EmeraldGreen
+                        )
+                    )
+                }
+            } else if (attempt.finishedAt != null) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(CoralOrange.copy(alpha = 0.15f))
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                ) {
+                    Text(
+                        text = "Tekshirilmoqda",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = CoralOrange
                         )
                     )
                 }
@@ -139,14 +178,14 @@ private fun HistoryAttemptCard(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
-                        .background(CoralOrange.copy(alpha = 0.15f))
-                        .padding(horizontal = 14.dp, vertical = 8.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
                 ) {
                     Text(
-                        text = "Ko'rish",
-                        style = MaterialTheme.typography.labelLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = CoralOrange
+                        text = "Tugallanmagan",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     )
                 }
