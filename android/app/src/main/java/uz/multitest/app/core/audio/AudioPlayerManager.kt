@@ -104,15 +104,26 @@ class AudioPlayerManager @Inject constructor(
         }
     }
 
+    fun normalizeUrl(url: String): String {
+        val trimmed = url.trim()
+        if (trimmed.startsWith("http://", ignoreCase = true) || trimmed.startsWith("https://", ignoreCase = true)) {
+            return trimmed
+        }
+        val cleanPath = if (trimmed.startsWith("/")) trimmed else "/$trimmed"
+        return "https://multitest.uz$cleanPath"
+    }
+
     fun play(url: String) {
+        if (url.isBlank()) return
         initPlayer()
-        if (currentMediaUrl == url && exoPlayer?.playbackState == Player.STATE_READY) {
+        val fullUrl = normalizeUrl(url)
+        if (currentMediaUrl == fullUrl && exoPlayer?.playbackState == Player.STATE_READY) {
             exoPlayer?.play()
             return
         }
 
-        currentMediaUrl = url
-        val mediaItem = MediaItem.fromUri(url)
+        currentMediaUrl = fullUrl
+        val mediaItem = MediaItem.fromUri(fullUrl)
         exoPlayer?.apply {
             setMediaItem(mediaItem)
             prepare()

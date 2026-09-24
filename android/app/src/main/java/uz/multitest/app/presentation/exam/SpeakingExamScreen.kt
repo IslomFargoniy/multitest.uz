@@ -168,9 +168,11 @@ fun SpeakingExamScreen(
                         totalQuestions = totalQuestions,
                         questionText = currentQuestion?.textarea ?: "",
                         isPreparation = true,
+                        isAudioPromptPlaying = uiState.isAudioPromptPlaying,
                         secondsRemaining = uiState.secondsRemaining,
                         totalSeconds = uiState.totalSeconds,
                         amplitude = 0f,
+                        onStartRecordingNow = { viewModel.startRecordingNow() },
                         onFinishEarly = {}
                     )
                 }
@@ -181,9 +183,11 @@ fun SpeakingExamScreen(
                         totalQuestions = totalQuestions,
                         questionText = currentQuestion?.textarea ?: "",
                         isPreparation = false,
+                        isAudioPromptPlaying = false,
                         secondsRemaining = uiState.secondsRemaining,
                         totalSeconds = uiState.totalSeconds,
                         amplitude = uiState.recordingAmplitude,
+                        onStartRecordingNow = {},
                         onFinishEarly = { viewModel.finishRecordingEarly() }
                     )
                 }
@@ -302,9 +306,11 @@ private fun QuestionActiveView(
     totalQuestions: Int,
     questionText: String,
     isPreparation: Boolean,
+    isAudioPromptPlaying: Boolean,
     secondsRemaining: Int,
     totalSeconds: Int,
     amplitude: Float,
+    onStartRecordingNow: () -> Unit,
     onFinishEarly: () -> Unit
 ) {
     Column(
@@ -319,19 +325,51 @@ private fun QuestionActiveView(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Question Badge
-            Surface(
-                shape = RoundedCornerShape(12.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant
+            // Question Badge & Audio Playing Indicator
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Savol $questionIndex / $totalQuestions",
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    ),
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
-                )
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant
+                ) {
+                    Text(
+                        text = "Savol $questionIndex / $totalQuestions",
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        ),
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
+                    )
+                }
+
+                if (isAudioPromptPlaying) {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = IndigoPrimary.copy(alpha = 0.15f)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(12.dp),
+                                color = IndigoPrimary,
+                                strokeWidth = 2.dp
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = "Savol o'qilmoqda...",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    color = IndigoPrimary,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        }
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -402,8 +440,31 @@ private fun QuestionActiveView(
                     )
                 }
             } else {
+                FilledTonalButton(
+                    onClick = onStartRecordingNow,
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = IndigoPrimary.copy(alpha = 0.15f),
+                        contentColor = IndigoPrimary
+                    ),
+                    modifier = Modifier.fillMaxWidth().height(50.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Mic,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Javob berishni boshlash",
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
                 Text(
-                    text = "Diqqat: Tayyorgarlik vaqti tugagach ovozingiz avtomatik yozib olinadi",
+                    text = if (isAudioPromptPlaying) "Savol o'qilmoqda. Tayyor bo'lsangiz boshlashingiz mumkin." else "Tayyorgarlik vaqti tugagach ovozingiz avtomatik yozib olinadi",
                     style = MaterialTheme.typography.bodySmall.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
