@@ -229,31 +229,36 @@ fun ExamResultScreen(
 
                     if (!attempt.review.isNullOrBlank()) {
                         item {
-                            MultiTestCard(shape = RoundedCornerShape(18.dp)) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.RateReview,
-                                        contentDescription = null,
-                                        tint = IndigoPrimary,
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
+                            val attemptEvaluation = remember(attempt.review) { parseAiReview(attempt.review) }
+                            if (attemptEvaluation != null && attemptEvaluation.rawText == null) {
+                                AiReviewEvaluationCard(evaluation = attemptEvaluation)
+                            } else {
+                                MultiTestCard(shape = RoundedCornerShape(18.dp)) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.RateReview,
+                                            contentDescription = null,
+                                            tint = IndigoPrimary,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            text = "O'qituvchi Xulosasi:",
+                                            style = MaterialTheme.typography.labelLarge.copy(
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.primary
+                                            )
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(8.dp))
                                     Text(
-                                        text = "O'qituvchi Xulosasi:",
-                                        style = MaterialTheme.typography.labelLarge.copy(
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.primary
+                                        text = attemptEvaluation?.rawText ?: attempt.review,
+                                        style = MaterialTheme.typography.bodyMedium.copy(
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            lineHeight = 22.sp
                                         )
                                     )
                                 }
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(
-                                    text = attempt.review,
-                                    style = MaterialTheme.typography.bodyMedium.copy(
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        lineHeight = 22.sp
-                                    )
-                                )
                             }
                         }
                     }
@@ -464,33 +469,12 @@ private fun AttemptPartReviewCard(
                                 }
                             }
 
-                            // AI / Teacher Feedback
+                            // AI / Teacher Feedback & Evaluation
                             val reviewText = answer.review ?: answer.reviewAi
-                            if (!reviewText.isNullOrBlank()) {
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Surface(
-                                    shape = RoundedCornerShape(8.dp),
-                                    color = CoralOrange.copy(alpha = 0.08f),
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Column(modifier = Modifier.padding(8.dp)) {
-                                        Text(
-                                            text = "Tahlil va Tavsiya:",
-                                            style = MaterialTheme.typography.labelSmall.copy(
-                                                fontWeight = FontWeight.Bold,
-                                                color = CoralOrange
-                                            )
-                                        )
-                                        Spacer(modifier = Modifier.height(2.dp))
-                                        Text(
-                                            text = reviewText,
-                                            style = MaterialTheme.typography.bodySmall.copy(
-                                                color = MaterialTheme.colorScheme.onSurface,
-                                                lineHeight = 18.sp
-                                            )
-                                        )
-                                    }
-                                }
+                            val evaluation = remember(reviewText) { parseAiReview(reviewText) }
+                            if (evaluation != null) {
+                                Spacer(modifier = Modifier.height(10.dp))
+                                AiReviewEvaluationCard(evaluation = evaluation)
                             }
                         }
                     }
@@ -499,3 +483,264 @@ private fun AttemptPartReviewCard(
         }
     }
 }
+
+data class AiEvaluationData(
+    val score: String? = null,
+    val level: String? = null,
+    val fluency: String? = null,
+    val vocabulary: String? = null,
+    val grammar: String? = null,
+    val pronunciation: String? = null,
+    val interaction: String? = null,
+    val detectedLanguage: String? = null,
+    val feedback: String? = null,
+    val rawText: String? = null
+)
+
+fun parseAiReview(review: String?): AiEvaluationData? {
+    if (review.isNullOrBlank()) return null
+    val trimmed = review.trim()
+    if (!trimmed.startsWith("{")) {
+        return AiEvaluationData(rawText = trimmed)
+    }
+    return try {
+        val json = org.json.JSONObject(trimmed)
+        val score = if (json.has("score") && !json.isNull("score")) json.get("score").toString() else null
+        val level = json.optString("level").takeIf { it.isNotBlank() }
+        val fluency = json.optString("fluency").takeIf { it.isNotBlank() }
+        val vocabulary = json.optString("vocabulary").takeIf { it.isNotBlank() }
+        val grammar = json.optString("grammar").takeIf { it.isNotBlank() }
+        val pronunciation = json.optString("pronunciation").takeIf { it.isNotBlank() }
+        val interaction = json.optString("interaction").takeIf { it.isNotBlank() }
+        val detectedLanguage = json.optString("detected_language").takeIf { it.isNotBlank() }
+        val feedback = json.optString("feedback").takeIf { it.isNotBlank() }
+
+        AiEvaluationData(
+            score = score,
+            level = level,
+            fluency = fluency,
+            vocabulary = vocabulary,
+            grammar = grammar,
+            pronunciation = pronunciation,
+            interaction = interaction,
+            detectedLanguage = detectedLanguage,
+            feedback = feedback
+        )
+    } catch (e: Exception) {
+        AiEvaluationData(rawText = trimmed)
+    }
+}
+
+@Composable
+fun AiReviewEvaluationCard(
+    evaluation: AiEvaluationData,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            IndigoPrimary.copy(alpha = 0.2f)
+        ),
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            // Header: Title + Level + Score
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f, fill = false)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.AutoAwesome,
+                        contentDescription = null,
+                        tint = IndigoPrimary,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "AI Tahlili & Baholash",
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = IndigoPrimary
+                        )
+                    )
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (!evaluation.level.isNullOrBlank()) {
+                        Surface(
+                            shape = RoundedCornerShape(6.dp),
+                            color = IndigoPrimary
+                        ) {
+                            Text(
+                                text = evaluation.level,
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = Color.White
+                                ),
+                                modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
+
+                    if (!evaluation.score.isNullOrBlank() && evaluation.score != "null") {
+                        Surface(
+                            shape = RoundedCornerShape(6.dp),
+                            color = EmeraldGreen.copy(alpha = 0.15f)
+                        ) {
+                            Text(
+                                text = "${evaluation.score} Ball",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = EmeraldGreen
+                                ),
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Detected Language warning / tag
+            if (!evaluation.detectedLanguage.isNullOrBlank() && evaluation.detectedLanguage != "English") {
+                Spacer(modifier = Modifier.height(8.dp))
+                Surface(
+                    shape = RoundedCornerShape(6.dp),
+                    color = RosePink.copy(alpha = 0.12f)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Info,
+                            contentDescription = null,
+                            tint = RosePink,
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "Aniqlangan signal: ${evaluation.detectedLanguage}",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.SemiBold,
+                                color = RosePink
+                            )
+                        )
+                    }
+                }
+            }
+
+            // Criteria list
+            val hasCriteria = evaluation.fluency != null || evaluation.vocabulary != null ||
+                    evaluation.grammar != null || evaluation.pronunciation != null || evaluation.interaction != null
+
+            if (hasCriteria) {
+                Spacer(modifier = Modifier.height(10.dp))
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    evaluation.fluency?.let {
+                        EvaluationCriterionItem(icon = "✨", title = "Ravonlik (Fluency)", desc = it)
+                    }
+                    evaluation.vocabulary?.let {
+                        EvaluationCriterionItem(icon = "📚", title = "Lug'at boyligi (Vocabulary)", desc = it)
+                    }
+                    evaluation.grammar?.let {
+                        EvaluationCriterionItem(icon = "🛠️", title = "Grammatika (Grammar)", desc = it)
+                    }
+                    evaluation.pronunciation?.let {
+                        EvaluationCriterionItem(icon = "🗣️", title = "Talaffuz (Pronunciation)", desc = it)
+                    }
+                    evaluation.interaction?.let {
+                        EvaluationCriterionItem(icon = "🎯", title = "Interaktivlik (Interaction)", desc = it)
+                    }
+                }
+            }
+
+            // General feedback if available
+            if (!evaluation.feedback.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        Text(
+                            text = "Umumiy tavsiya:",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = evaluation.feedback,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                color = MaterialTheme.colorScheme.onSurface,
+                                lineHeight = 18.sp
+                            )
+                        )
+                    }
+                }
+            }
+
+            // Non-JSON raw text
+            if (!evaluation.rawText.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = evaluation.rawText,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onSurface,
+                        lineHeight = 20.sp
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun EvaluationCriterionItem(
+    icon: String,
+    title: String,
+    desc: String
+) {
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = icon, fontSize = 13.sp)
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                )
+            }
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = desc,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    lineHeight = 17.sp
+                )
+            )
+        }
+    }
+}
+
