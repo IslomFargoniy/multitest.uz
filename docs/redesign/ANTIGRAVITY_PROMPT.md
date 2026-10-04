@@ -318,7 +318,7 @@ Skrinshot kerak bo'lgan ekranlar: ...
 ## 9. Phases (tick as you go)
 
 - [x] **Phase 1 — Tokens & components:** §3 tokens in `app.css`, fonts in `app.blade.php`, default dark, §4 components.
-- [ ] **Phase 2 — Shell:** sidebar, header, mobile bottom nav, `ui/*` (button, card, input, select, dialog, dropdown,
+- [x] **Phase 2 — Shell:** sidebar, header, mobile bottom nav, `ui/*` (button, card, input, select, dialog, dropdown,
       badge, table-pagination) restyled to tokens.
 - [ ] **Phase 3 — Attempt result page** (§5.1) + `AttemptAnswer.tsx`, `AttemptPartAccordion.tsx`, `attempt-table.tsx`.
 - [ ] **Phase 4 — Exam screen** (§5.2) — markup only.

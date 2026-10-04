@@ -52,8 +52,8 @@ export function AppBottomNav() {
     ];
 
     return (
-        <div className="fixed right-4 left-4 bottom-[calc(1.2rem+env(safe-area-inset-bottom))] z-50 md:hidden">
-            <div className="flex p-1.5 items-center justify-around rounded-[2.5rem] border border-slate-200/80 bg-white/90 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl dark:border-white/15 dark:bg-slate-900/90 dark:shadow-[0_12px_48px_rgba(0,0,0,0.5)] gap-1">
+        <div className="fixed right-4 left-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-50 md:hidden">
+            <div className="flex p-1.5 items-center justify-around rounded-xl border border-border bg-surface-sunken">
                 {mainNavItems.map((item) => {
                     const isActive = page.url.startsWith(item.href);
 
@@ -64,14 +64,14 @@ export function AppBottomNav() {
                                 impact('light');
                                 router.visit(item.href);
                             }}
-                            className={`flex flex-1 flex-col items-center justify-center transition-all duration-300 py-2 px-1 rounded-[1.8rem] ${
+                            className={`flex flex-1 flex-col items-center justify-center transition-colors py-2 px-1 rounded-lg gap-1 ${
                                 isActive 
-                                    ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/30' 
-                                    : 'text-slate-400 hover:text-slate-600'
+                                    ? 'bg-secondary text-foreground font-semibold' 
+                                    : 'text-muted-foreground hover:text-foreground'
                             }`}
                         >
-                            <item.icon size={isActive ? 20 : 22} strokeWidth={isActive ? 2.5 : 2} />
-                            <span className={`text-[9px] font-black mt-1 tracking-tight leading-none uppercase ${isActive ? 'text-primary-foreground' : 'text-slate-400'}`}>
+                            <item.icon size={20} />
+                            <span className="text-[12px] font-medium leading-none">
                                 {item.title}
                             </span>
                         </button>

@@ -31,57 +31,56 @@ const LanguageBar = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    const currentLangLabel = i18n.language === 'uz' ? 'Oʻzbekcha' : i18n.language === 'en' ? 'English' : 'Русский';
+    const currentLangCode = i18n.language.toUpperCase();
+
     return (
         <div className="relative flex justify-end" ref={dropdownRef}>
             <button
                 onClick={() => setOpen(!open)}
-                className="flex items-center gap-2 rounded-2xl border border-slate-200/60 bg-white/80 px-4 py-2 text-sm font-bold shadow-sm backdrop-blur-xl transition-all hover:bg-white active:scale-95 dark:border-slate-800/60 dark:bg-slate-900/80 dark:text-white dark:hover:bg-slate-900"
+                className="flex items-center gap-2 rounded-lg border border-border-strong bg-surface-2 px-3 py-1.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary active:scale-95"
             >
-                <span className="text-lg leading-none">
-                    {i18n.language === 'uz' ? '🇺🇿' : i18n.language === 'en' ? '🇬🇧' : '🇷🇺'}
-                </span>
-                <span className="hidden sm:inline-block">
-                    {i18n.language === 'uz' ? 'Oʻzbekcha' : i18n.language === 'en' ? 'English' : 'Русский'}
-                </span>
+                <span className="text-xs font-bold text-accent-text">{currentLangCode}</span>
+                <span className="hidden sm:inline-block">{currentLangLabel}</span>
             </button>
 
             {open && (
-                <div className="absolute right-0 z-[100] mt-3 w-48 overflow-hidden rounded-[1.5rem] border border-slate-200/60 bg-white/95 p-2 shadow-2xl backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-200 dark:border-slate-800/60 dark:bg-slate-900/95">
-                    <div className="mb-2 px-3 pt-2 text-[10px] font-black tracking-widest text-slate-400 uppercase">
+                <div className="absolute right-0 z-[100] mt-2 w-48 overflow-hidden rounded-xl border border-border bg-popover p-1.5 shadow-sm dark:shadow-none animate-in fade-in zoom-in-95 duration-150">
+                    <div className="mb-1 px-2.5 pt-1.5 text-xs font-semibold text-muted-foreground">
                         {t('lang.title') ?? 'Select Language'}
                     </div>
                     <button
                         onClick={() => changeLanguage('uz')}
-                        className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition-all ${
-                            i18n.language === 'uz' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
+                        className={`flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-sm font-medium transition-colors ${
+                            i18n.language === 'uz' ? 'bg-secondary text-foreground font-semibold' : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground'
                         }`}
                     >
-                        <span className="text-lg">🇺🇿</span>
-                        {t('lang.uz')}
+                        <span>{t('lang.uz')}</span>
+                        <span className="text-xs font-bold text-muted-foreground">UZ</span>
                     </button>
                     <button
                         onClick={() => changeLanguage('en')}
-                        className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition-all ${
-                            i18n.language === 'en' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
+                        className={`flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-sm font-medium transition-colors ${
+                            i18n.language === 'en' ? 'bg-secondary text-foreground font-semibold' : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground'
                         }`}
                     >
-                        <span className="text-lg">🇬🇧</span>
-                        {t('lang.en')}
+                        <span>{t('lang.en')}</span>
+                        <span className="text-xs font-bold text-muted-foreground">EN</span>
                     </button>
                     <button
                         onClick={() => changeLanguage('ru')}
-                        className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition-all ${
-                            i18n.language === 'ru' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
+                        className={`flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-sm font-medium transition-colors ${
+                            i18n.language === 'ru' ? 'bg-secondary text-foreground font-semibold' : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground'
                         }`}
                     >
-                        <span className="text-lg">🇷🇺</span>
-                        {t('lang.ru')}
+                        <span>{t('lang.ru')}</span>
+                        <span className="text-xs font-bold text-muted-foreground">RU</span>
                     </button>
                     
-                    <div className="my-2 h-px bg-slate-100 dark:bg-slate-800" />
+                    <div className="my-1 h-px bg-border" />
                     
-                    <div className="px-1 pb-1">
-                        <AppearanceTabs className="flex flex-col gap-1 rounded-xl bg-slate-50 p-1 dark:bg-slate-800/50" />
+                    <div className="p-1">
+                        <AppearanceTabs className="flex flex-col gap-1 rounded-lg bg-surface-2 p-1" />
                     </div>
                 </div>
             )}

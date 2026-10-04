@@ -46,8 +46,8 @@ export default function TablePagination({
     };
 
     return (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-3 text-sm text-slate-600 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800">
-            <div className="font-semibold text-xs sm:text-sm">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-3 text-sm text-muted-foreground border-t border-border">
+            <div className="font-medium text-xs sm:text-sm text-foreground">
                 {t('showing', {
                     from: from ?? 1,
                     to: to ?? total,
@@ -64,7 +64,7 @@ export default function TablePagination({
                         return (
                             <span
                                 key={idx}
-                                className="inline-flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-300 dark:text-slate-600 cursor-not-allowed text-sm font-bold"
+                                className="inline-flex items-center justify-center h-9 w-9 rounded-lg border border-border bg-surface-sunken text-muted-foreground opacity-50 cursor-not-allowed text-sm font-semibold"
                             >
                                 {isPrevious ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                             </span>
@@ -76,7 +76,7 @@ export default function TablePagination({
                             <Link
                                 key={idx}
                                 href={buildUrl(link.url)}
-                                className="inline-flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all shadow-xs cursor-pointer active:scale-95 text-sm font-bold"
+                                className="inline-flex items-center justify-center h-9 w-9 rounded-lg border border-border-strong bg-surface-2 hover:bg-secondary text-foreground transition-colors cursor-pointer text-sm font-semibold"
                                 title={t('previous', 'Oldingi')}
                             >
                                 <ChevronLeft className="w-4 h-4" />
@@ -89,7 +89,7 @@ export default function TablePagination({
                             <Link
                                 key={idx}
                                 href={buildUrl(link.url)}
-                                className="inline-flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all shadow-xs cursor-pointer active:scale-95 text-sm font-bold"
+                                className="inline-flex items-center justify-center h-9 w-9 rounded-lg border border-border-strong bg-surface-2 hover:bg-secondary text-foreground transition-colors cursor-pointer text-sm font-semibold"
                                 title={t('next', 'Keyingi')}
                             >
                                 <ChevronRight className="w-4 h-4" />
@@ -101,7 +101,7 @@ export default function TablePagination({
                         return (
                             <span
                                 key={idx}
-                                className="inline-flex items-center justify-center h-9 px-2 text-slate-400 font-bold text-sm"
+                                className="inline-flex items-center justify-center h-9 px-2 text-muted-foreground font-semibold text-sm"
                             >
                                 ...
                             </span>
@@ -112,10 +112,10 @@ export default function TablePagination({
                         <Link
                             key={idx}
                             href={buildUrl(link.url)}
-                            className={`inline-flex items-center justify-center h-9 min-w-[36px] px-3 rounded-xl font-bold text-sm transition-all shadow-xs cursor-pointer active:scale-95 ${
+                            className={`inline-flex items-center justify-center h-9 min-w-[36px] px-3 rounded-lg font-semibold text-sm transition-colors cursor-pointer ${
                                 link.active
-                                    ? 'bg-indigo-600 text-white shadow-indigo-500/20'
-                                    : 'border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200'
+                                    ? 'bg-primary text-primary-foreground'
+                                    : 'border border-border-strong bg-surface-2 hover:bg-secondary text-foreground'
                             }`}
                         >
                             {link.label}
