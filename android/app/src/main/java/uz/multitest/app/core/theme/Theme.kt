@@ -7,33 +7,60 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+// 🌙 Night Focus Dark Scheme (Default)
 private val DarkColorScheme = darkColorScheme(
-    primary = ElectricIndigoDark,
-    background = SlateBackgroundDark,
-    surface = SlateCardDark,
-    onPrimary = SlateTextPrimaryDark,
-    onBackground = SlateTextPrimaryDark,
-    onSurface = SlateTextPrimaryDark,
-    outline = SlateBorderDark
+    primary = NightPrimary,
+    onPrimary = Color.White,
+    primaryContainer = NightSurface2,
+    onPrimaryContainer = NightPrimary,
+    secondary = NightSurface2,
+    onSecondary = NightTextPrimary,
+    background = NightBackground,
+    onBackground = NightTextPrimary,
+    surface = NightSurface,
+    onSurface = NightTextPrimary,
+    surfaceVariant = NightSurface2,
+    onSurfaceVariant = NightTextMuted,
+    secondaryContainer = NightSurface2,
+    outline = NightBorderStrong,
+    outlineVariant = NightBorder,
+    error = NightDestructive,
+    onError = Color.White,
+    errorContainer = NightDestructiveBg,
+    onErrorContainer = NightDestructive
 )
 
+// ☀️ Clean Light Scheme
 private val LightColorScheme = lightColorScheme(
-    primary = ElectricIndigo,
-    background = SlateBackgroundLight,
-    surface = SlateCardLight,
-    onPrimary = SlateCardLight,
-    onBackground = SlateTextPrimaryLight,
-    onSurface = SlateTextPrimaryLight,
-    outline = SlateBorderLight
+    primary = NightPrimary,
+    onPrimary = Color.White,
+    primaryContainer = LightSurface2,
+    onPrimaryContainer = NightPrimary,
+    secondary = LightSurface2,
+    onSecondary = LightTextPrimary,
+    background = LightBackground,
+    onBackground = LightTextPrimary,
+    surface = LightSurface,
+    onSurface = LightTextPrimary,
+    surfaceVariant = LightSurface2,
+    onSurfaceVariant = LightTextMuted,
+    secondaryContainer = LightSurface2,
+    outline = LightBorderStrong,
+    outlineVariant = LightBorder,
+    error = NightDestructive,
+    onError = Color.White,
+    errorContainer = NightDestructiveBg,
+    onErrorContainer = NightDestructive
 )
 
 @Composable
 fun MultiTestTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = true, // Dark by default per §6.1
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
@@ -49,6 +76,7 @@ fun MultiTestTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
+        shapes = Shapes,
         content = content
     )
 }

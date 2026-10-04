@@ -44,7 +44,7 @@ fun GradientButton(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     enabled: Boolean = true,
-    gradient: Brush = Brush.horizontalGradient(listOf(IndigoPrimary, IndigoAccent)),
+    gradient: Brush = Brush.horizontalGradient(listOf(NightPrimary, NightPrimaryHover)),
     icon: ImageVector? = null
 ) {
     Button(
@@ -52,51 +52,44 @@ fun GradientButton(
         enabled = enabled && !isLoading,
         modifier = modifier
             .fillMaxWidth()
-            .height(54.dp)
-            .shadow(if (enabled) 8.dp else 0.dp, shape = RoundedCornerShape(16.dp), spotColor = IndigoPrimary.copy(alpha = 0.4f)),
-        shape = RoundedCornerShape(16.dp),
+            .height(52.dp),
+        shape = RoundedCornerShape(14.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            disabledContainerColor = IndigoPrimary.copy(alpha = 0.4f)
+            containerColor = NightPrimary,
+            contentColor = Color.White,
+            disabledContainerColor = NightSurface2,
+            disabledContentColor = NightTextMuted
         ),
-        contentPadding = PaddingValues()
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp, pressedElevation = 0.dp),
+        contentPadding = PaddingValues(horizontal = 20.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(if (enabled) gradient else Brush.horizontalGradient(listOf(Color.Gray.copy(alpha = 0.5f), Color.Gray.copy(alpha = 0.5f))))
-                .padding(horizontal = 24.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            if (isLoading) {
-                CircularProgressIndicator(
-                    color = Color.White,
-                    strokeWidth = 3.dp,
-                    modifier = Modifier.size(24.dp)
-                )
-            } else {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    if (icon != null) {
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                    }
-                    Text(
-                        text = text,
-                        style = MaterialTheme.typography.labelLarge.copy(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
+        if (isLoading) {
+            CircularProgressIndicator(
+                color = Color.White,
+                strokeWidth = 2.5.dp,
+                modifier = Modifier.size(20.dp)
+            )
+        } else {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                if (icon != null) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp)
                     )
+                    Spacer(modifier = Modifier.width(8.dp))
                 }
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White
+                    )
+                )
             }
         }
     }
@@ -106,7 +99,7 @@ fun GradientButton(
 fun MultiTestCard(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
-    shape: RoundedCornerShape = RoundedCornerShape(20.dp),
+    shape: RoundedCornerShape = RoundedCornerShape(12.dp),
     content: @Composable ColumnScope.() -> Unit
 ) {
     Card(
@@ -117,9 +110,10 @@ fun MultiTestCard(
             ),
         shape = shape,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+            containerColor = MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
             modifier = Modifier.padding(18.dp),
@@ -345,7 +339,7 @@ fun CountdownTimerCircle(
         currentSeconds.toFloat() / totalSeconds.toFloat()
     } else 0f
 
-    val color = if (isPreparation) CoralOrange else RosePink
+    val color = if (isPreparation) NightWarning else NightPrimary
 
     Box(
         modifier = modifier.size(size),
@@ -399,9 +393,9 @@ fun LoadingStateView(
             verticalArrangement = Arrangement.Center
         ) {
             CircularProgressIndicator(
-                color = IndigoPrimary,
-                strokeWidth = 4.dp,
-                modifier = Modifier.size(48.dp)
+                color = MaterialTheme.colorScheme.primary,
+                strokeWidth = 3.dp,
+                modifier = Modifier.size(40.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
@@ -430,12 +424,20 @@ fun ErrorStateView(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Icon(
-                imageVector = Icons.Rounded.Warning,
-                contentDescription = null,
-                tint = RosePink,
-                modifier = Modifier.size(56.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(MaterialTheme.colorScheme.errorContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Warning,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = message,
@@ -447,7 +449,11 @@ fun ErrorStateView(
             Spacer(modifier = Modifier.height(20.dp))
             OutlinedButton(
                 onClick = onRetry,
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                )
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Refresh,
@@ -458,6 +464,256 @@ fun ErrorStateView(
                 Text("Qayta urinish")
             }
         }
+    }
+}
+
+// 🎓 CEFR Badge Composable (§4 & §6.1)
+@Composable
+fun CefrBadge(
+    score: Int?,
+    modifier: Modifier = Modifier,
+    explicitLevel: String? = null
+) {
+    val level = remember(score, explicitLevel) {
+        if (!explicitLevel.isNullOrBlank()) {
+            val norm = explicitLevel.uppercase().trim()
+            when {
+                norm.contains("C1") || norm.contains("C2") -> "C1"
+                norm.contains("B2") -> "B2"
+                norm.contains("B1") -> "B1"
+                norm.contains("A2") -> "A2"
+                norm.contains("A1") || norm.contains("BELOW") -> "A1"
+                else -> "A1"
+            }
+        } else if (score != null) {
+            when {
+                score >= 65 -> "C1"
+                score >= 51 -> "B2"
+                score >= 38 -> "B1"
+                score >= 16 -> "A2"
+                else -> "A1"
+            }
+        } else {
+            "—"
+        }
+    }
+
+    val (bg, text) = when (level) {
+        "C1" -> CefrC1Bg to CefrC1
+        "B2" -> CefrB2Bg to CefrB2
+        "B1" -> CefrB1Bg to CefrB1
+        "A2" -> CefrA2Bg to CefrA2
+        "A1" -> CefrA1Bg to CefrA1
+        else -> MaterialTheme.colorScheme.surfaceVariant to MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(bg)
+            .padding(horizontal = 10.dp, vertical = 4.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = level,
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold,
+                color = text,
+                fontSize = 16.sp
+            )
+        )
+    }
+}
+
+// 📏 CEFR Scale Composable (§4 & §6.1)
+@Composable
+fun CefrScale(
+    score: Int?,
+    modifier: Modifier = Modifier,
+    showLabels: Boolean = true
+) {
+    val clampedScore = (score ?: 0).coerceIn(0, 75)
+    val fraction = clampedScore / 75f
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(20.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            // Background scale bar
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(8.dp)
+                    .clip(RoundedCornerShape(4.dp))
+            ) {
+                Box(modifier = Modifier.weight(16f).fillMaxHeight().background(CefrA1))
+                Spacer(modifier = Modifier.width(2.dp))
+                Box(modifier = Modifier.weight(22f).fillMaxHeight().background(CefrA2))
+                Spacer(modifier = Modifier.width(2.dp))
+                Box(modifier = Modifier.weight(13f).fillMaxHeight().background(CefrB1))
+                Spacer(modifier = Modifier.width(2.dp))
+                Box(modifier = Modifier.weight(14f).fillMaxHeight().background(CefrB2))
+                Spacer(modifier = Modifier.width(2.dp))
+                Box(modifier = Modifier.weight(11f).fillMaxHeight().background(CefrC1))
+            }
+
+            // Indicator marker
+            if (score != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(fraction.coerceAtLeast(0.02f))
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .size(width = 4.dp, height = 18.dp)
+                            .clip(RoundedCornerShape(2.dp))
+                            .background(Color.White)
+                    )
+                }
+            }
+        }
+
+        if (showLabels) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                listOf("A1", "A2", "B1", "B2", "C1").forEach { lvl ->
+                    Text(
+                        text = lvl,
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
+                }
+            }
+        }
+    }
+}
+
+// 🏷️ Status Pill Composable (§4 & §6.1)
+@Composable
+fun StatusPill(
+    status: String,
+    modifier: Modifier = Modifier
+) {
+    val (label, bg, text, dot) = when (status.lowercase()) {
+        "graded", "completed", "evaluated" -> Quadruple("Baholandi", NightSuccessBg, NightSuccess, NightSuccess)
+        "no_speech" -> Quadruple("Ovoz eshitilmadi", NightWarningBg, NightWarning, NightWarning)
+        "wrong_language" -> Quadruple("Boshqa tilda javob", NightWarningBg, NightWarning, NightWarning)
+        "off_topic", "not_relevant" -> Quadruple("Savolga mos emas", NightWarningBg, NightWarning, NightWarning)
+        "pending" -> Quadruple("Baholanmoqda", MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant)
+        "ai_error" -> Quadruple("AI xatosi", NightDestructiveBg, NightDestructive, NightDestructive)
+        else -> Quadruple(status, MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(100.dp))
+            .background(bg)
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(5.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(6.dp)
+                .clip(CircleShape)
+                .background(dot)
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.SemiBold,
+                color = text
+            )
+        )
+    }
+}
+
+private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
+
+// 📊 Score Summary Card Composable (§4 & §6.1)
+@Composable
+fun ScoreSummaryCard(
+    score: Int?,
+    max: Int = 75,
+    isTeacherGraded: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    val isPending = score == null
+    val label = if (isTeacherGraded) "Umumiy ball · O'qituvchi" else "Umumiy ball · AI"
+
+    MultiTestCard(modifier = modifier) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+            CefrBadge(score = score)
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Row(
+            verticalAlignment = Alignment.Bottom
+        ) {
+            if (isPending) {
+                Text(
+                    text = "—",
+                    style = MaterialTheme.typography.displayLarge.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Baholanmoqda",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            } else {
+                Text(
+                    text = "$score",
+                    style = MaterialTheme.typography.displayLarge.copy(
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                )
+                Text(
+                    text = " / $max",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                    modifier = Modifier.padding(bottom = 6.dp)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outlineVariant,
+            thickness = 1.dp
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        CefrScale(score = score)
     }
 }
 
