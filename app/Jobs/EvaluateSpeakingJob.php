@@ -53,8 +53,8 @@ class EvaluateSpeakingJob implements ShouldQueue
         if (json_last_error() === JSON_ERROR_NONE && is_array($data)) {
             $transcript = (string) ($data['transcript'] ?? '');
             $answer->transcript = $transcript;
-            $answer->review_ai = $resultText;
-            $answer->score_ai = (int) ($data['score'] ?? 0);
+            $answer->score_ai = max(0, min(75, (int) ($data['score'] ?? 0)));
+            $zeroReason = null;
 
             // Language & Relevance Checks
             $targetLanguage = strtolower((string) ($question->part?->test?->language?->name_en ?? ''));
@@ -62,17 +62,29 @@ class EvaluateSpeakingJob implements ShouldQueue
 
             if ($targetLanguage !== '' && $detectedLanguage !== 'noise' && $detectedLanguage !== 'silence' && $detectedLanguage !== '') {
                 if (! str_contains($detectedLanguage, $targetLanguage) && ! str_contains($targetLanguage, $detectedLanguage)) {
-                    $answer->score_ai = 0;
+                    $zeroReason = 'wrong_language';
                 }
             }
 
             if (($data['is_relevant'] ?? true) === false) {
-                $answer->score_ai = 0;
+                $zeroReason = 'not_relevant';
             }
 
             if ($this->isNonSpeechResponse($transcript) || $detectedLanguage === 'noise' || $detectedLanguage === 'silence') {
+                $zeroReason = 'no_speech';
+            }
+
+            if ($zeroReason !== null) {
                 $answer->score_ai = 0;
             }
+
+            // Store the analysis with the final score so every client (web, Android, certificates) shows the same number.
+            $data['score'] = $answer->score_ai;
+            if ($zeroReason !== null) {
+                $data['level'] = 'Below A1';
+                $data['override_reason'] = $zeroReason;
+            }
+            $answer->review_ai = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         } else {
             // Regex fallback if JSON is messy
             if (preg_match('/"score"\s*:\s*(\d+)/', $resultText, $matches)) {

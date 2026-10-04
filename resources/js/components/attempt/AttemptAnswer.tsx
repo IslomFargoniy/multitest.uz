@@ -102,7 +102,7 @@ const AttemptAnswerComponent = ({ attempt_answers }: QuestionTableProps) => {
                                                 <BrainCircuit className="h-3 w-3" />
                                                 {t('response_card.ai_analysis')}
                                             </div>
-                                            <AIReviewHelper review={item.review_ai} />
+                                            <AIReviewHelper review={item.review_ai} finalScore={item.score_ai} />
                                         </div>
                                     )}
                                 </div>
@@ -116,12 +116,17 @@ const AttemptAnswerComponent = ({ attempt_answers }: QuestionTableProps) => {
 };
 
 /* --- AI Review Helper --- */
-function AIReviewHelper({ review }: { review: string }) {
+function AIReviewHelper({ review, finalScore }: { review: string; finalScore?: number | null }) {
     const { t } = useTranslation();
 
     try {
         const data = JSON.parse(review);
         if (typeof data !== 'object' || data === null) throw new Error('Not an object');
+
+        // The stored score_ai is authoritative (the server may force 0 for silence / wrong language / off-topic).
+        const score = finalScore ?? data.score;
+        const hasScore = score !== undefined && score !== null && score !== '';
+        const level = finalScore === 0 ? 'Below A1' : data.level;
 
         const criteria = [
             { key: 'fluency', label: t('response_card.fluency'), icon: '✨' },
@@ -134,13 +139,13 @@ function AIReviewHelper({ review }: { review: string }) {
         return (
             <div className="relative overflow-hidden rounded-2xl border border-purple-100 bg-white shadow-sm dark:border-purple-900/20 dark:bg-slate-900">
                 {/* Score & Level Header */}
-                {(data.score || data.level) && (
+                {(hasScore || level) && (
                     <div className="flex items-center justify-between border-b border-purple-50 bg-purple-50/30 px-4 py-3 dark:border-purple-900/30 dark:bg-purple-900/20">
                         <div className="flex items-center gap-3">
-                            {data.level && <span className="rounded-lg bg-purple-600 px-2.5 py-1 text-xs font-black text-white">{data.level}</span>}
+                            {level && <span className="rounded-lg bg-purple-600 px-2.5 py-1 text-xs font-black text-white">{level}</span>}
                             <span className="text-xs font-bold text-purple-700 dark:text-purple-300">{t('response_card.estimated_level')}</span>
                         </div>
-                        {data.score && <span className="text-lg font-black text-purple-600 dark:text-purple-400">{data.score} / 75</span>}
+                        {hasScore && <span className="text-lg font-black text-purple-600 dark:text-purple-400">{score} / 75</span>}
                     </div>
                 )}
 

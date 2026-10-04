@@ -49,6 +49,7 @@ class EvaluateSpeakingJobTest extends TestCase
         EvaluateSpeakingJob::dispatchSync($answer->id);
 
         $this->assertSame(75, $answer->fresh()->score_ai);
+        $this->assertSame(75, json_decode($answer->fresh()->review_ai, true)['score']);
         $this->assertSame('I like my city a lot.', $answer->fresh()->transcript);
     }
 
@@ -60,6 +61,21 @@ class EvaluateSpeakingJobTest extends TestCase
         EvaluateSpeakingJob::dispatchSync($answer->id);
 
         $this->assertSame(0, $answer->fresh()->score_ai);
+    }
+
+    public function test_silence_stores_consistent_analysis(): void
+    {
+        $answer = $this->answer();
+        $this->fakeGemini(json_encode(['score' => 10, 'level' => 'A2', 'transcript' => '[SILENCE]', 'detected_language' => 'Noise', 'is_relevant' => true]));
+
+        EvaluateSpeakingJob::dispatchSync($answer->id);
+
+        $fresh = $answer->fresh();
+        $review = json_decode($fresh->review_ai, true);
+        $this->assertSame(0, $fresh->score_ai);
+        $this->assertSame(0, $review['score']);
+        $this->assertSame('Below A1', $review['level']);
+        $this->assertSame('no_speech', $review['override_reason']);
     }
 
     public function test_api_errors_propagate_for_retry_and_failed_hook_records_the_error(): void
