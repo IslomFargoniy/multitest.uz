@@ -1462,5 +1462,38 @@
     "select_theme": "Select theme:",
     "confirm_logout": "Are you sure you want to log out?",
     "quick_actions": "Quick actions",
-    "logout": "Log out"
+    "logout": "Log out",
+    "status": {
+        "graded": "Graded",
+        "no_speech": "No speech detected",
+        "wrong_language": "Wrong language",
+        "off_topic": "Off topic",
+        "pending": "Evaluating",
+        "ai_error": "AI Error"
+    },
+    "score_summary": {
+        "total_score": "Overall score",
+        "teacher": "Teacher",
+        "ai": "AI",
+        "pending": "Evaluating"
+    },
+    "notice": {
+        "no_speech_title": "No speech detected in {{count}} questions",
+        "no_speech_desc": "Please check your microphone permissions and audio volume next time."
+    },
+    "question_result": {
+        "question": "Question",
+        "ai_feedback": "AI feedback",
+        "no_speech_text": "No response recorded or no speech detected.",
+        "transcript": "Transcript",
+        "no_transcript": "No transcript available",
+        "no_audio": "No audio recorded"
+    },
+    "empty_state": {
+        "title": "No data found",
+        "description": "There is currently no data to display."
+    },
+    "loading_state": {
+        "loading": "Loading..."
+    }
 }

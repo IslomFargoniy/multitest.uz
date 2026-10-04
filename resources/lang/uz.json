@@ -1462,5 +1462,38 @@
     "select_theme": "Mavzuni tanlang:",
     "confirm_logout": "Haqiqatan ham tizimdan chiqmoqchimisiz?",
     "quick_actions": "Tezkor amallar",
-    "logout": "Tizimdan chiqish"
+    "logout": "Tizimdan chiqish",
+    "status": {
+        "graded": "Baholandi",
+        "no_speech": "Ovoz eshitilmadi",
+        "wrong_language": "Boshqa tilda javob",
+        "off_topic": "Savolga mos emas",
+        "pending": "Baholanmoqda",
+        "ai_error": "AI xatosi"
+    },
+    "score_summary": {
+        "total_score": "Umumiy ball",
+        "teacher": "O'qituvchi",
+        "ai": "AI",
+        "pending": "Baholanmoqda"
+    },
+    "notice": {
+        "no_speech_title": "{{count}} ta savolda ovoz eshitilmadi",
+        "no_speech_desc": "Keyingi safar mikrofon ruxsatini va ovoz balandligini tekshiring."
+    },
+    "question_result": {
+        "question": "Savol",
+        "ai_feedback": "AI izohi",
+        "no_speech_text": "Javob yozilmadi yoki ovoz eshitilmadi.",
+        "transcript": "Transkript",
+        "no_transcript": "Transkript mavjud emas",
+        "no_audio": "Ovoz yozilmagan"
+    },
+    "empty_state": {
+        "title": "Ma'lumot topilmadi",
+        "description": "Hozircha ko'rsatish uchun hech qanday ma'lumot yo'q."
+    },
+    "loading_state": {
+        "loading": "Yuklanmoqda..."
+    }
 }
