@@ -1,5 +1,5 @@
 import { type AttemptPart } from '@/types';
-import { Check } from 'lucide-react';
+import React from 'react';
 
 type StepTabsProps = {
     attempt_parts: AttemptPart[];
@@ -10,51 +10,33 @@ export default function StepTabs({ attempt_parts, active }: StepTabsProps) {
     const activeIndex = attempt_parts.findIndex((p) => p.id === active);
 
     return (
-        <div className="scrollbar-hide flex w-full items-center justify-between lg:justify-center gap-1 overflow-x-auto px-2 py-4 md:px-4">
+        <div className="flex w-full items-center justify-center gap-3 py-2">
             {attempt_parts.map((p, index) => {
                 const isCompleted = index < activeIndex;
                 const isActive = p.id === active;
-                const isLast = index === attempt_parts.length - 1;
 
                 return (
-                    <div key={p.id} className={`flex items-center ${!isLast ? 'flex-1 lg:flex-none' : 'flex-none'}`}>
-                        <div className="group relative flex flex-col items-center">
-                            {/* 🔘 Stepper Node - Dynamic Width Pill */}
-                            <div className="relative z-10 flex items-center justify-center">
-                                <div
-                                    className={`flex h-9 md:h-12 min-w-[2.25rem] md:min-w-[3rem] items-center justify-center gap-1 md:gap-2 rounded-lg md:rounded-[1.25rem] border md:border-4 px-2.5 md:px-4 transition-all duration-500 ease-out ${
-                                        isActive
-                                            ? 'scale-105 border-primary/20 bg-primary text-primary-foreground shadow-xl shadow-primary/10 dark:border-primary/40 dark:shadow-none'
-                                            : isCompleted
-                                              ? 'border-slate-50 bg-slate-900 text-white dark:border-slate-800'
-                                              : 'border-white bg-slate-100 text-slate-400 dark:border-slate-900 dark:bg-slate-800'
-                                    }`}
-                                >
-                                    {isCompleted && <Check className="h-4 w-4 shrink-0 stroke-[4]" />}
-
-                                    <span
-                                        className={`text-[10px] md:text-[11px] font-black tracking-tight whitespace-nowrap uppercase ${
-                                            isActive ? 'text-primary-foreground' : isCompleted ? 'text-slate-200' : 'text-slate-400'
-                                        }`}
-                                    >
-                                        {p.part?.name}
-                                    </span>
-                                </div>
-
-                                {/* Pulse Effect for active step */}
-                                {isActive && <div className="absolute inset-0 -z-10 scale-110 animate-pulse rounded-[1rem] md:rounded-[1.25rem] bg-primary/20" />}
-                            </div>
-                        </div>
-
-                        {/* 🔗 Connector Line - Expands on mobile, fixed on desktop */}
-                        {!isLast && (
-                            <div className="mx-1 md:mx-2 h-0.5 md:h-[3px] flex-1 lg:flex-none lg:w-16 rounded-full bg-slate-100 dark:bg-slate-800">
-                                <div
-                                    className="h-full bg-primary transition-all duration-1000 ease-in-out"
-                                    style={{ width: isCompleted ? '100%' : '0%' }}
-                                />
-                            </div>
-                        )}
+                    <div key={p.id} className="flex flex-1 max-w-[140px] flex-col gap-1.5 items-center">
+                        {/* 6px Progress Bar */}
+                        <div
+                            className={`h-1.5 w-full rounded-full transition-colors duration-300 ${
+                                isActive
+                                    ? 'bg-chart'
+                                    : isCompleted
+                                      ? 'bg-chart/60'
+                                      : 'bg-border'
+                            }`}
+                        />
+                        {/* Label under */}
+                        <span
+                            className={`text-xs font-medium truncate max-w-full ${
+                                isActive
+                                    ? 'text-foreground font-semibold'
+                                    : 'text-muted-foreground'
+                            }`}
+                        >
+                            {p.part?.name}
+                        </span>
                     </div>
                 );
             })}

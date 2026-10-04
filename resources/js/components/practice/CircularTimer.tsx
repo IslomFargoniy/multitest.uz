@@ -1,3 +1,6 @@
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+
 interface CircularTimerProps {
     timeLeft: number;
     totalTime: number;
@@ -5,38 +8,17 @@ interface CircularTimerProps {
 }
 
 export default function CircularTimer({ timeLeft, totalTime, phase }: CircularTimerProps) {
-    const size = 140;
-    const strokeWidth = 11;
+    const { t } = useTranslation();
+    const size = 220;
+    const strokeWidth = 10;
     const radius = (size - strokeWidth) / 2;
     const circumference = 2 * Math.PI * radius;
 
     // Progress goes from 1 (full) down to 0 (empty), clockwise
-    const progress = totalTime > 0 ? timeLeft / totalTime : 0;
-    // strokeDashoffset: 0 = full circle, circumference = empty
-    // We want it to "decrease" clockwise as time runs out
+    const progress = totalTime > 0 ? Math.max(0, Math.min(1, timeLeft / totalTime)) : 0;
     const dashOffset = circumference * (1 - progress);
 
-    const isRecording = phase === 'recording';
-    const isReady = phase === 'ready';
     const isUploading = phase === 'uploading';
-
-    const trackColor = isRecording
-        ? 'var(--color-destructive, #ef4444)'
-        : isReady
-          ? 'var(--color-warning, #f59e0b)'
-          : 'var(--primary, #6366f1)';
-
-    const bgTrackColor = isRecording
-        ? 'rgba(239, 68, 68, 0.15)'
-        : isReady
-          ? 'rgba(245, 158, 11, 0.15)'
-          : 'rgba(99, 102, 241, 0.15)';
-
-    const timeColor = isRecording
-        ? 'var(--color-destructive, #dc2626)'
-        : isReady
-          ? 'var(--color-warning, #d97706)'
-          : 'var(--primary, #4f46e5)';
 
     const displayTime = () => {
         if (isUploading) return '--';
@@ -45,16 +27,16 @@ export default function CircularTimer({ timeLeft, totalTime, phase }: CircularTi
         if (mins > 0) {
             return `${mins}:${secs.toString().padStart(2, '0')}`;
         }
-        return `${secs}`;
+        return `0:${secs.toString().padStart(2, '0')}`;
     };
 
     return (
-        <div className="relative inline-flex items-center justify-center">
+        <div className="relative inline-flex flex-col items-center justify-center">
             <svg
                 width={size}
                 height={size}
                 viewBox={`0 0 ${size} ${size}`}
-                className="-scale-x-100 rotate-[-270deg]"
+                className="-scale-x-100 rotate-[-90deg]"
             >
                 {/* Background track */}
                 <circle
@@ -62,34 +44,33 @@ export default function CircularTimer({ timeLeft, totalTime, phase }: CircularTi
                     cy={size / 2}
                     r={radius}
                     fill="none"
-                    stroke={bgTrackColor}
+                    stroke="var(--border)"
                     strokeWidth={strokeWidth}
                 />
-                {/* Animated countdown arc - decreases clockwise */}
+                {/* Animated countdown arc */}
                 <circle
                     cx={size / 2}
                     cy={size / 2}
                     r={radius}
                     fill="none"
-                    stroke={trackColor}
+                    stroke="var(--chart)"
                     strokeWidth={strokeWidth}
                     strokeDasharray={circumference}
                     strokeDashoffset={dashOffset}
                     strokeLinecap="round"
-                    style={{ transition: 'stroke-dashoffset 0.8s linear, stroke 0.3s' }}
+                    style={{ transition: 'stroke-dashoffset 0.8s linear' }}
                 />
             </svg>
-            {/* Center number */}
-            <span
-                className="absolute font-black tabular-nums transition-colors duration-300"
-                style={{
-                    color: timeColor,
-                    fontSize: timeLeft >= 100 ? '1.5rem' : timeLeft >= 10 ? '2rem' : '2.5rem',
-                    lineHeight: 1,
-                }}
-            >
-                {displayTime()}
-            </span>
+
+            {/* Inner Circle Content */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
+                <span className="font-display text-[56px] font-bold leading-none tracking-tight text-foreground tabular-nums">
+                    {displayTime()}
+                </span>
+                <span className="text-[13px] font-medium text-muted-foreground mt-2">
+                    {t('practice_show.seconds_left', 'soniya qoldi')}
+                </span>
+            </div>
         </div>
     );
 }

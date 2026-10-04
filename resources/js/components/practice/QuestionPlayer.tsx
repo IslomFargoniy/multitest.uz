@@ -1,10 +1,14 @@
+import { NoticeBanner } from '@/components/design/NoticeBanner';
 import CircularTimer from '@/components/practice/CircularTimer';
+import StepTabs from '@/components/practice/StepTabs';
 import SafeHtml from '@/components/safe-html';
 import { useHaptic, useTelegramBackButton } from '@/components/telegram-theme-provider';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import type { AttemptPart, Part, Question } from '@/types';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
-import { AlertTriangle, CloudUpload, Info, Maximize, Mic, Minimize, ShieldAlert, Timer, Volume2 } from 'lucide-react';
+import { AlertTriangle, Check, CloudUpload, Info, Maximize, Mic, Minimize, ShieldAlert, Timer, Volume2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -103,12 +107,14 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
         return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
     }, [attempt_part, phase]);
 
-    // Show native BackButton to exit test with confirmation
-    useTelegramBackButton(phase !== 'uploading', () => {
+    const handleExit = () => {
         if (confirm(t('question_player.exit_confirm', 'Haqiqatan ham testdan chiqmoqchimisiz? Natijalaringiz saqlanmasligi mumkin.'))) {
             router.visit('/dashboard');
         }
-    });
+    };
+
+    // Show native BackButton to exit test with confirmation
+    useTelegramBackButton(phase !== 'uploading', handleExit);
 
     const playerRef = useRef<HTMLDivElement>(null);
 
@@ -372,152 +378,229 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
             onCopy={(e) => e.preventDefault()}
             onCut={(e) => e.preventDefault()}
             onPaste={(e) => e.preventDefault()}
-            className={`border-border bg-card relative mx-auto w-full overflow-hidden border shadow-2xl transition-all duration-300 select-none ${isFullscreen ? 'rounded-none' : 'rounded-2xl md:rounded-[2.5rem]'}`}
+            className="w-full min-h-screen flex flex-col bg-background text-foreground select-none"
         >
             {/* Anti-Cheat Violation Warning Modal Overlay */}
             {showViolationModal && (
-                <div className="animate-in fade-in absolute inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
-                    <div className="w-full max-w-md space-y-4 rounded-2xl border-2 border-red-500 bg-white p-6 text-center shadow-2xl dark:bg-gray-900">
-                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-950/60 dark:text-red-400">
-                            <ShieldAlert className="h-8 w-8 animate-bounce" />
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 animate-in fade-in">
+                    <div className="w-full max-w-md space-y-4 rounded-2xl border border-border bg-card p-6 text-center shadow-sm dark:shadow-none">
+                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
+                            <ShieldAlert className="h-6 w-6" />
                         </div>
                         <div>
-                            <h3 className="text-lg font-black text-gray-900 dark:text-white">⚠️ Qoidabuzarlik Qayd Etildi!</h3>
-                            <p className="mt-1 text-xs leading-relaxed text-gray-600 dark:text-gray-300">
-                                Imtihon davomida boshqa oynaga (tab) o'tish yoki ilovani yashirish taqiqlanadi. Har bir holat tizim tomonidan qayd
-                                etilmoqda va o'qituvchiga ma'lum qilinadi.
+                            <h3 className="text-[18px] font-bold text-foreground">
+                                {t('question_player.violation_title', 'Qoidabuzarlik qayd etildi')}
+                            </h3>
+                            <p className="mt-2 text-[15px] leading-relaxed text-muted-foreground">
+                                {t('question_player.violation_desc', "Imtihon davomida boshqa oynaga (tab) o'tish yoki ilovani yashirish taqiqlanadi. Har bir holat tizim tomonidan qayd etilmoqda.")}
                             </p>
                         </div>
-                        <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
-                            Buzilishlar soni: {tabSwitchCount} marta
+                        <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 bg-destructive/10 text-destructive text-xs font-semibold border border-destructive/20">
+                            <span>{t('question_player.violations_count', 'Buzilishlar soni')}: {tabSwitchCount} marta</span>
                         </div>
-                        <button
-                            type="button"
-                            onClick={() => setShowViolationModal(false)}
-                            className="w-full cursor-pointer rounded-xl bg-red-600 py-2.5 text-xs font-bold text-white shadow-xs transition-all hover:bg-red-700 active:scale-95"
-                        >
-                            Tushundim, testni davom ettirish
-                        </button>
+                        <div className="pt-2">
+                            <Button
+                                type="button"
+                                variant="default"
+                                className="w-full"
+                                onClick={() => setShowViolationModal(false)}
+                            >
+                                {t('question_player.continue_test', 'Tushundim, testni davom ettirish')}
+                            </Button>
+                        </div>
                     </div>
                 </div>
             )}
 
-            <div className="border-border bg-muted/50 flex items-center justify-between border-b px-4 py-3 md:px-8 md:py-4">
-                <div className="flex items-center gap-3">
-                    <span className="rounded-md bg-indigo-600 px-2.5 py-1 text-[11px] font-bold tracking-wide text-white uppercase">
-                        {t('question_player.part_label')}
+            {/* Top Bar (sunken, border-b): left {test} · {part} (700) + Savol {i}/{n} (13 muted), middle part progress, right exit button */}
+            <header className="h-14 bg-surface-sunken border-b border-border px-4 sm:px-6 flex items-center justify-between gap-4 sticky top-0 z-30">
+                <div className="flex items-center gap-3 min-w-0">
+                    <span className="font-bold text-sm text-foreground truncate">
+                        {attempt_part.attempt?.mock?.name || attempt_part.attempt?.test?.name || 'CEFR Speaking'} · {part.name}
                     </span>
-                    <h1 className="text-base font-bold tracking-tight text-slate-800 md:text-lg dark:text-slate-100">{part.name}</h1>
+                    {index >= 0 && (
+                        <span className="text-[13px] text-muted-foreground whitespace-nowrap">
+                            Savol {index + 1} / {questions.length}
+                        </span>
+                    )}
+                </div>
+
+                <div className="hidden md:flex flex-1 justify-center max-w-md">
+                    <StepTabs attempt_parts={attempt_part.attempt?.attempt_parts ?? []} active={attempt_part.id} />
                 </div>
 
                 <div className="flex items-center gap-2">
                     {tabSwitchCount > 0 && (
-                        <span className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-100 px-2.5 py-1 text-[10px] font-bold text-red-700 dark:border-red-800 dark:bg-red-950/60 dark:text-red-300">
-                            <AlertTriangle className="h-3 w-3" />
+                        <span className="hidden sm:inline-flex items-center gap-1 rounded-lg border border-destructive/20 bg-destructive/10 px-2.5 py-1 text-xs font-semibold text-destructive">
+                            <AlertTriangle className="h-3.5 w-3.5" />
                             {tabSwitchCount} ta ogohlantirish
                         </span>
                     )}
-
                     <button
+                        type="button"
                         onClick={toggleFullscreen}
-                        className="flex cursor-pointer items-center justify-center rounded-xl bg-slate-100 p-2 text-slate-500 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+                        className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-strong bg-surface-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                         title={isFullscreen ? t('common.exit_fullscreen') : t('common.fullscreen')}
                     >
                         {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
                     </button>
+                    <Button variant="outline" size="sm" onClick={handleExit}>
+                        {t('common.exit', 'Chiqish')}
+                    </Button>
                 </div>
-            </div>
+            </header>
 
-            <div className="grid min-h-[500px] grid-cols-1 md:grid-cols-12">
-                <div className="border-border border-r p-4 md:col-span-8 md:p-10">
-                    <div className="mb-6 flex items-center justify-between">
-                        <span className="text-[10px] leading-none font-black tracking-[0.15em] text-slate-400 uppercase md:text-[11px] dark:text-slate-500">
-                            {phase === 'introduction'
-                                ? t('question_player.introduction')
-                                : phase === 'uploading'
-                                  ? t('question_player.saving_results')
-                                  : t('question_player.question_counter', { current: index + 1, total: questions.length })}
-                        </span>
-                        <PhaseBadge phase={phase} />
-                    </div>
-                    <div className="max-w-none">
+            {/* Main (max 1200, wrap) */}
+            <main className="w-full max-w-[1200px] mx-auto px-4 py-6 sm:px-6 sm:py-8 flex-1 flex flex-col justify-center">
+                <div className="flex flex-col lg:flex-row gap-6 items-stretch">
+                    {/* Left card (flex 999 1 520px, padding 40, vertically centered) */}
+                    <div className="flex-[999_1_520px] rounded-xl border border-border bg-card p-6 sm:p-10 flex flex-col justify-center min-h-[460px] shadow-sm dark:shadow-none">
                         {phase === 'introduction' ? (
                             <div className="space-y-4">
-                                <h2 className="text-2xl leading-snug font-extrabold text-slate-800 md:text-3xl dark:text-slate-100">{part.name}</h2>
+                                <span className="text-xs font-semibold text-muted-foreground block">
+                                    {t('question_player.introduction', 'Kirish')}
+                                </span>
+                                <h2 className="text-[28px] sm:text-[36px] font-bold text-foreground leading-tight tracking-tight">
+                                    {part.name}
+                                </h2>
                                 <SafeHtml
-                                    className="text-base leading-relaxed text-slate-600 md:text-lg dark:text-slate-300"
+                                    className="text-base sm:text-lg leading-relaxed text-muted-foreground mt-4"
                                     html={part.description}
                                 />
                             </div>
                         ) : phase === 'uploading' ? (
                             uploadError ? (
-                                <div role="alert" className="flex h-full flex-col items-center justify-center space-y-4 py-20 text-center">
-                                    <AlertTriangle className="h-10 w-10 text-red-500" />
-                                    <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
-                                        {t('question_player.upload_failed_title', 'Javoblar yuklanmadi')}
-                                    </h2>
-                                    <p className="max-w-md text-slate-500 dark:text-slate-400">
+                                <div role="alert" className="flex flex-col items-center justify-center space-y-6 py-12 text-center max-w-md mx-auto">
+                                    <NoticeBanner
+                                        tone="danger"
+                                        title={t('question_player.upload_failed_title', 'Javoblar yuklanmadi')}
+                                    >
                                         {t(
                                             'question_player.upload_failed_desc',
                                             'Internet aloqasini tekshiring. Javoblaringiz yo‘qolmaydi, qayta urinib ko‘ring.',
                                         )}
-                                    </p>
-                                    <button
+                                    </NoticeBanner>
+                                    <Button
                                         type="button"
+                                        variant="default"
                                         onClick={() => void finalize()}
-                                        className="cursor-pointer rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-bold text-white shadow-xs transition-all hover:bg-indigo-700 active:scale-95"
+                                        className="px-8"
                                     >
                                         {t('question_player.retry', 'Qayta urinish')}
-                                    </button>
+                                    </Button>
                                 </div>
                             ) : (
-                                <div className="flex h-full flex-col items-center justify-center space-y-4 py-20 text-center">
-                                    <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{t('question_player.uploading_title')}</h2>
-                                    <p className="text-slate-500 dark:text-slate-400">{t('question_player.uploading_desc')}</p>
+                                <div className="flex flex-col items-center justify-center space-y-4 py-16 text-center">
+                                    <CloudUpload className="h-10 w-10 text-accent-text animate-pulse" />
+                                    <h2 className="text-2xl font-bold text-foreground">
+                                        {t('question_player.uploading_title', 'Javoblar saqlanmoqda')}
+                                    </h2>
+                                    <p className="text-sm text-muted-foreground max-w-sm">
+                                        {t('question_player.uploading_desc', 'Iltimos, kuting. Natijalaringiz tizimga yuborilmoqda.')}
+                                    </p>
                                 </div>
                             )
                         ) : (
-                            <SafeHtml
-                                className="tinymce-content prose prose-slate dark:prose-invert prose-p:text-slate-600 dark:prose-p:text-slate-200 prose-img:rounded-2xl prose-strong:text-indigo-600 max-w-none flex-1 text-lg leading-relaxed md:text-xl dark:text-slate-200"
-                                html={question?.textarea}
-                            />
+                            <div className="space-y-4">
+                                <span className="text-xs font-semibold text-muted-foreground block">
+                                    Savol {index + 1} / {questions.length}
+                                </span>
+                                <SafeHtml
+                                    className="text-[28px] sm:text-[36px] font-bold text-foreground leading-tight tracking-tight"
+                                    html={question?.textarea ?? ''}
+                                />
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Right card (flex 1 1 340px, centered column, gap 24) */}
+                    <div className="flex-[1_1_340px] rounded-xl border border-border bg-card p-6 sm:p-8 flex flex-col items-center justify-center gap-6 min-h-[460px] shadow-sm dark:shadow-none">
+                        {/* Phase chips grid(3): Tinglash / Tayyorlanish / Gapiring */}
+                        <div className="grid grid-cols-3 gap-2 w-full">
+                            {/* Chip 1: Tinglash */}
+                            <div
+                                className={cn(
+                                    'flex items-center justify-center gap-1 py-2 px-2 rounded-lg text-xs transition-colors text-center',
+                                    phase === 'audio' || phase === 'introduction'
+                                        ? 'bg-primary text-primary-foreground font-bold'
+                                        : phase === 'ready' || phase === 'recording' || phase === 'uploading'
+                                          ? 'bg-secondary text-muted-foreground'
+                                          : 'bg-surface-2 text-muted-foreground',
+                                )}
+                            >
+                                {(phase === 'ready' || phase === 'recording' || phase === 'uploading') && <Check className="h-3 w-3" />}
+                                <span>{t('question_player.phase_listen', 'Tinglash')}</span>
+                            </div>
+
+                            {/* Chip 2: Tayyorlanish */}
+                            <div
+                                className={cn(
+                                    'flex items-center justify-center gap-1 py-2 px-2 rounded-lg text-xs transition-colors text-center',
+                                    phase === 'ready'
+                                        ? 'bg-primary text-primary-foreground font-bold'
+                                        : phase === 'recording' || phase === 'uploading'
+                                          ? 'bg-secondary text-muted-foreground'
+                                          : 'bg-surface-2 text-muted-foreground',
+                                )}
+                            >
+                                {(phase === 'recording' || phase === 'uploading') && <Check className="h-3 w-3" />}
+                                <span>{t('question_player.phase_prepare', 'Tayyorlanish')}</span>
+                            </div>
+
+                            {/* Chip 3: Gapiring */}
+                            <div
+                                className={cn(
+                                    'flex items-center justify-center gap-1 py-2 px-2 rounded-lg text-xs transition-colors text-center',
+                                    phase === 'recording'
+                                        ? 'bg-primary text-primary-foreground font-bold'
+                                        : phase === 'uploading'
+                                          ? 'bg-secondary text-muted-foreground'
+                                          : 'bg-surface-2 text-muted-foreground',
+                                )}
+                            >
+                                {phase === 'uploading' && <Check className="h-3 w-3" />}
+                                <span>{t('question_player.phase_speak', 'Gapiring')}</span>
+                            </div>
+                        </div>
+
+                        {/* Ring timer 220px: conic ring, inner circle card color, number Space Grotesk 56/700 */}
+                        <CircularTimer timeLeft={timer} totalTime={totalTime} phase={phase} />
+
+                        {/* Mic level meter 40px bars, green; above it ● Yozilmoqda */}
+                        {phase === 'recording' && (
+                            <div className="w-full flex flex-col items-center gap-3">
+                                <LiveAudioMeter stream={streamRef.current} />
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    className="w-full"
+                                    onClick={() => {
+                                        if (recorderRef.current && recorderRef.current.state === 'recording') {
+                                            recorderRef.current.stop();
+                                        }
+                                    }}
+                                >
+                                    {t('question_player.finish_answer', 'Javobni yakunlash')}
+                                </Button>
+                            </div>
+                        )}
+
+                        {/* Last save status line 13 muted */}
+                        {index > 0 && (
+                            <span className="text-[13px] text-muted-foreground text-center">
+                                {index}-savol javobi saqlandi ✓
+                            </span>
                         )}
                     </div>
                 </div>
-
-                <div className="bg-muted/30 flex flex-col items-center justify-center p-4 text-center md:col-span-4 md:p-10">
-                    {/* Timer on top, larger and prominent */}
-                    <div className="mb-4">
-                        <CircularTimer timeLeft={timer} totalTime={totalTime} phase={phase} />
-                    </div>
-                    {/* Smaller mic pod below */}
-                    <RecordingPod phase={phase} stream={streamRef.current} />
-                    <div className="mt-6 w-full space-y-3">
-                        <div className="border-border bg-card rounded-xl border p-2.5 shadow-sm">
-                            <p className="mb-1 text-[10px] font-semibold tracking-widest text-slate-400 uppercase dark:text-slate-500">
-                                {t('question_player.status')}
-                            </p>
-                            <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-                                {phase === 'introduction'
-                                    ? t('question_player.status_intro')
-                                    : phase === 'audio'
-                                      ? t('question_player.status_listening')
-                                      : phase === 'ready'
-                                        ? t('question_player.status_preparing')
-                                        : phase === 'uploading'
-                                          ? t('question_player.status_uploading')
-                                          : t('question_player.status_capturing')}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </main>
         </div>
     );
 }
 
-// Sub-components (RecordingPod and PhaseBadge)
+// Sub-components: LiveAudioMeter
 function LiveAudioMeter({ stream }: { stream: MediaStream | null }) {
+    const { t } = useTranslation();
     const [level, setLevel] = useState(0);
 
     useEffect(() => {
@@ -559,117 +642,28 @@ function LiveAudioMeter({ stream }: { stream: MediaStream | null }) {
     }, [stream]);
 
     return (
-        <div className="flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 dark:border-emerald-800 dark:bg-emerald-950/40">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
-            <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300">Mikrofon:</span>
-            <div className="flex h-3 items-center gap-0.5">
-                {[20, 40, 60, 80, 100].map((threshold, idx) => (
-                    <div
-                        key={idx}
-                        className={`w-1 rounded-full transition-all duration-75 ${
-                            level >= threshold || (level > 10 && idx === 0) ? 'h-3 bg-emerald-500' : 'h-1.5 bg-slate-200 dark:bg-slate-700'
-                        }`}
-                    />
-                ))}
+        <div className="flex flex-col items-center gap-2">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-success">
+                <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
+                <span>{t('question_player.recording_now', 'Yozilmoqda')}</span>
             </div>
-        </div>
-    );
-}
-
-function RecordingPod({ phase, stream }: { phase: string; stream?: MediaStream | null }) {
-    const { t } = useTranslation();
-    if (phase === 'uploading') {
-        return (
-            <div className="flex flex-col items-center">
-                <div className="relative mb-3">
-                    <div className="absolute inset-0 animate-pulse rounded-full bg-indigo-400 opacity-20"></div>
-                    <div className="relative flex h-16 w-16 items-center justify-center rounded-full border-4 border-white bg-indigo-600 text-white shadow-xl">
-                        <CloudUpload size={28} className="animate-bounce" strokeWidth={2.5} />
-                    </div>
-                </div>
-                <span className="animate-pulse text-xs font-black tracking-[0.2em] text-indigo-600 uppercase">
-                    {t('question_player.uploading_live')}
-                </span>
+            {/* 40px bars */}
+            <div className="flex h-10 items-end gap-1 px-3 py-1 rounded-lg bg-surface-2 border border-border">
+                {[15, 30, 45, 60, 75, 90, 100].map((threshold, idx) => {
+                    const isActive = level >= threshold || (level > 8 && idx < 2);
+                    const barHeight = isActive ? Math.max(12, Math.min(36, Math.round((level / 100) * 36) + (idx % 2 === 0 ? 4 : -2))) : 6;
+                    return (
+                        <div
+                            key={idx}
+                            className={cn(
+                                'w-1.5 rounded-full transition-all duration-75',
+                                isActive ? 'bg-success' : 'bg-muted-foreground/30',
+                            )}
+                            style={{ height: `${barHeight}px` }}
+                        />
+                    );
+                })}
             </div>
-        );
-    }
-    if (phase === 'recording') {
-        return (
-            <div className="flex flex-col items-center space-y-2">
-                <div className="relative">
-                    <div className="absolute inset-0 animate-ping rounded-full bg-red-400 opacity-20"></div>
-                    <div className="absolute -inset-2 animate-pulse rounded-full bg-red-100 opacity-40"></div>
-                    <div className="relative flex h-16 w-16 items-center justify-center rounded-full border-4 border-white bg-red-600 text-white shadow-xl">
-                        <Mic size={28} strokeWidth={2.5} />
-                    </div>
-                </div>
-                <span className="animate-pulse text-xs font-black tracking-[0.2em] text-red-600 uppercase">
-                    {t('simulator.recording_phase', 'OVOZ YOZILMOQDA (GAPIRING)')}
-                </span>
-                <LiveAudioMeter stream={stream || null} />
-            </div>
-        );
-    }
-    if (phase === 'ready') {
-        return (
-            <div className="flex flex-col items-center space-y-1.5">
-                <div className="mb-1 flex h-16 w-16 items-center justify-center rounded-full border-4 border-white bg-amber-500 text-white shadow-xl">
-                    <Timer size={28} strokeWidth={2.5} />
-                </div>
-                <span className="text-xs font-black tracking-[0.2em] text-amber-600 uppercase">
-                    {t('simulator.prep_phase', 'TAYYORGARLIK VAQTI')}
-                </span>
-                <p className="max-w-[200px] text-[11px] leading-tight text-slate-500">
-                    {t('simulator.prep_hint', 'Fikrlaringizni tartibga soling va qoralamaga yozing.')}
-                </p>
-            </div>
-        );
-    }
-    if (phase === 'introduction') {
-        return (
-            <div className="flex flex-col items-center">
-                <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full border-4 border-white bg-indigo-600 text-white shadow-xl">
-                    <Info size={28} strokeWidth={2.5} />
-                </div>
-                <span className="text-xs font-black tracking-[0.2em] text-indigo-600 uppercase">{t('question_player.part_intro')}</span>
-            </div>
-        );
-    }
-    return (
-        <div className="flex flex-col items-center">
-            <div className="border-border bg-card text-muted-foreground mb-3 flex h-16 w-16 items-center justify-center rounded-full border-2 shadow-sm">
-                <Volume2 size={28} />
-            </div>
-            <span className="text-xs font-black tracking-[0.2em] text-slate-400 uppercase">{t('question_player.playing_audio')}</span>
-        </div>
-    );
-}
-
-function PhaseBadge({ phase }: { phase: string }) {
-    const { t } = useTranslation();
-    const styles = {
-        introduction: 'bg-indigo-50 text-indigo-600 border-indigo-100',
-        audio: 'bg-blue-50 text-blue-600 border-blue-100',
-        ready: 'bg-amber-50 text-amber-600 border-amber-100',
-        recording: 'bg-red-50 text-red-600 border-red-100',
-        uploading: 'bg-indigo-50 text-indigo-600 border-indigo-100',
-    };
-    return (
-        <div
-            className={`flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-black tracking-widest uppercase md:px-4 md:py-1.5 ${styles[phase as keyof typeof styles]}`}
-        >
-            <span
-                className={`h-1.5 w-1.5 rounded-full ${phase === 'recording' ? 'animate-pulse bg-red-600' : phase === 'uploading' ? 'animate-bounce bg-indigo-600' : 'bg-current'}`}
-            />
-            {phase === 'introduction'
-                ? t('question_player.phase_intro')
-                : phase === 'audio'
-                  ? t('question_player.phase_instruction')
-                  : phase === 'ready'
-                    ? t('question_player.phase_preparing')
-                    : phase === 'uploading'
-                      ? t('question_player.phase_saving')
-                      : t('question_player.phase_answering')}
         </div>
     );
 }
