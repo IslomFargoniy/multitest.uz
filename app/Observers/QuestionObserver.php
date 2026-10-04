@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Question;
+use App\Support\HtmlSanitizer;
 use DOMDocument;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +17,7 @@ class QuestionObserver
             $oldHtml = $question->getOriginal('textarea') ?? '';
 
             // 1. Process the content (Saves new Base64, leaves existing URLs alone)
-            $newHtml = \App\Support\HtmlSanitizer::clean($this->processImages($question->textarea));
+            $newHtml = HtmlSanitizer::clean($this->processImages($question->textarea));
 
             // 2. Cleanup (If updating, check what was removed)
             if ($question->exists) {
@@ -28,7 +29,7 @@ class QuestionObserver
         }
     }
 
-    public function deleted(Question $question): void
+    public function forceDeleted(Question $question): void
     {
         $this->deleteOrphanedImages($question->textarea, '', $question->id);
     }

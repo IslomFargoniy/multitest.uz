@@ -50,7 +50,12 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
-            'locale' => app()->getLocale(),
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+            ],
+            // Only the language explicitly chosen by the user; otherwise the browser/localStorage detection stays in charge.
+            'locale' => $request->session()->get('locale'),
             'appearance' => $request->cookie('appearance') ?? 'system',
             'sidebarOpen' => $request->cookie('sidebar_state') !== 'false',
         ];

@@ -3,22 +3,25 @@
 namespace App\Models;
 
 use App\Models\User\User;
+use Database\Factories\AttemptFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Attempt extends Model
 {
-    /** @use HasFactory<\Database\Factories\AttemptFactory> */
+    /** @use HasFactory<AttemptFactory> */
     use HasFactory, SoftDeletes;
 
     protected static function booted()
     {
         static::creating(function ($attempt) {
-            $attempt->verify_code ??= \Illuminate\Support\Str::lower(\Illuminate\Support\Str::random(32));
+            $attempt->verify_code ??= Str::lower(Str::random(32));
         });
 
-        static::deleting(function ($attempt) {
+        // Soft-deleting an attempt keeps its parts, answers and audio; they are removed only on force delete.
+        static::forceDeleting(function ($attempt) {
             $attempt->attempt_parts()->each(function ($part) {
                 $part->delete();
             });

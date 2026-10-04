@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
+use App\Jobs\SendResultEmailJob;
 use App\Models\AttemptAnswer;
 use App\Models\User\User;
-use App\Jobs\SendResultEmailJob;
+use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
 use Telegram\Bot\FileUpload\InputFile;
-use Illuminate\Support\Facades\Log;
 
 class NotificationService
 {
@@ -16,18 +16,30 @@ class NotificationService
      */
     public function sendPerQuestionTelegram(AttemptAnswer $answer): void
     {
+        if (! config('services.telegram.per_question_notify')) {
+            return;
+        }
+
         try {
             $attemptPart = $answer->attempt_part;
-            if (!$attemptPart) return;
+            if (! $attemptPart) {
+                return;
+            }
 
             $attempt = $attemptPart->attempt;
-            if (!$attempt) return;
+            if (! $attempt) {
+                return;
+            }
 
             $user = $attempt->user;
-            if (!$user || !$user->telegram_id) return;
+            if (! $user || ! $user->telegram_id) {
+                return;
+            }
 
             $question = $answer->question;
-            if (!$question) return;
+            if (! $question) {
+                return;
+            }
 
             $telegram = new Api(config('services.telegram.bot_token'));
             $chatId = $user->telegram_id;
@@ -43,12 +55,9 @@ class NotificationService
             $qText = htmlspecialchars($questionText, ENT_QUOTES, 'UTF-8');
 
             $caption = "🎉 <b>Natijangiz tayyor!</b>\n\n"
-                . "👤 {$userName}\n"
-                . "📝 <b>Savol :</b> {$qText}\n"
-                . "📊 <b>AI bahosi:</b> {$scoreAi}\n\n"
-                . "💳 <b>Bizni Qo'llab-quvvatlang:</b>\n\n"
-                . "<code>9860600402432220</code>\n\n"
-                . "Donat qilishingiz mumkin.";
+                ."👤 {$userName}\n"
+                ."📝 <b>Savol :</b> {$qText}\n"
+                ."📊 <b>AI bahosi:</b> {$scoreAi}";
 
             // 1. Send Images if any
             if (count($imageUrls) > 0) {
@@ -77,8 +86,8 @@ class NotificationService
                         $telegram->sendMediaGroup($params);
                     } else {
                         $imgData = $imageUrls[0];
-                        $photo = $imgData['type'] === 'local' 
-                            ? InputFile::create($imgData['path'], basename($imgData['path'])) 
+                        $photo = $imgData['type'] === 'local'
+                            ? InputFile::create($imgData['path'], basename($imgData['path']))
                             : $imgData['path'];
 
                         $telegram->sendPhoto([
@@ -88,7 +97,7 @@ class NotificationService
                         ]);
                     }
                 } catch (\Exception $imgErr) {
-                    Log::error("Image sending failed for Answer #{$answer->id}: " . $imgErr->getMessage());
+                    Log::error("Image sending failed for Answer #{$answer->id}: ".$imgErr->getMessage());
                 }
             }
 
@@ -101,9 +110,10 @@ class NotificationService
                         'caption' => $caption,
                         'parse_mode' => 'HTML',
                     ]);
+
                     return;
                 } catch (\Exception $audErr) {
-                    Log::error("Audio send failed for Answer #{$answer->id}: " . $audErr->getMessage());
+                    Log::error("Audio send failed for Answer #{$answer->id}: ".$audErr->getMessage());
                 }
             }
 
@@ -115,7 +125,7 @@ class NotificationService
             ]);
 
         } catch (\Throwable $e) {
-            Log::error("sendPerQuestionTelegram fatal failure for Answer #{$answer->id}: " . $e->getMessage());
+            Log::error("sendPerQuestionTelegram fatal failure for Answer #{$answer->id}: ".$e->getMessage());
         }
     }
 
@@ -133,8 +143,9 @@ class NotificationService
         $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
         $text = trim(preg_replace('/\s+/', ' ', $text));
         if (mb_strlen($text) > 200) {
-            $text = mb_substr($text, 0, 200) . '...';
+            $text = mb_substr($text, 0, 200).'...';
         }
+
         return $text ?: '—';
     }
 
@@ -144,12 +155,12 @@ class NotificationService
         if (preg_match_all('/<img[^>]+src=["\']([^"\']+)["\']/i', $html, $matches)) {
             foreach ($matches[1] as $src) {
                 if (str_starts_with($src, '/storage/')) {
-                    $path = storage_path('app/public/' . substr($src, 9));
+                    $path = storage_path('app/public/'.substr($src, 9));
                     if (file_exists($path)) {
                         $images[] = ['type' => 'local', 'path' => $path];
                     }
-                } elseif (str_starts_with($src, config('app.url') . '/storage/')) {
-                    $path = storage_path('app/public/' . substr(parse_url($src, PHP_URL_PATH), 9));
+                } elseif (str_starts_with($src, config('app.url').'/storage/')) {
+                    $path = storage_path('app/public/'.substr(parse_url($src, PHP_URL_PATH), 9));
                     if (file_exists($path)) {
                         $images[] = ['type' => 'local', 'path' => $path];
                     }
@@ -158,13 +169,17 @@ class NotificationService
                 }
             }
         }
+
         return $images;
     }
 
     protected function getAudioPhysicalPath(?string $path): ?string
     {
-        if (!$path) return null;
+        if (! $path) {
+            return null;
+        }
         $cleanPath = str_replace(['/storage/', 'storage/'], '', $path);
-        return storage_path('app/public/' . ltrim($cleanPath, '/'));
+
+        return storage_path('app/public/'.ltrim($cleanPath, '/'));
     }
 }

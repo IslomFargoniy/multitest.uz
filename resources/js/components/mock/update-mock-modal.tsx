@@ -46,7 +46,7 @@ export default function UpdateMockModal({ tests = [], mock, open, setOpen }: Upd
     const { data, setData, put, processing, reset, errors, clearErrors } = useForm({
         name: mock.name || '',
         comment: mock.comment || '',
-        started_at: formatSafeDate(mock.started_at || mock.starts_at),
+        started_at: formatSafeDate(mock.started_at),
         finished_at: formatSafeDate(mock.finished_at),
         test_id: mock.test_id || (mock.mock_tests && mock.mock_tests[0]?.test_id) || null,
         active: mock.active ? 1 : 0,
@@ -57,7 +57,7 @@ export default function UpdateMockModal({ tests = [], mock, open, setOpen }: Upd
             setData({
                 name: mock.name || '',
                 comment: mock.comment || '',
-                started_at: formatSafeDate(mock.started_at || mock.starts_at),
+                started_at: formatSafeDate(mock.started_at),
                 finished_at: formatSafeDate(mock.finished_at),
                 test_id: mock.test_id || (mock.mock_tests && mock.mock_tests[0]?.test_id) || null,
                 active: mock.active ? 1 : 0,

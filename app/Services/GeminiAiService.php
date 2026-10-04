@@ -6,142 +6,46 @@ use Gemini;
 use Gemini\Data\Blob;
 use Gemini\Data\GenerationConfig;
 use Gemini\Data\Schema;
-use Gemini\Enums\MimeType;
 use Gemini\Enums\DataType;
+use Gemini\Enums\MimeType;
 use Gemini\Enums\ResponseMimeType;
+use Illuminate\Support\Facades\Log;
 
 class GeminiAiService
 {
     protected $client;
-    // Use the model available in the environment
-    protected string $model = 'gemini-2.5-flash-lite';
 
+    protected string $model;
 
     public function __construct()
     {
+        $this->model = (string) config('services.gemini.model', 'gemini-2.5-flash-lite');
         $apiKey = config('services.gemini.api_key');
         if (empty($apiKey)) {
-            \Illuminate\Support\Facades\Log::error('GEMINI_API_KEY is not set in .env file');
+            Log::error('GEMINI_API_KEY is not set in .env file');
         }
         $this->client = Gemini::client($apiKey ?? '');
-    }
-
-    public function evaluateEssay(string $taskPrompt, string $questionText, string $essayText): string
-    {
-        $essayText = mb_substr($essayText, 0, 4000);
-        $questionText = strip_tags($questionText);
-
-        $promptText = "You are an IELTS examiner. Evaluate the following essay based on:
-1. Task Response, 2. Coherence & Cohesion, 3. Lexical Resource, 4. Grammatical Range & Accuracy.
-Give band scores (0–9) for each and overall, plus feedback 250 words.
-
-Task: {$taskPrompt}
-Question: {$questionText}
-Essay: {$essayText}";
-
-        try {
-            $response = $this->client->generativeModel(model: $this->model)
-                ->withGenerationConfig(new GenerationConfig(
-                    responseMimeType: ResponseMimeType::APPLICATION_JSON,
-                    responseSchema: new Schema(
-                        type: DataType::OBJECT,
-                        properties: [
-                            'task_response' => new Schema(type: DataType::NUMBER),
-                            'coherence_cohesion' => new Schema(type: DataType::NUMBER),
-                            'lexical_resource' => new Schema(type: DataType::NUMBER),
-                            'grammatical_accuracy' => new Schema(type: DataType::NUMBER),
-                            'overall' => new Schema(type: DataType::NUMBER),
-                            'feedback' => new Schema(type: DataType::STRING),
-                        ],
-                        required: ['overall', 'feedback']
-                    )
-                ))
-                ->generateContent($promptText);
-
-            return $response->text();
-        } catch (\Exception $e) {
-            return json_encode(['error' => $e->getMessage()]);
-        }
-    }
-
-    public function transcribeAudio(string $relativePath): string
-    {
-        try {
-            $fullPath = $this->getPhysicalPath($relativePath);
-            if (!file_exists($fullPath)) return json_encode(['error' => "File not found."]);
-
-            $audioInfo = $this->getCompatibleAudio($fullPath);
-            $mimeType = $audioInfo['mimeType'];
-            $tempPath = $audioInfo['path'];
-
-            $response = $this->client->generativeModel(model: $this->model)
-                ->generateContent([
-                    'Please provide a word-for-word transcription of this audio.',
-                    new Blob(
-                        mimeType: $mimeType,
-                        data: base64_encode(file_get_contents($tempPath))
-                    )
-                ]);
-
-            if ($tempPath !== $fullPath && file_exists($tempPath)) {
-                unlink($tempPath);
-            }
-
-            return $response->text();
-        } catch (\Exception $e) {
-            return json_encode(['error' => $e->getMessage()]);
-        }
-    }
-
-    public function evaluateSpeaking(string $questionText, string $transcript): string
-    {
-        $promptText = "You are an expert IELTS Speaking examiner. Evaluate:
-1. Fluency, 2. Lexical Resource, 3. Grammar, 4. Pronunciation.
-Provide scores (0–9) and overall feedback.
-
-Question: {$questionText}
-Transcript: {$transcript}";
-
-        try {
-            $response = $this->client->generativeModel(model: $this->model)
-                ->withGenerationConfig(new GenerationConfig(
-                    responseMimeType: ResponseMimeType::APPLICATION_JSON,
-                    responseSchema: new Schema(
-                        type: DataType::OBJECT,
-                        properties: [
-                            'fluency' => new Schema(type: DataType::NUMBER),
-                            'lexical_resource' => new Schema(type: DataType::NUMBER),
-                            'grammar' => new Schema(type: DataType::NUMBER),
-                            'pronunciation' => new Schema(type: DataType::NUMBER),
-                            'overall' => new Schema(type: DataType::NUMBER),
-                            'feedback' => new Schema(type: DataType::STRING),
-                        ],
-                        required: ['overall', 'feedback']
-                    )
-                ))
-                ->generateContent($promptText);
-            return $response->text();
-        } catch (\Exception $e) {
-            return json_encode(['error' => $e->getMessage()]);
-        }
     }
 
     public function evaluateSpeakingDirectly(string $audioPath, object $question): string
     {
         try {
             $fullPath = $this->getPhysicalPath($audioPath);
-            if (!file_exists($fullPath)) throw new \Exception("Audio file not found at path: {$fullPath}");
+            if (! file_exists($fullPath)) {
+                throw new \Exception("Audio file not found at path: {$fullPath}");
+            }
 
-
-            $mimeType = $this->getMimeType($fullPath);
+            $language = $question->part?->test?->language;
+            $languageCode = $language?->code ?? 'en';
+            $languageName = $language?->name_en ?? 'English';
 
             $instruction = "
 You are an expert Uzbekistan Multilevel (CEFR) Speaking Examiner.
 Your task is to evaluate the provided audio response based on official scientific CEFR descriptors.
 
 TARGET LANGUAGE:
-- Language code: {$question->part->test->language->code}
-- Language name (English): {$question->part->test->language->name_en}
+- Language code: {$languageCode}
+- Language name (English): {$languageName}
 
 SCORING CRITERIA (Total: 0–75 points, 15 points each):
 1. Fluency and Coherence (0–15): Speech flow, hesitations, linking of ideas.
@@ -169,7 +73,7 @@ CRITICAL RULES:
   • The student repeats the question itself without giving an actual answer.
 - If `is_relevant` is `false`: You MUST set `score` to 0 and `level` to \"Below A1\".
 
-- STRICT LANGUAGE ENFORCEMENT: You MUST verify if the spoken language matches the TARGET LANGUAGE ({$question->part->test->language->name_en}). 
+- STRICT LANGUAGE ENFORCEMENT: You MUST verify if the spoken language matches the TARGET LANGUAGE ({$languageName}). 
 - IF THE CANDIDATE SPEAKS IN ANY OTHER LANGUAGE: You MUST assign a total `score` of 0, set `level` to \"Below A1\", and explicitly state \"Wrong language detected\" in the feedback fields. DO NOT give any partial credit.
 - AUDIO QUALITY & SILENCE: If the audio is silent, contains only background noise, static, breathing, or unintelligible sounds, you MUST set the `transcript` to \"[SILENCE]\", assign a total `score` of 0, and set `level` to \"Below A1\". 
 - NO HALLUCINATION: Do NOT guess, invent, or hallucinate speech if it is not clearly and distinctly audible. If there is any doubt about the existence of speech, treat the audio as noise. 
@@ -183,54 +87,57 @@ QUESTION:
             $mimeType = $audioInfo['mimeType'];
             $tempPath = $audioInfo['path'];
 
-            $response = $this->client->generativeModel(model: $this->model)
-                ->withGenerationConfig(new GenerationConfig(
-                    responseMimeType: ResponseMimeType::APPLICATION_JSON,
-                    responseSchema: new Schema(
-                        type: DataType::OBJECT,
-                        properties: [
-                            'fluency' => new Schema(type: DataType::STRING),
-                            'vocabulary' => new Schema(type: DataType::STRING),
-                            'grammar' => new Schema(type: DataType::STRING),
-                            'pronunciation' => new Schema(type: DataType::STRING),
-                            'interaction' => new Schema(type: DataType::STRING),
-                            'score' => new Schema(type: DataType::NUMBER),
-                            'level' => new Schema(type: DataType::STRING),
-                            'transcript' => new Schema(type: DataType::STRING),
-                            'detected_language' => new Schema(type: DataType::STRING),
-                            'is_relevant' => new Schema(type: DataType::BOOLEAN),
-                        ],
-                        required: ['score', 'level', 'transcript', 'fluency', 'vocabulary', 'grammar', 'pronunciation', 'interaction', 'detected_language', 'is_relevant']
-                    )
-                ))
-                ->generateContent([
-                    $instruction,
-                    new Blob(
-                        mimeType: $mimeType,
-                        data: base64_encode(file_get_contents($tempPath))
-                    )
-                ]);
-
-            if ($tempPath !== $fullPath && file_exists($tempPath)) {
-                unlink($tempPath);
+            try {
+                $response = $this->client->generativeModel(model: $this->model)
+                    ->withGenerationConfig(new GenerationConfig(
+                        responseMimeType: ResponseMimeType::APPLICATION_JSON,
+                        responseSchema: new Schema(
+                            type: DataType::OBJECT,
+                            properties: [
+                                'fluency' => new Schema(type: DataType::STRING),
+                                'vocabulary' => new Schema(type: DataType::STRING),
+                                'grammar' => new Schema(type: DataType::STRING),
+                                'pronunciation' => new Schema(type: DataType::STRING),
+                                'interaction' => new Schema(type: DataType::STRING),
+                                'score' => new Schema(type: DataType::NUMBER),
+                                'level' => new Schema(type: DataType::STRING),
+                                'transcript' => new Schema(type: DataType::STRING),
+                                'detected_language' => new Schema(type: DataType::STRING),
+                                'is_relevant' => new Schema(type: DataType::BOOLEAN),
+                            ],
+                            required: ['score', 'level', 'transcript', 'fluency', 'vocabulary', 'grammar', 'pronunciation', 'interaction', 'detected_language', 'is_relevant']
+                        )
+                    ))
+                    ->generateContent([
+                        $instruction,
+                        new Blob(
+                            mimeType: $mimeType,
+                            data: base64_encode(file_get_contents($tempPath))
+                        ),
+                    ]);
+            } finally {
+                if ($tempPath !== $fullPath && file_exists($tempPath)) {
+                    @unlink($tempPath);
+                }
             }
 
             return $response->text();
         } catch (\Exception $e) {
             throw $e;
         }
-
     }
 
     private function getPhysicalPath(string $path): string
     {
         $cleanPath = str_replace(['/storage/', 'storage/'], '', $path);
-        return storage_path('app/public/' . ltrim($cleanPath, '/'));
+
+        return storage_path('app/public/'.ltrim($cleanPath, '/'));
     }
 
     private function getMimeType(string $filePath): MimeType
     {
         $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+
         return match ($extension) {
             'mp3' => MimeType::AUDIO_MP3,
             'wav' => MimeType::AUDIO_WAV,
@@ -242,7 +149,7 @@ QUESTION:
     private function getCompatibleAudio(string $fullPath): array
     {
         $extension = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
-        
+
         // Preferred formats for Gemini
         if (in_array($extension, ['mp3', 'wav'])) {
             return [
@@ -252,17 +159,20 @@ QUESTION:
         }
 
         // Convert to wav if not compatible (e.g. webm)
-        $tempDir = storage_path('app/public/temp_audio');
-        if (!file_exists($tempDir)) mkdir($tempDir, 0777, true);
-        
-        $tempPath = $tempDir . '/' . uniqid('audio_', true) . '.wav';
-        
+        $tempDir = storage_path('app/tmp');
+        if (! is_dir($tempDir)) {
+            mkdir($tempDir, 0775, true);
+        }
+
+        $tempPath = $tempDir.'/'.uniqid('audio_', true).'.wav';
+
         // Use ffmpeg for conversion
-        $command = "ffmpeg -i " . escapeshellarg($fullPath) . " -ar 16000 -ac 1 " . escapeshellarg($tempPath) . " 2>&1";
+        $command = 'ffmpeg -y -i '.escapeshellarg($fullPath).' -ar 16000 -ac 1 '.escapeshellarg($tempPath).' 2>&1';
         exec($command, $output, $returnVar);
 
         if ($returnVar !== 0) {
-            \Illuminate\Support\Facades\Log::error("FFMPEG Conversion Failed: " . implode("\n", $output));
+            Log::error('FFMPEG Conversion Failed: '.implode("\n", $output));
+
             // Return original if conversion fails, hoping Gemini handles it
             return [
                 'path' => $fullPath,

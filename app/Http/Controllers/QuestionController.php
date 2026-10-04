@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Part;
-use App\Models\Question;
 use App\Http\Requests\StoreQuestionRequest;
 use App\Http\Requests\UpdateQuestionRequest;
+use App\Models\Part;
+use App\Models\Question;
 use App\Services\FileUploadService;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 
 class QuestionController extends Controller
 {
@@ -15,21 +18,6 @@ class QuestionController extends Controller
     public function __construct(FileUploadService $fileUploadService)
     {
         $this->fileUploadService = $fileUploadService;
-    }
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -48,31 +36,16 @@ class QuestionController extends Controller
             }
 
             Question::create($data);
+
             return redirect()->back()->with('success', 'Question created successfully');
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $e) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $e) {
 
             throw $e;
-
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
+            report($e);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Question $question)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Question $question)
-    {
-        //
     }
 
     /**
@@ -99,12 +72,12 @@ class QuestionController extends Controller
 
             return redirect()->back()->with('success', 'Question updated successfully.');
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
 
             throw $exception;
-
         } catch (\Exception $exception) {
-            return redirect()->back()->with('error', $exception->getMessage());
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
     }
 
@@ -117,18 +90,14 @@ class QuestionController extends Controller
             $this->authorize('delete', $question);
             $question->delete();
 
-            if ($question->audio_path) {
-                $this->fileUploadService->deleteFile($question->audio_path);
-            }
-
             return redirect()->back()->with('success', 'Question deleted successfully.');
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
 
             throw $exception;
-
         } catch (\Exception $exception) {
-            return redirect()->back()->with('error', $exception->getMessage());
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
     }
 }

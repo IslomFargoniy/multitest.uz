@@ -187,7 +187,7 @@ export default function MockShow() {
                                 {t('mock_exam.time_range') || 'Vaqt Oralig\'i'}
                             </p>
                             <p className="text-[11px] font-bold text-gray-800 dark:text-gray-200 mt-0.5">
-                                {formatSafeDate(mock.started_at || mock.starts_at)} - {formatSafeDate(mock.finished_at)}
+                                {formatSafeDate(mock.started_at)} - {formatSafeDate(mock.finished_at)}
                             </p>
                         </div>
                     </div>

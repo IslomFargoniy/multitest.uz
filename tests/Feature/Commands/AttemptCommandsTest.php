@@ -58,6 +58,7 @@ class AttemptCommandsTest extends TestCase
         $oldAnswer->question_id = $question->id;
         $oldAnswer->started_at = now()->subDays(11);
         $oldAnswer->audio_path = '/storage/attempt_answers_audio/old-audio.mp3';
+        $oldAnswer->created_at = now()->subDays(11);
         $oldAnswer->saveQuietly();
 
         // Write fake file to storage
@@ -87,14 +88,14 @@ class AttemptCommandsTest extends TestCase
 
         // Run the artisan command for 10 days threshold
         $this->artisan('attempts:clean-old 10')
-            ->expectsOutputToContain('Starting cleanup for attempts older than 10 days')
-            ->expectsOutputToContain('Audio cleanup finished: 1 attempts, 1 audio files')
+            ->expectsOutputToContain('Starting audio cleanup for answers older than 10 days')
+            ->expectsOutputToContain('Audio cleanup finished: 1 audio files')
             ->assertSuccessful();
 
-        // Assert old records are deleted
-        $this->assertDatabaseMissing('attempts', ['id' => $oldAttempt->id]);
-        $this->assertDatabaseMissing('attempt_parts', ['id' => $oldAttemptPart->id]);
-        $this->assertDatabaseMissing('attempt_answers', ['id' => $oldAnswer->id]);
+        // Old audio is removed, but attempts, parts and answers (scores/transcripts) are preserved
+        $this->assertDatabaseHas('attempts', ['id' => $oldAttempt->id]);
+        $this->assertDatabaseHas('attempt_parts', ['id' => $oldAttemptPart->id]);
+        $this->assertDatabaseHas('attempt_answers', ['id' => $oldAnswer->id, 'audio_path' => null]);
         Storage::disk('public')->assertMissing('attempt_answers_audio/old-audio.mp3');
 
         // Assert recent records still exist

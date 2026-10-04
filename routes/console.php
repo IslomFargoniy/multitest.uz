@@ -8,7 +8,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// Clean attempts and audio files older than 30 days every night at 03:00
+// Delete recorded audio older than 30 days every night at 03:00 (attempts and scores are kept)
 Schedule::command('attempts:clean-old 30')
     ->dailyAt('03:00')
     ->withoutOverlapping()

@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+use Database\Factories\AttemptAnswerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class AttemptAnswer extends Model
 {
-    /** @use HasFactory<\Database\Factories\AttemptAnswerFactory> */
+    /** @use HasFactory<AttemptAnswerFactory> */
     use HasFactory;
-
 
     protected $fillable = [
         'attempt_part_id',
@@ -26,11 +26,11 @@ class AttemptAnswer extends Model
     ];
 
     protected $casts = [
-        'started_at'   => 'datetime',
-        'finished_at'  => 'datetime',
+        'started_at' => 'datetime',
+        'finished_at' => 'datetime',
         'audio_second' => 'float',
-        'score_ai'     => 'integer',
-        'score'        => 'integer',
+        'score_ai' => 'integer',
+        'score' => 'integer',
     ];
 
     public function attempt_part()
@@ -40,11 +40,11 @@ class AttemptAnswer extends Model
 
     public function attempt()
     {
-        return $this->belongsTo(Attempt::class , 'attempt_id');
+        return $this->hasOneThrough(Attempt::class, AttemptPart::class, 'id', 'id', 'attempt_part_id', 'attempt_id');
     }
 
     public function question()
     {
-        return $this->belongsTo(Question::class , 'question_id');
+        return $this->belongsTo(Question::class, 'question_id');
     }
 }

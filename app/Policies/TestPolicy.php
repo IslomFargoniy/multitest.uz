@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Test;
 use App\Models\User\User;
-use Illuminate\Auth\Access\Response;
 
 class TestPolicy
 {
@@ -20,7 +19,8 @@ class TestPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasRole('Teacher');
+        // The per-user create_test_limit (set by an admin) is enforced in TestController::store.
+        return $user->hasRole('Teacher') || (int) $user->create_test_limit > 0;
     }
 
     public function update(User $user, Test $test): bool

@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-
-
     public function allJson(Request $request)
     {
         try {
@@ -19,16 +20,17 @@ class RoleController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'data' => $tests
+                'data' => $tests,
             ]);
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
             throw $exception;
         } catch (\Exception $exception) {
+            report($exception);
+
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage()
+                'message' => __('error.generic'),
             ], 500);
         }
     }
-
 }

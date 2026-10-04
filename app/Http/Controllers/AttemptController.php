@@ -3,8 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAttemptRequest;
-use App\Http\Requests\UpdateAttemptRequest;
+use App\Jobs\EvaluateSpeakingJob;
 use App\Models\Attempt;
+use App\Models\Mock;
+use App\Models\Test;
+use App\Services\Telegram\MultitestUzBotService;
+use App\Support\Pagination;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +25,7 @@ class AttemptController extends Controller
     public function index(Request $request)
     {
         try {
-            $per_page = \App\Support\Pagination::perPage($request, 10);
+            $per_page = Pagination::perPage($request, 10);
 
             $attempt = Attempt::query()
                 ->select('attempts.*')
@@ -42,7 +48,7 @@ class AttemptController extends Controller
             }
 
             if ($request->filled('search')) {
-                $search = '%' . $request->input('search') . '%';
+                $search = '%'.$request->input('search').'%';
                 $attempt->where(function ($outer) use ($search) {
                     $outer->where('attempts.name', 'like', $search)
                         ->orWhereHas('user', function ($query) use ($search) {
@@ -88,24 +94,13 @@ class AttemptController extends Controller
                 'attempt' => $attempt,
             ]);
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
 
             throw $exception;
-
         } catch (\Exception $exception) {
-            // Proper Inertia error response
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -115,8 +110,8 @@ class AttemptController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['name'] = (!empty($data['mock_id']) ? \App\Models\Mock::whereKey($data['mock_id'])->value('name') : null)
-                ?? \App\Models\Test::whereKey($data['test_id'])->value('name')
+            $data['name'] = (! empty($data['mock_id']) ? Mock::whereKey($data['mock_id'])->value('name') : null)
+                ?? Test::whereKey($data['test_id'])->value('name')
                 ?? 'Attempt';
 
             $attempt = DB::transaction(function () use ($data, $request) {
@@ -124,7 +119,7 @@ class AttemptController extends Controller
                 $attempt->load('test.parts');
 
                 if ($attempt->test->parts->isEmpty()) {
-                    throw new \Exception('The selected test has no parts defined.');
+                    throw ValidationException::withMessages(['error' => ['The selected test has no parts defined.']]);
                 }
 
                 $partIds = $request->input('part_ids');
@@ -135,7 +130,7 @@ class AttemptController extends Controller
                 }
 
                 if ($partsToAttempt->isEmpty()) {
-                    throw new \Exception('No valid parts selected for the attempt.');
+                    throw ValidationException::withMessages(['error' => ['No valid parts selected for the attempt.']]);
                 }
 
                 $attempt->attempt_parts()->createMany(
@@ -148,15 +143,13 @@ class AttemptController extends Controller
             return redirect()->route('practice.index', $attempt->id)
                 ->with('success', 'Attempt created successfully.');
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
             throw $exception;
         } catch (\Exception $exception) {
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
     }
-
 
     /**
      * Display the specified resource.
@@ -185,31 +178,13 @@ class AttemptController extends Controller
                 'attempt' => $resAttempt,
             ]);
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
 
             throw $exception;
-
         } catch (\Exception $exception) {
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Attempt $attempt)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateAttemptRequest $request, Attempt $attempt)
-    {
-        //
     }
 
     public function evaluate(Request $request, Attempt $attempt)
@@ -217,7 +192,7 @@ class AttemptController extends Controller
         try {
             $this->authorize('evaluate', $attempt);
             $request->validate([
-                'score' => 'required|numeric|min:0|max:75',
+                'score' => 'required|integer|min:0|max:75',
                 'review' => 'nullable|string',
             ]);
 
@@ -228,21 +203,19 @@ class AttemptController extends Controller
 
             // Send Telegram Notification if applicable
             try {
-                app(\App\Services\Telegram\MultitestUzBotService::class)->sendAttemptResultNotification($attempt);
-            } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $e) {
-                throw $e;
-            } catch (\Exception $e) {
+                app(MultitestUzBotService::class)->sendAttemptResultNotification($attempt);
+            } catch (\Throwable $e) {
                 \Log::warning('Telegram notification failed on evaluate: '.$e->getMessage());
             }
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+            return redirect()->back()->with('success', 'Attempt evaluated successfully.');
+
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
 
             throw $exception;
-
         } catch (\Exception $exception) {
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
     }
 
@@ -257,14 +230,12 @@ class AttemptController extends Controller
 
             return redirect()->back()->with('success', 'Attempt deleted successfully.');
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
 
             throw $exception;
-
         } catch (\Exception $exception) {
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
     }
 
@@ -286,21 +257,19 @@ class AttemptController extends Controller
                         $answer->review_ai = null;
                         $answer->save();
 
-                        \App\Jobs\EvaluateSpeakingJob::dispatch($answer->id);
+                        EvaluateSpeakingJob::dispatch($answer->id);
                     }
                 }
             }
 
             return redirect()->back()->with('success', 'Full re-evaluation started. All questions are being re-processed.');
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
 
             throw $exception;
-
         } catch (\Exception $exception) {
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,7 +18,6 @@ class Mock extends Model
         'description',
         'finished_at',
         'started_at',
-        'starts_at',
         'test_id',
         'user_id',
         'audio_path',
@@ -37,23 +37,24 @@ class Mock extends Model
     protected $casts = [
         'started_at' => 'datetime',
         'finished_at' => 'datetime',
-        'starts_at' => 'datetime',
         'active' => 'boolean',
+        'open' => 'boolean',
     ];
 
     public function getStatusAttribute(): string
     {
-        if (!$this->active) {
+        if (! $this->active) {
             return 'inactive';
         }
         $now = now();
-        $start = $this->started_at ?? $this->starts_at;
-        if ($start && $now->lt(\Carbon\Carbon::parse($start))) {
+        $start = $this->started_at;
+        if ($start && $now->lt(Carbon::parse($start))) {
             return 'scheduled';
         }
-        if ($this->finished_at && $now->gt(\Carbon\Carbon::parse($this->finished_at))) {
+        if ($this->finished_at && $now->gt(Carbon::parse($this->finished_at))) {
             return 'expired';
         }
+
         return 'active';
     }
 

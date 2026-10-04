@@ -137,7 +137,7 @@ const MockTable = ({ tests = [], searchData, ...mock }: MockTableProps) => {
                                     <div className="flex justify-between">
                                         <span className="text-slate-500">{t('started_at') || 'Boshlanadi'}</span>
                                         <span className="font-mono font-semibold text-slate-700 dark:text-slate-300">
-                                            {formatSafeDate(item.started_at || item.starts_at)}
+                                            {formatSafeDate(item.started_at)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between">

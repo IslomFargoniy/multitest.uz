@@ -3,99 +3,53 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Mock;
-use App\Models\MockStudent;
-use App\Models\Attempt;
-use App\Models\AttemptPart;
+use App\Services\MockEntryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class MockController extends Controller
 {
     /**
-     * Join mock test by secret pin code
+     * Join a mock exam with the candidate code (the Android "pin" field; "code" is accepted as an alias).
      */
-    public function join(Request $request)
+    public function join(Request $request, MockEntryService $entry)
     {
         $request->validate([
-            'pin' => 'required|string',
+            'pin' => 'required_without:code|nullable|string|max:32',
+            'code' => 'nullable|string|max:32',
         ], [
-            'pin.required' => 'Mock kodini kiriting',
+            'pin.required_without' => 'Nomzod kodini kiriting',
         ]);
 
-        $pin = trim($request->pin);
-
-        $mock = Mock::with(['test.parts.questions', 'language'])
-            ->where('code', $pin)
-            ->where('is_active', true)
-            ->first();
-
-        if (!$mock) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Kiritilgan kod bo‘yicha faol Mock imtihon topilmadi.',
-            ], 404);
-        }
-
-        if (!$mock->test || $mock->test->parts->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ushbu imtihon uchun test savollari topilmadi.',
-            ], 400);
-        }
-
         try {
-            DB::beginTransaction();
-
-            $mockStudent = MockStudent::updateOrCreate(
-                [
-                    'mock_id' => $mock->id,
-                    'user_id' => Auth::id(),
-                ],
-                [
-                    'name' => Auth::user()->name,
-                    'phone' => Auth::user()->phone,
-                ]
-            );
-
-            $attempt = Attempt::create([
-                'user_id' => Auth::id(),
-                'mock_id' => $mock->id,
-                'mock_student_id' => $mockStudent->id,
-                'test_id' => $mock->test_id,
-                'name' => $mock->name,
-                'started_at' => now(),
-            ]);
-
-            foreach ($mock->test->parts as $part) {
-                AttemptPart::create([
-                    'attempt_id' => $attempt->id,
-                    'part_id' => $part->id,
-                ]);
-            }
-
-            DB::commit();
-
-            $attempt->load([
-                'test.language',
-                'mock',
-                'attempt_parts.part.questions' => function ($query) {
-                    $query->select('id', 'part_id', 'textarea', 'audio_path', 'ready_second', 'answer_second');
-                }
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'data' => $attempt,
-                'message' => 'Mock imtihonga muvaffaqiyatli ulandingiz!',
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
+            [, $attempt] = $entry->enter((string) ($request->input('pin') ?: $request->input('code')), Auth::user());
+        } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
-            ], 500);
+                'message' => $e->errors()['code'][0] ?? 'Kod noto‘g‘ri.',
+            ], 422);
         }
+
+        if ($attempt->finished_at) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Siz ushbu imtihonni allaqachon topshirgansiz.',
+            ], 422);
+        }
+
+        $attempt->load([
+            'test.language',
+            'mock:id,name,slug,active,started_at,finished_at',
+            'attempt_parts.part.questions' => function ($query) {
+                $query->select('id', 'part_id', 'textarea', 'audio_path', 'ready_second', 'answer_second');
+            },
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'data' => $attempt,
+            'message' => 'Mock imtihonga muvaffaqiyatli ulandingiz!',
+        ]);
     }
 }

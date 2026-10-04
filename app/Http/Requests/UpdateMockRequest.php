@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Test;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -16,19 +17,10 @@ class UpdateMockRequest extends FormRequest
         return true;
     }
 
-    protected function prepareForValidation(): void
-    {
-        if ($this->has('started_at')) {
-            $this->merge([
-                'starts_at' => $this->started_at,
-            ]);
-        }
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -46,11 +38,11 @@ class UpdateMockRequest extends FormRequest
     {
         return [
             function (Validator $validator) {
-                if ($validator->errors()->has('test_id') || !$this->filled('test_id')) {
+                if ($validator->errors()->has('test_id') || ! $this->filled('test_id')) {
                     return;
                 }
 
-                if (!Test::query()->visibleTo($this->user())->whereKey($this->input('test_id'))->exists()) {
+                if (! Test::query()->visibleTo($this->user())->whereKey($this->input('test_id'))->exists()) {
                     $validator->errors()->add('test_id', 'The selected test is not available.');
                 }
             },

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Part;
 use App\Http\Requests\StorePartRequest;
 use App\Http\Requests\UpdatePartRequest;
-use Illuminate\Validation\ValidationException;
+use App\Models\Part;
+use App\Models\Test;
 use App\Services\FileUploadService;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 
 class PartController extends Controller
 {
@@ -16,21 +19,6 @@ class PartController extends Controller
     {
         $this->fileUploadService = $fileUploadService;
     }
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -39,7 +27,7 @@ class PartController extends Controller
     {
         try {
             $data = $request->validated();
-            $this->authorize('update', \App\Models\Test::findOrFail($data['test_id']));
+            $this->authorize('update', Test::findOrFail($data['test_id']));
 
             if ($request->hasFile('audio_path')) {
                 $data['audio_path'] = $this->fileUploadService->uploadAudio($request->file('audio_path'), 'parts/audio');
@@ -48,34 +36,16 @@ class PartController extends Controller
             }
 
             Part::create($data);
+
             return redirect()->back()->with('success', 'Part created successfully');
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
 
             throw $exception;
-
         } catch (\Exception $exception) {
-            // Proper Inertia error response
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Part $part)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Part $part)
-    {
-        //
     }
 
     /**
@@ -102,15 +72,12 @@ class PartController extends Controller
 
             return redirect()->back()->with('success', 'Part updated successfully.');
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
 
             throw $exception;
-
         } catch (\Exception $exception) {
-            // Proper Inertia error response
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
     }
 
@@ -123,21 +90,14 @@ class PartController extends Controller
             $this->authorize('delete', $part);
             $part->delete();
 
-            if ($part->audio_path) {
-                $this->fileUploadService->deleteFile($part->audio_path);
-            }
-
             return redirect()->back()->with('success', 'Part deleted successfully.');
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
 
             throw $exception;
-
         } catch (\Exception $exception) {
-            // Proper Inertia error response
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
     }
 }

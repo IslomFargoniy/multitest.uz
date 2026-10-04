@@ -2,10 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\Mock;
+use App\Models\Test;
+use App\Models\User\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Mock>
+ * @extends Factory<Mock>
  */
 class MockFactory extends Factory
 {
@@ -17,12 +20,11 @@ class MockFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => \App\Models\User\User::factory(),
-            'test_id' => \App\Models\Test::factory(),
+            'user_id' => User::factory(),
+            'test_id' => Test::factory(),
             'name' => fake()->sentence(3),
             'slug' => fake()->unique()->slug(),
             'started_at' => now()->subHour(),
-            'starts_at' => now()->subHour(),
             'finished_at' => now()->addDay(),
             'active' => true,
             'open' => true,

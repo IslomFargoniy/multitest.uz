@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Test;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
@@ -21,15 +22,14 @@ class StoreMockRequest extends FormRequest
     {
         $this->merge([
             'user_id' => auth()->id(),
-            'slug' => Str::slug($this->name, '-') . '-' . Str::random(5),
-            'starts_at' => $this->started_at ?? $this->starts_at,
+            'slug' => Str::slug($this->name, '-').'-'.Str::random(5),
         ]);
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -49,11 +49,11 @@ class StoreMockRequest extends FormRequest
     {
         return [
             function (Validator $validator) {
-                if ($validator->errors()->has('test_id') || !$this->filled('test_id')) {
+                if ($validator->errors()->has('test_id') || ! $this->filled('test_id')) {
                     return;
                 }
 
-                if (!Test::query()->visibleTo($this->user())->whereKey($this->input('test_id'))->exists()) {
+                if (! Test::query()->visibleTo($this->user())->whereKey($this->input('test_id'))->exists()) {
                     $validator->errors()->add('test_id', 'The selected test is not available.');
                 }
             },

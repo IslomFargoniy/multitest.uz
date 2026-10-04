@@ -124,7 +124,6 @@ export interface Mock {
     description?: string;
     audio_path?: string;
     started_at?: string;
-    starts_at?: string;
     finished_at?: string;
     slug: string;
     active: number;

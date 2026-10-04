@@ -44,12 +44,15 @@ return [
 
     'gemini' => [
         'api_key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-2.5-flash-lite'),
     ],
 
     'telegram' => [
         'bot_token' => env('MultitestUzBot_TOKEN'),
         'auth_max_age' => (int) env('TELEGRAM_AUTH_MAX_AGE', 86400),
         'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET'),
+        'donation_card' => env('TELEGRAM_DONATION_CARD'),
+        'per_question_notify' => (bool) env('TELEGRAM_PER_QUESTION_NOTIFY', true),
     ],
 
 ];

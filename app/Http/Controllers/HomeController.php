@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attempt;
+use App\Models\Mock;
+use App\Models\Test;
 use App\Models\User\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
@@ -16,8 +17,8 @@ class HomeController extends Controller
     {
 
         if ($request->slug) {
-            $mock = \App\Models\Mock::query()
-                ->select('id', 'user_id', 'test_id', 'name', 'comment', 'slug', 'active', 'open', 'started_at', 'starts_at', 'finished_at')
+            $mock = Mock::query()
+                ->select('id', 'user_id', 'test_id', 'name', 'comment', 'slug', 'active', 'open', 'started_at', 'finished_at')
                 ->with(['test:id,name,language_id', 'user:id,name'])
                 ->where('slug', $request->slug)->where('open', true)
                 ->first();
@@ -34,7 +35,7 @@ class HomeController extends Controller
 
     public function landingPageTests(Request $request)
     {
-        $tests = \App\Models\Test::query()
+        $tests = Test::query()
             ->where('is_public', true)
             ->with(['language', 'parts'])
             ->withCount('attempts')
@@ -143,12 +144,12 @@ class HomeController extends Controller
         }
 
         return Inertia::render('dashboard', [
-            'user'                  => $user,
-            'daily_users'           => $daily_users,
-            'daily_attempts'        => $daily_attempts,
-            'hourly_attempts'       => $hourly_attempts,
+            'user' => $user,
+            'daily_users' => $daily_users,
+            'daily_attempts' => $daily_attempts,
+            'hourly_attempts' => $hourly_attempts,
             'today_hourly_attempts' => $today_hourly_attempts,
-            'weekly_attempts'       => $weekly_attempts,
+            'weekly_attempts' => $weekly_attempts,
         ]);
 
     }

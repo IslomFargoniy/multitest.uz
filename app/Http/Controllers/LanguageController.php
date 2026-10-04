@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreLanguageRequest;
-use App\Http\Requests\UpdateLanguageRequest;
 use App\Models\Language;
 use App\Models\Test;
+use App\Support\Pagination;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -24,12 +25,14 @@ class LanguageController extends Controller
                 'status' => 'success',
                 'data' => $languages,
             ]);
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
             throw $exception;
         } catch (\Exception $exception) {
+            report($exception);
+
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage(),
+                'message' => __('error.generic'),
             ], 500);
         }
     }
@@ -57,38 +60,16 @@ class LanguageController extends Controller
                 'status' => 'success',
                 'data' => $languages,
             ]);
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
             throw $exception;
         } catch (\Exception $exception) {
+            report($exception);
+
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage(),
+                'message' => __('error.generic'),
             ], 500);
         }
-    }
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreLanguageRequest $request)
-    {
-        //
     }
 
     /**
@@ -97,7 +78,7 @@ class LanguageController extends Controller
     public function show(Request $request, Language $language)
     {
         try {
-            $per_page = \App\Support\Pagination::perPage($request, 25);
+            $per_page = Pagination::perPage($request, 25);
 
             $testQuery = Test::query()
                 ->with([
@@ -128,39 +109,12 @@ class LanguageController extends Controller
                 'language' => $language,
             ]);
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
 
             throw $exception;
-
         } catch (\Exception $exception) {
-            // Proper Inertia error response
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Language $language)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateLanguageRequest $request, Language $language)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Language $language)
-    {
-        //
     }
 }

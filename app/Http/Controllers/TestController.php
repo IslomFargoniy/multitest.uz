@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Test;
 use App\Http\Requests\StoreTestRequest;
 use App\Http\Requests\UpdateTestRequest;
+use App\Models\Language;
+use App\Models\Test;
+use App\Services\FileUploadService;
+use App\Support\DefaultAudio;
+use App\Support\Pagination;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use App\Services\FileUploadService;
 use Inertia\Inertia;
 
 class TestController extends Controller
@@ -37,14 +42,16 @@ class TestController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'data' => $tests
+                'data' => $tests,
             ]);
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
             throw $exception;
         } catch (\Exception $exception) {
+            report($exception);
+
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage()
+                'message' => __('error.generic'),
             ], 500);
         }
     }
@@ -55,7 +62,7 @@ class TestController extends Controller
     public function index(Request $request)
     {
         try {
-            $per_page = \App\Support\Pagination::perPage($request, 25);
+            $per_page = Pagination::perPage($request, 25);
 
             $testQuery = Test::query()
                 ->with([
@@ -67,8 +74,8 @@ class TestController extends Controller
             if ($request->search) {
                 $search = $request->search;
                 $testQuery->where(function ($query) use ($search) {
-                    $query->where('name', 'like', '%' . $search . '%')
-                        ->orWhere('description', 'like', '%' . $search . '%');
+                    $query->where('name', 'like', '%'.$search.'%')
+                        ->orWhere('description', 'like', '%'.$search.'%');
                 });
             }
 
@@ -80,7 +87,6 @@ class TestController extends Controller
                 $testQuery->where('is_public', true);
             }
 
-
             $test = $testQuery->paginate($per_page);
 
             if ($request->wantsJson()) {
@@ -91,36 +97,18 @@ class TestController extends Controller
                 'og_image' => url('/images/og-image.png'), // Replace with actual OG image if available
             ];
 
-
             return Inertia::render('test/index', [
                 'test' => $test,
                 'seoData' => $seoData,
             ]);
 
-
-
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
-
-
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
 
             throw $exception;
-
-
-
         } catch (\Exception $exception) {
-            // Proper Inertia error response
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -129,11 +117,13 @@ class TestController extends Controller
     public function store(StoreTestRequest $request)
     {
         try {
-            if (!Auth::user()->hasRole('Admin')) {
+            $this->authorize('create', Test::class);
+
+            if (! Auth::user()->hasRole('Admin')) {
                 $userTestsCount = Auth::user()->tests()->count();
                 if ($userTestsCount >= Auth::user()->create_test_limit) {
                     throw ValidationException::withMessages([
-                        'error' => ["You have reached your test creation limit."],
+                        'error' => ['You have reached your test creation limit.'],
                     ]);
                 }
             }
@@ -143,22 +133,19 @@ class TestController extends Controller
             if ($request->hasFile('audio_path')) {
                 $data['audio_path'] = $this->fileUploadService->uploadAudio($request->file('audio_path'), 'tests/audio');
             } else {
-                $data['audio_path'] = '/en/audio/test-intro.mp3';
+                $data['audio_path'] = DefaultAudio::path(Language::whereKey($data['language_id'])->value('code'), 'test-intro.mp3');
             }
 
             Test::create($data);
 
             return redirect()->back()->with('success', 'Test created successfully.');
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
             throw $exception;
         } catch (\Exception $exception) {
-            // Proper Inertia error response
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
     }
-
 
     /**
      * Display the specified resource.
@@ -174,30 +161,19 @@ class TestController extends Controller
                     'user',
                     'parts' => function ($query) {
                         $query->with([
-                            'questions'
+                            'questions',
                         ]);
                     },
                 ]),
             ]);
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
 
             throw $exception;
-
         } catch (\Exception $exception) {
-            // Proper Inertia error response
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Test $test)
-    {
-        //
     }
 
     /**
@@ -224,15 +200,12 @@ class TestController extends Controller
 
             return redirect()->back()->with('success', 'Test updated successfully.');
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
 
             throw $exception;
-
         } catch (\Exception $exception) {
-            // Proper Inertia error response
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
     }
 
@@ -245,18 +218,12 @@ class TestController extends Controller
             $this->authorize('delete', $test);
             $test->delete();
 
-            if ($test->audio_path) {
-                $this->fileUploadService->deleteFile($test->audio_path);
-            }
-
             return redirect()->back()->with('success', 'Test deleted successfully.');
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $exception) {
             throw $exception;
         } catch (\Exception $exception) {
-            // Proper Inertia error response
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+            report($exception);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
     }
 }

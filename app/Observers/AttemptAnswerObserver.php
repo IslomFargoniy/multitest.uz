@@ -5,8 +5,7 @@ namespace App\Observers;
 use App\Jobs\CompressAudioJob;
 use App\Jobs\EvaluateSpeakingJob;
 use App\Models\AttemptAnswer;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use App\Services\FileUploadService;
 
 class AttemptAnswerObserver
 {
@@ -17,7 +16,7 @@ class AttemptAnswerObserver
     {
         // Dispatch if audio_path is newly provided (created) or changed (updated)
         if ($attemptAnswer->audio_path && ($attemptAnswer->wasRecentlyCreated || $attemptAnswer->wasChanged('audio_path'))) {
-            if (!str_ends_with(strtolower($attemptAnswer->audio_path), '.mp3')) {
+            if (! str_ends_with(strtolower($attemptAnswer->audio_path), '.mp3')) {
                 // Dispatch compression job for uncompressed audio files
                 CompressAudioJob::dispatch($attemptAnswer->id);
             } else {
@@ -37,9 +36,7 @@ class AttemptAnswerObserver
      */
     public function deleting(AttemptAnswer $attemptAnswer): void
     {
-        if ($attemptAnswer->audio_path) {
-            Storage::disk('public')->delete($attemptAnswer->audio_path);
-        }
+        app(FileUploadService::class)->deleteFile($attemptAnswer->audio_path);
     }
 
     /**

@@ -6,11 +6,14 @@ use App\Http\Requests\StoreMockRequest;
 use App\Http\Requests\UpdateMockRequest;
 use App\Models\Mock;
 use App\Models\Test;
+use App\Models\User\User;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class MockController extends Controller
 {
@@ -23,7 +26,7 @@ class MockController extends Controller
     {
         $this->authorize('viewAny', Mock::class);
 
-        $per_page = $request->per_page === 'all' ? 100 : min((int)($request->per_page ?? 10), 100);
+        $per_page = $request->per_page === 'all' ? 100 : min((int) ($request->per_page ?? 10), 100);
 
         $mock = Mock::with([
             'students.attempt',
@@ -45,7 +48,7 @@ class MockController extends Controller
         }
 
         if ($request->from && $request->to) {
-            $mock->whereBetween('created_at', [$request->from, $request->to . ' 23:59:59']);
+            $mock->whereBetween('created_at', [$request->from, $request->to.' 23:59:59']);
         }
 
         if ($request->user_id) {
@@ -82,7 +85,7 @@ class MockController extends Controller
         }
 
         $teachers = Auth::user()->hasRole('Admin')
-            ? \App\Models\User\User::whereHas('roles', function ($q) {
+            ? User::whereHas('roles', function ($q) {
                 $q->where('name', 'Teacher');
             })->select('id', 'name')->get()
             : [];
@@ -98,14 +101,6 @@ class MockController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreMockRequest $request)
@@ -114,17 +109,15 @@ class MockController extends Controller
             $this->authorize('create', Mock::class);
 
             $data = $request->validated();
-            $data['starts_at'] = $data['started_at'] ?? now();
 
             Mock::create($data);
 
-            return back()->with('success', __('success.mock_created') ?? 'Mock test muvaffaqiyatli yaratildi');
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $e) {
+            return back()->with('success', 'Mock created successfully.');
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw ValidationException::withMessages([
-                'error' => [$e->getMessage()],
-            ]);
+            report($e);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
     }
 
@@ -151,14 +144,6 @@ class MockController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Mock $mock)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(UpdateMockRequest $request, Mock $mock)
@@ -167,18 +152,14 @@ class MockController extends Controller
             $this->authorize('update', $mock);
 
             $data = $request->validated();
-            if (isset($data['started_at'])) {
-                $data['starts_at'] = $data['started_at'];
-            }
-
             $mock->update($data);
-            return back()->with('success', __('success.mock_updated') ?? 'Mock test muvaffaqiyatli yangilandi');
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $e) {
+
+            return back()->with('success', 'Mock updated successfully.');
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw ValidationException::withMessages([
-                'error' => [$e->getMessage()],
-            ]);
+            report($e);
+            throw ValidationException::withMessages(['error' => [__('error.generic')]]);
         }
     }
 
@@ -190,21 +171,17 @@ class MockController extends Controller
         try {
             $this->authorize('delete', $mock);
 
-            \Illuminate\Support\Facades\DB::transaction(function () use ($mock) {
-                // Detach/nullify attempts so history is preserved without FK error
-                \App\Models\Attempt::where('mock_id', $mock->id)->update(['mock_id' => null]);
-                // Delete associated mock students
-                $mock->students()->delete();
-                // Delete the mock
-                $mock->delete();
-            });
+            // Soft delete only: attempts, candidates and results are preserved.
+            $mock->delete();
 
-            return redirect()->route('mock.index')->with('success', __('success.mock_deleted') ?? "Mock o'chirildi");
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $e) {
+            return redirect()->route('mock.index')->with('success', 'Mock deleted successfully.');
+        } catch (AuthorizationException|ModelNotFoundException|ValidationException $e) {
             throw $e;
         } catch (\Exception $e) {
+            report($e);
+
             return redirect()->route('mock.index')->withErrors([
-                'error' => $e->getMessage(),
+                'error' => __('error.generic'),
             ]);
         }
     }
