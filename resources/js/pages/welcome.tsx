@@ -66,7 +66,7 @@ export default function Welcome() {
                     <img
                         src="/images/logo/logo.png"
                         alt="Logo"
-                        className="h-24 w-24 rounded-3xl object-cover animate-pulse shadow-2xl"
+                        className="h-24 w-24 rounded-2xl object-cover animate-pulse shadow-2xl"
                     />
                     <div className="absolute -inset-4 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
                 </div>
@@ -93,7 +93,7 @@ export default function Welcome() {
                 <meta property="og:type" content="website" />
             </Head>
 
-            <div className="min-h-screen bg-background text-foreground selection:bg-indigo-500 selection:text-white">
+            <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
                 {!isMobile && <Header />}
 
                 <main>
@@ -125,20 +125,19 @@ export default function Welcome() {
                         </>
                     ) : (
                         <div className={`flex items-center justify-center ${isMobile ? 'p-4' : 'mt-20 py-16'}`}>
-                            <div className="tma-card w-full max-w-md relative overflow-hidden group border border-slate-200/80 bg-white p-6 shadow-xl rounded-3xl dark:border-slate-800 dark:bg-slate-900">
-                                {/* Decorative Gradient */}
+                            <div className="w-full max-w-md relative overflow-hidden group border border-border bg-card p-6 shadow-xl rounded-2xl">
                                 <div className="absolute top-0 right-0 -mr-16 -mt-16 h-32 w-32 rounded-full bg-primary/10 blur-3xl transition-all group-hover:bg-primary/20" />
 
                                 <div className="relative flex flex-col">
                                     {/* Status Badges */}
                                     <div className="mb-4 flex gap-2">
                                         {mock.active && (
-                                            <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-500 border border-emerald-500/20">
+                                            <span className="rounded-full bg-success-bg px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-success-text border border-success/20">
                                                 {t('common.active')}
                                             </span>
                                         )}
                                         {mock.open && (
-                                            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-primary border border-primary/20">
+                                            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-primary border border-primary/20">
                                                 {t('common.open')}
                                             </span>
                                         )}

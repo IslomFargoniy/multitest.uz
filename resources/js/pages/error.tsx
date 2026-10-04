@@ -22,10 +22,10 @@ export default function ErrorPage({ status }: { status: number }) {
     return (
         <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background px-4 text-center">
             <Head title={`${status} - ${title}`} />
-            <p className="text-6xl font-black text-primary">{status}</p>
-            <h1 className="text-2xl font-bold">{title}</h1>
+            <p className="text-6xl font-display font-black text-primary">{status}</p>
+            <h1 className="text-2xl font-bold text-foreground">{title}</h1>
             <p className="max-w-md text-muted-foreground">{description}</p>
-            <Button asChild>
+            <Button asChild className="rounded-xl">
                 <Link href="/">{t('error_page.home', { defaultValue: 'Go to home page' })}</Link>
             </Button>
         </div>

@@ -1,10 +1,9 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
 import { useIsDarkMode } from '@/hooks/use-is-dark-mode';
 import { cn } from '@/lib/utils';
-import { CardDescription } from '@/components/ui/card';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface SkillsRadarChartProps {
@@ -33,13 +32,6 @@ export default function SkillsRadarChart({ skills, className }: SkillsRadarChart
         chart: {
             toolbar: { show: false },
             background: 'transparent',
-            dropShadow: {
-                enabled: true,
-                blur: 1,
-                left: 1,
-                top: 1,
-                opacity: isDark ? 0.3 : 0.1,
-            },
             offsetY: isMobile ? 10 : 0,
         },
         theme: {
@@ -47,16 +39,16 @@ export default function SkillsRadarChart({ skills, className }: SkillsRadarChart
         },
         stroke: {
             width: 2,
-            colors: ['#2481cc'],
+            colors: ['#3b82f6'],
         },
         fill: {
-            opacity: isDark ? 0.4 : 0.2,
-            colors: ['#2481cc'],
+            opacity: isDark ? 0.35 : 0.2,
+            colors: ['#3b82f6'],
         },
         markers: {
             size: isMobile ? 3 : 4,
-            colors: ['#2481cc'],
-            strokeColor: isDark ? '#1e293b' : '#fff',
+            colors: ['#3b82f6'],
+            strokeColor: isDark ? '#141820' : '#ffffff',
             strokeWidth: 2,
         },
         xaxis: {
@@ -69,8 +61,8 @@ export default function SkillsRadarChart({ skills, className }: SkillsRadarChart
             labels: {
                 style: {
                     colors: Array(4).fill(isDark ? '#94a3b8' : '#64748b'),
-                    fontSize: isMobile ? '9px' : '11px',
-                    fontWeight: 700,
+                    fontSize: isMobile ? '12px' : '12px',
+                    fontWeight: 600,
                 },
                 offsetY: 5,
             },
@@ -84,14 +76,14 @@ export default function SkillsRadarChart({ skills, className }: SkillsRadarChart
             radar: {
                 size: isMobile ? 75 : 90,
                 polygons: {
-                    strokeColors: isDark ? '#334155' : '#e2e8f0',
+                    strokeColors: isDark ? '#232936' : '#e2e8f0',
                     fill: {
-                        colors: isDark ? ['#1e293b', '#0f172a'] : ['#f8fafc', '#fff'],
+                        colors: isDark ? ['#141820', '#0b0e14'] : ['#f8fafc', '#ffffff'],
                     },
                 },
             },
         },
-        colors: ['#2481cc'],
+        colors: ['#3b82f6'],
         legend: { show: false },
         grid: { show: false },
     };
@@ -104,13 +96,12 @@ export default function SkillsRadarChart({ skills, className }: SkillsRadarChart
     ];
 
     return (
-        <Card className={cn("rounded-2xl border-border bg-card shadow-sm flex flex-col", className)}>
-
+        <Card className={cn("rounded-xl border border-border bg-card shadow-sm dark:shadow-none flex flex-col", className)}>
             <CardHeader className="pb-2">
-                <CardTitle className="text-lg font-black tracking-tight text-slate-800 dark:text-white">
+                <CardTitle className="text-base font-bold text-foreground">
                     {t('skills.skills_analysis')}
                 </CardTitle>
-                <CardDescription className="text-xs">
+                <CardDescription className="text-xs text-muted-foreground">
                     {t('skills.skills_analysis_description', 'Detailed analysis of your language proficiency metrics.')}
                 </CardDescription>
             </CardHeader>

@@ -47,78 +47,78 @@ export default function PartAccordion({ test, isAdmin, isTeacher }: PartAccordio
                 return (
                     <div
                         key={item.id}
-                        className={`overflow-hidden rounded-[1.5rem] border transition-all duration-300 ${
+                        className={`overflow-hidden rounded-xl border transition-colors ${
                             isOpen
-                                ? 'border-indigo-200 bg-white shadow-xl shadow-indigo-500/5 dark:border-indigo-500/30 dark:bg-slate-900'
-                                : 'border-slate-200 bg-slate-50/50 hover:bg-white dark:border-slate-800 dark:bg-slate-900/40'
+                                ? 'border-border-strong bg-card shadow-sm dark:shadow-none'
+                                : 'border-border bg-card/60 hover:bg-card'
                         }`}
                     >
                         {/* Accordion Header */}
                         <button
                             type="button"
                             onClick={() => toggle(index)}
-                            className="flex w-full items-center justify-between px-6 py-5 text-left focus:outline-none"
+                            className="flex w-full items-center justify-between px-6 py-4 text-left focus:outline-hidden cursor-pointer"
                         >
                             <div className="flex items-center gap-4">
                                 <div
-                                    className={`flex h-10 w-10 items-center justify-center rounded-xl font-mono text-sm font-black transition-colors ${
+                                    className={`flex h-9 w-9 items-center justify-center rounded-lg font-mono text-sm font-bold transition-colors ${
                                         isOpen
-                                            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 dark:shadow-none'
-                                            : 'bg-slate-200 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-surface-2 text-muted-foreground'
                                     }`}
                                 >
                                     {globalIndex < 10 ? `0${globalIndex}` : globalIndex}
                                 </div>
                                 <div>
                                     <h3
-                                        className={`text-lg font-bold transition-colors ${
-                                            isOpen ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'
+                                        className={`text-base font-bold transition-colors ${
+                                            isOpen ? 'text-foreground' : 'text-muted-foreground'
                                         }`}
                                     >
                                         {item.name}
                                     </h3>
                                     {!isOpen && item.description && (
-                                        <p className="line-clamp-1 text-xs font-medium text-slate-400">{item.description}</p>
+                                        <p className="line-clamp-1 text-xs text-muted-foreground">{item.description}</p>
                                     )}
                                 </div>
                             </div>
                             <ChevronDown
-                                className={`h-5 w-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180 text-indigo-500' : ''}`}
+                                className={`h-5 w-5 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-180 text-foreground' : ''}`}
                             />
                         </button>
 
                         {/* Accordion Content */}
                         <div
-                            className={`grid transition-all duration-300 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+                            className={`grid transition-all duration-200 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
                         >
                             <div className="overflow-hidden">
-                                <div className="space-y-8 px-6 pt-2 pb-8">
+                                <div className="space-y-6 px-6 pt-2 pb-6">
                                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                                         {/* Description Block */}
-                                        <div className="space-y-3">
-                                            <div className="flex items-center gap-2 text-[10px] font-black tracking-widest text-slate-400 uppercase">
-                                                <AlignLeft className="h-3 w-3" />
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+                                                <AlignLeft className="h-3.5 w-3.5" />
                                                 {t('test_show.part_instructions')}
                                             </div>
-                                            <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 text-sm leading-relaxed text-slate-600 dark:border-slate-800/50 dark:bg-slate-950/40 dark:text-slate-300">
+                                            <div className="rounded-lg border border-border bg-surface-2 p-4 text-sm leading-relaxed text-foreground">
                                                 {item.description || t('common.no_description')}
                                             </div>
                                         </div>
 
                                         {/* Audio Block */}
-                                        <div className="space-y-3">
-                                            <div className="flex items-center gap-2 text-[10px] font-black tracking-widest text-slate-400 uppercase">
-                                                <Headphones className="h-3 w-3" />
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+                                                <Headphones className="h-3.5 w-3.5" />
                                                 {t('test_show.audio_prompt')}
                                             </div>
                                             {item.audio_path ? (
-                                                <div className="flex h-[54px] items-center rounded-2xl border border-indigo-50 bg-indigo-50/30 px-3 dark:border-indigo-900/20 dark:bg-indigo-900/10">
-                                                    <audio preload="none" controls className="h-8 w-full invert dark:invert-0">
+                                                <div className="flex h-12 items-center rounded-lg border border-border bg-surface-2 px-3">
+                                                    <audio preload="none" controls className="h-8 w-full">
                                                         <source src={item.audio_path} />
                                                     </audio>
                                                 </div>
                                             ) : (
-                                                <div className="flex h-[54px] items-center justify-center rounded-2xl border border-dashed border-slate-200 text-xs font-medium text-slate-400 dark:border-slate-800">
+                                                <div className="flex h-12 items-center justify-center rounded-lg border border-dashed border-border text-xs text-muted-foreground">
                                                     {t('test_show.no_audio_attached')}
                                                 </div>
                                             )}
@@ -126,23 +126,23 @@ export default function PartAccordion({ test, isAdmin, isTeacher }: PartAccordio
                                     </div>
 
                                     {/* Question Table Section */}
-                                    <div className="space-y-4">
+                                    <div className="space-y-3">
                                         <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-2 text-[10px] font-black tracking-widest text-slate-400 uppercase">
-                                                <ListOrdered className="h-3 w-3" />
+                                            <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+                                                <ListOrdered className="h-3.5 w-3.5" />
                                                 {t('test_show.questions_list')}
                                             </div>
 
                                             {(isAdmin || isTeacher) && (
                                                 <div className="flex items-center gap-2">
                                                     <UpdatePartModal part={item} />
-                                                    <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-700" />
+                                                    <div className="h-4 w-[1px] bg-border" />
                                                     <DeleteItemModal item={item} onDelete={handleDelete} />
                                                 </div>
                                             )}
                                         </div>
 
-                                        <div className="rounded-3xl border border-slate-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950/20">
+                                        <div className="rounded-xl border border-border bg-card overflow-hidden">
                                             <QuestionTable part={item} />
                                         </div>
                                     </div>

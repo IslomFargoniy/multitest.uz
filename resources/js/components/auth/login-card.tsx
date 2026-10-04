@@ -40,19 +40,19 @@ export default function LoginCard() {
 
             <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t border-slate-200 dark:border-slate-800" />
+                    <span className="w-full border-t border-border" />
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white px-3 font-bold text-slate-400 dark:bg-slate-950">{t('login.or')}</span>
+                <div className="relative flex justify-center text-xs uppercase tracking-wider">
+                    <span className="bg-card px-3 font-semibold text-muted-foreground">{t('login.or')}</span>
                 </div>
             </div>
 
             {/* 📝 Main Login Form */}
-            <form className="flex flex-col gap-4 sm:gap-6" onSubmit={submit}>
-                <div className="grid gap-3 sm:gap-5">
+            <form className="flex flex-col gap-4 sm:gap-5" onSubmit={submit}>
+                <div className="grid gap-3 sm:gap-4">
                     {/* Identifier Input (Email or Phone) */}
                     <div className="grid gap-1.5">
-                        <Label htmlFor="email_or_phone" className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                        <Label htmlFor="email_or_phone" className="text-sm font-semibold text-foreground">
                             {t('login.email_or_phone')}
                         </Label>
                         <Input
@@ -62,7 +62,7 @@ export default function LoginCard() {
                             autoFocus
                             tabIndex={1}
                             autoComplete="username"
-                            className="h-11 rounded-xl border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 sm:h-12 dark:border-slate-800"
+                            className="h-11 rounded-xl border-border bg-secondary focus:ring-2 focus:ring-primary/20 text-foreground"
                             value={data.email_or_phone}
                             onChange={(e) => setData('email_or_phone', e.target.value)}
                             placeholder={t('login.email_placeholder')}
@@ -73,7 +73,7 @@ export default function LoginCard() {
                     {/* Password Input */}
                     <div className="grid gap-1.5">
                         <div className="flex items-center justify-between">
-                            <Label htmlFor="password" className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                            <Label htmlFor="password" className="text-sm font-semibold text-foreground">
                                 {t('login.password_label')}
                             </Label>
                         </div>
@@ -83,7 +83,7 @@ export default function LoginCard() {
                             required
                             tabIndex={2}
                             autoComplete="current-password"
-                            className="h-11 rounded-xl border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 sm:h-12 dark:border-slate-800"
+                            className="h-11 rounded-xl border-border bg-secondary focus:ring-2 focus:ring-primary/20 text-foreground"
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
                             placeholder={t('login.password_placeholder')}
@@ -99,11 +99,11 @@ export default function LoginCard() {
                             checked={data.remember}
                             onCheckedChange={(checked) => setData('remember', checked as boolean)}
                             tabIndex={3}
-                            className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700"
+                            className="h-5 w-5 rounded border-border data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                         />
                         <Label
                             htmlFor="remember"
-                            className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
                         >
                             {t('login.remember')}
                         </Label>
@@ -112,7 +112,7 @@ export default function LoginCard() {
                     {/* Submit Button */}
                     <Button
                         type="submit"
-                        className="mt-2 h-11 w-full rounded-xl bg-indigo-600 font-black text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-70 sm:h-12 dark:shadow-none"
+                        className="mt-2 h-11 w-full rounded-xl bg-primary font-bold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 active:scale-[0.98] disabled:opacity-50"
                         tabIndex={4}
                         disabled={processing}
                     >
@@ -122,9 +122,9 @@ export default function LoginCard() {
                 </div>
 
                 {/* Registration Link */}
-                <div className="mt-2 text-center text-sm font-medium text-slate-500">
+                <div className="mt-2 text-center text-sm font-medium text-muted-foreground">
                     {t('login.no_account')}{' '}
-                    <TextLink href={route('register')} tabIndex={5} className="font-bold text-indigo-600 hover:text-indigo-500 hover:underline">
+                    <TextLink href={route('register')} tabIndex={5} className="font-bold text-primary hover:underline">
                         {t('login.signup')}
                     </TextLink>
                 </div>

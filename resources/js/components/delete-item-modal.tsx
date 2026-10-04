@@ -32,31 +32,30 @@ export default function DeleteItemModal({ item, open, setOpen, onDelete }: Delet
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="sm:max-w-md w-full dark:border-gray-700">
-                <DialogHeader className="space-y-1 pb-2 border-b border-gray-100 dark:border-gray-800">
-                    <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
+            <DialogContent className="sm:max-w-md w-full border-border bg-card">
+                <DialogHeader className="space-y-1 pb-2 border-b border-border">
+                    <div className="flex items-center gap-2 text-destructive">
                         <AlertTriangle className="w-5 h-5 shrink-0" />
-                        <DialogTitle className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                        <DialogTitle className="text-lg font-bold text-foreground">
                             {t('modal.delete_title', "O'chirishni tasdiqlang")}
                         </DialogTitle>
                     </div>
-                    <DialogDescription className="text-xs text-gray-500 dark:text-gray-400">
+                    <DialogDescription className="text-xs text-muted-foreground">
                         {t('modal.delete_confirmation', "Ushbu ma'lumotni o'chirishga ishonchingiz komilmi? Ushbu amalni ortga qaytarib bo'lmaydi.")}
                     </DialogDescription>
                 </DialogHeader>
 
                 {displayName && (
-                    <div className="p-3 my-1 rounded-lg bg-red-50/60 dark:bg-red-950/30 border border-red-100 dark:border-red-900 text-xs font-semibold text-red-900 dark:text-red-200 truncate">
+                    <div className="p-3 my-1 rounded-lg bg-destructive/10 border border-destructive/20 text-xs font-semibold text-destructive truncate">
                         "{displayName}"
                     </div>
                 )}
 
-                <DialogFooter className="flex items-center justify-end gap-3 pt-3 mt-2 border-t border-gray-100 dark:border-gray-800">
+                <DialogFooter className="flex items-center justify-end gap-3 pt-3 mt-2 border-t border-border">
                     <DialogClose asChild>
                         <Button
                             type="button"
                             variant="outline"
-                            className="border-gray-300 dark:border-gray-700 cursor-pointer"
                             onClick={() => setOpen && setOpen(false)}
                         >
                             {t('cancel', 'Bekor qilish')}
@@ -67,7 +66,6 @@ export default function DeleteItemModal({ item, open, setOpen, onDelete }: Delet
                         type="button"
                         variant="destructive"
                         onClick={handleDelete}
-                        className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow-xs cursor-pointer"
                     >
                         {t('delete', "O'chirish")}
                     </Button>

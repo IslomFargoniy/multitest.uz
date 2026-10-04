@@ -1,12 +1,12 @@
 import DeleteItemModal from '@/components/delete-item-modal';
-import CreateMockModal from '@/components/mock/create-mock-modal';
 import UpdateMockModal from '@/components/mock/update-mock-modal';
 import MockStudentManager from '@/components/mock/mock-student-manager';
 import TablePagination from '@/components/ui/table-pagination';
+import { StatusPill } from '@/components/design/StatusPill';
 import { Auth, Mock, type MockPaginate, SearchData, Test } from '@/types';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { format } from 'date-fns';
-import { CheckCircle, Clock, MinusCircle, PencilIcon, TrashIcon } from 'lucide-react';
+import { PencilIcon, TrashIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -29,28 +29,32 @@ const MockTable = ({ tests = [], searchData, ...mock }: MockTableProps) => {
         const status = (item as any).status || (item.active ? 'active' : 'inactive');
         if (!item.active || status === 'inactive') {
             return (
-                <span className="inline-flex items-center rounded-full bg-gray-50 px-2 py-0.5 text-[10px] font-bold text-gray-500 dark:bg-gray-800 dark:text-gray-400">
-                    <MinusCircle className="mr-1 h-3 w-3" /> {t('inactive', 'Nofaol')}
+                <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold bg-secondary text-muted-foreground border border-border">
+                    <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground" />
+                    {t('inactive', 'Nofaol')}
                 </span>
             );
         }
         if (status === 'scheduled') {
             return (
-                <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
-                    <Clock className="mr-1 h-3 w-3" /> {t('scheduled', 'Boshlanmagan')}
+                <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold bg-warning-bg text-warning-text border border-warning/20">
+                    <span className="h-1.5 w-1.5 rounded-full bg-warning" />
+                    {t('scheduled', 'Boshlanmagan')}
                 </span>
             );
         }
         if (status === 'expired') {
             return (
-                <span className="inline-flex items-center rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-700 dark:bg-rose-900/20 dark:text-rose-400">
-                    <MinusCircle className="mr-1 h-3 w-3" /> {t('expired', 'Vaqti tugagan')}
+                <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold bg-danger-bg text-danger-text border border-danger/20">
+                    <span className="h-1.5 w-1.5 rounded-full bg-danger" />
+                    {t('expired', 'Vaqti tugagan')}
                 </span>
             );
         }
         return (
-            <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-bold text-green-700 dark:bg-green-900/20 dark:text-green-400">
-                <CheckCircle className="mr-1 h-3 w-3" /> {t('active', 'Faol')}
+            <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold bg-success-bg text-success-text border border-success/20">
+                <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                {t('active', 'Faol')}
             </span>
         );
     };
@@ -94,73 +98,72 @@ const MockTable = ({ tests = [], searchData, ...mock }: MockTableProps) => {
 
     return (
         <div>
-            {/* Cards Grid */}
             {mock.data.length === 0 ? (
-                <div className="rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 p-12 text-center text-sm text-slate-500">
+                <div className="rounded-xl border border-dashed border-border p-12 text-center text-sm text-muted-foreground">
                     {t('mock_exam.no_mocks_found', 'Hozircha hech qanday mock test mavjud emas. Yangi mock test yaratishingiz mumkin.')}
                 </div>
             ) : (
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {mock.data.map((item, index) => {
                         const globalIndex = (mock.current_page - 1) * mock.per_page + index + 1;
 
                         return (
                             <div
                                 key={item.id}
-                                className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
+                                className="group flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-sm dark:shadow-none transition-colors hover:border-border-strong"
                             >
                                 {/* Header */}
                                 <div className="mb-3">
                                     <div className="flex items-center justify-between mb-2">
-                                        <span className="text-xs font-bold font-mono text-indigo-600 dark:text-indigo-400">
+                                        <span className="text-xs font-semibold font-mono text-muted-foreground">
                                             #{globalIndex.toString().padStart(2, '0')}
                                         </span>
                                         {renderStatusBadge(item)}
                                     </div>
-                                    <h3 className="line-clamp-1 text-lg font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors">
+                                    <h3 className="line-clamp-1 text-base font-bold text-foreground transition-colors hover:text-primary">
                                         <Link href={`/mock/${item.id}`}>{item.name}</Link>
                                     </h3>
-                                    <div className="mt-1 flex items-center text-xs font-semibold text-slate-500 dark:text-slate-400">
+                                    <div className="mt-1 flex items-center text-xs font-medium text-muted-foreground">
                                         <span className="truncate">{item.test?.name || t('mock_exam.no_test_selected', 'Test tanlanmagan')}</span>
                                     </div>
                                 </div>
 
                                 {/* Comment */}
                                 <div className="mb-4 flex-grow">
-                                    <p className="line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400 italic">
+                                    <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
                                         {item.comment || item.description || t('no_comment', "Izoh yo'q")}
                                     </p>
                                 </div>
 
                                 {/* Dates */}
-                                <div className="mb-4 space-y-2 rounded-xl bg-slate-50 p-3 dark:bg-slate-800/50 text-xs">
+                                <div className="mb-4 space-y-1.5 rounded-lg border border-border bg-surface-2 p-3 text-xs">
                                     <div className="flex justify-between">
-                                        <span className="text-slate-500">{t('started_at', 'Boshlanadi')}</span>
-                                        <span className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+                                        <span className="text-muted-foreground">{t('started_at', 'Boshlanadi')}</span>
+                                        <span className="font-mono font-medium text-foreground tabular-nums">
                                             {formatSafeDate(item.started_at)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-slate-500">{t('finished_at', 'Tugaydi')}</span>
-                                        <span className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+                                        <span className="text-muted-foreground">{t('finished_at', 'Tugaydi')}</span>
+                                        <span className="font-mono font-medium text-foreground tabular-nums">
                                             {formatSafeDate(item.finished_at)}
                                         </span>
                                     </div>
                                 </div>
 
                                 {/* Actions */}
-                                <div className="flex items-center justify-between gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+                                <div className="flex items-center justify-between gap-2 pt-3 border-t border-border">
                                     <MockStudentManager
                                         mockId={item.id}
                                         mockName={item.name}
                                         students={(item as any).students ?? []}
                                     />
 
-                                    <div className="flex items-center gap-1.5">
+                                    <div className="flex items-center gap-1">
                                         <button
                                             type="button"
                                             onClick={() => handleUpdateClick(item)}
-                                            className="p-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white rounded-xl font-semibold text-xs transition-all cursor-pointer shadow-xs active:scale-95"
+                                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface-2 text-muted-foreground transition-colors hover:border-border-strong hover:text-foreground cursor-pointer"
                                             title={t('edit', 'Tahrirlash')}
                                         >
                                             <PencilIcon className="h-3.5 w-3.5" />
@@ -168,7 +171,7 @@ const MockTable = ({ tests = [], searchData, ...mock }: MockTableProps) => {
                                         <button
                                             type="button"
                                             onClick={() => handleDeleteClick(item)}
-                                            className="p-2 bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white rounded-xl font-semibold text-xs transition-all cursor-pointer shadow-xs active:scale-95"
+                                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface-2 text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
                                             title={t('delete', "O'chirish")}
                                         >
                                             <TrashIcon className="h-3.5 w-3.5" />

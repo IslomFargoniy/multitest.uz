@@ -39,14 +39,14 @@ export default function AttemptsChart({ attempts, className }: { attempts: Attem
                 label: t('exam_attempts.score', 'Score'),
                 data: scores,
                 fill: true,
-                borderColor: '#2481cc',
-                backgroundColor: 'rgba(36, 129, 204, 0.12)',
+                borderColor: 'hsl(220, 90%, 56%)',
+                backgroundColor: 'rgba(59, 130, 246, 0.12)',
                 tension: 0.4,
-                pointBackgroundColor: '#2481cc',
-                pointBorderColor: '#fff',
+                pointBackgroundColor: 'hsl(220, 90%, 56%)',
+                pointBorderColor: isDark ? '#0b0e14' : '#ffffff',
                 pointBorderWidth: 2,
-                pointRadius: 5,
-                pointHoverRadius: 7,
+                pointRadius: 4,
+                pointHoverRadius: 6,
             },
         ],
     };
@@ -57,11 +57,13 @@ export default function AttemptsChart({ attempts, className }: { attempts: Attem
         plugins: {
             legend: { display: false },
             tooltip: {
-                backgroundColor: '#1e293b',
-                titleColor: '#fff',
-                bodyColor: '#cbd5e1',
+                backgroundColor: isDark ? '#141820' : '#ffffff',
+                titleColor: isDark ? '#f1f5f9' : '#0b0e14',
+                bodyColor: isDark ? '#94a3b8' : '#475569',
+                borderColor: isDark ? '#232936' : '#e2e8f0',
+                borderWidth: 1,
                 padding: 12,
-                cornerRadius: 12,
+                cornerRadius: 8,
             },
         },
         scales: {
@@ -77,20 +79,19 @@ export default function AttemptsChart({ attempts, className }: { attempts: Attem
                     color: isDark ? '#64748b' : '#94a3b8',
                 },
                 grid: {
-                    color: isDark ? 'rgba(51,65,85,0.4)' : 'rgba(226,232,240,0.4)',
+                    color: isDark ? 'rgba(35, 41, 54, 0.6)' : 'rgba(226, 232, 240, 0.6)',
                 },
             },
         },
     };
 
     return (
-        <Card className={cn("rounded-2xl border-border bg-card shadow-sm", className)}>
-
+        <Card className={cn("rounded-xl border border-border bg-card shadow-sm dark:shadow-none", className)}>
             <CardHeader>
-                <CardTitle className="text-lg font-black tracking-tight text-slate-800 dark:text-white">
+                <CardTitle className="text-base font-bold text-foreground">
                     {t('exam_attempts.performance')}
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-sm text-muted-foreground">
                     {t('exam_attempts.track_and_review_student_performance')}
                 </CardDescription>
             </CardHeader>

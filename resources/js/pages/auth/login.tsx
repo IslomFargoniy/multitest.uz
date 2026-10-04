@@ -95,11 +95,10 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                 <div className="flex items-center justify-between">
                     <Label className="text-muted-foreground">{t('login.password')}</Label>
 
-
                     {canResetPassword && (
                         <TextLink
                             href={route('password.request')}
-                            className="text-sm font-semibold text-indigo-600 hover:text-indigo-500"
+                            className="text-sm font-semibold text-primary hover:underline"
                             tabIndex={5}
                         >
                             {t('login.forgot')}
@@ -109,16 +108,15 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                 {/* Success Status Message */}
                 {status && (
-                    <div className="rounded-xl bg-emerald-50 p-4 text-center text-sm font-medium text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400">
+                    <div className="rounded-xl bg-success-bg border border-success/20 p-4 text-center text-sm font-medium text-success-text">
                         {t('login.status_success')}
                     </div>
                 )}
 
                 {/* Registration Link */}
                 <p className="text-center text-sm text-muted-foreground">
-
                     {t('login.no_account')}{' '}
-                    <TextLink href={route('register')} className="font-bold text-indigo-600 hover:underline">
+                    <TextLink href={route('register')} className="font-bold text-primary hover:underline">
                         {t('login.register')}
                     </TextLink>
                 </p>

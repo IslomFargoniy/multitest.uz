@@ -47,12 +47,12 @@ const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => 
             <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center lg:gap-3">
                 {/* Search Bar */}
                 <div className="relative flex-1 min-w-[200px]">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <input
                         type="text"
                         value={data.search}
                         onChange={handleSearch}
-                        className="h-10 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-4 text-sm font-medium text-slate-900 ring-offset-white transition-colors placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus-visible:ring-blue-500"
+                        className="h-10 w-full rounded-xl border border-border bg-secondary pl-10 pr-4 text-sm font-medium text-foreground transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
                         placeholder={t('search_form.search')}
                     />
                 </div>
@@ -62,7 +62,7 @@ const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => 
                     <select
                         value={data.per_page}
                         onChange={handlePerPageChange}
-                        className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-900 ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:ring-offset-slate-950 dark:focus-visible:ring-blue-500"
+                        className="h-10 rounded-xl border border-border bg-secondary px-3 text-sm font-medium text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
                     >
                         <option value={10}>10</option>
                         <option value={25}>25</option>
@@ -82,7 +82,7 @@ const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => 
                             onChange={(from) => {
                                 setData('from', from ? format(from, 'yyyy-MM-dd') : '');
                             }}
-                            className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-900 ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:ring-offset-slate-950 dark:focus-visible:ring-blue-500 sm:w-32"
+                            className="h-10 w-full rounded-xl border border-border bg-secondary px-3 text-sm font-medium text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 sm:w-32"
                         />
                     )}
 
@@ -95,7 +95,7 @@ const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => 
                             onChange={(to) => {
                                 setData('to', to ? format(to, 'yyyy-MM-dd') : '');
                             }}
-                            className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-900 ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:ring-offset-slate-950 dark:focus-visible:ring-blue-500 sm:w-32"
+                            className="h-10 w-full rounded-xl border border-border bg-secondary px-3 text-sm font-medium text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 sm:w-32"
                         />
                     )}
                 </div>
@@ -107,7 +107,7 @@ const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => 
                         value={data.month}
                         max={format(new Date(), 'yyyy-MM')}
                         onChange={handleMonth}
-                        className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-900 ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:ring-offset-slate-950 dark:focus-visible:ring-blue-500"
+                        className="h-10 rounded-xl border border-border bg-secondary px-3 text-sm font-medium text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
                     />
                 )}
 
@@ -120,7 +120,7 @@ const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => 
                         onChange={(date) => {
                             setData('date', date ? format(date, 'yyyy-MM-dd') : '');
                         }}
-                        className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-900 ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:ring-offset-slate-950 dark:focus-visible:ring-blue-500"
+                        className="h-10 rounded-xl border border-border bg-secondary px-3 text-sm font-medium text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
                     />
                 )}
 
@@ -129,7 +129,7 @@ const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => 
                     <select
                         value={data.role || ''}
                         onChange={handleRoleChange}
-                        className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-900 ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:ring-offset-slate-950 dark:focus-visible:ring-blue-500"
+                        className="h-10 rounded-xl border border-border bg-secondary px-3 text-sm font-medium text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
                     >
                         <option value="0">{t('search_form.role')}</option>
                         {roles.map((role) => (
@@ -143,7 +143,7 @@ const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => 
                 {/* Submit button */}
                 <button
                     type="submit"
-                    className="flex h-10 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 text-sm font-bold text-white transition-all hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 active:scale-95 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-500 dark:focus:ring-offset-slate-950"
+                    className="flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/20 active:scale-95"
                 >
                     <Search className="h-4 w-4" />
                     <span className="lg:hidden">{t('search_form.search_button')}</span>

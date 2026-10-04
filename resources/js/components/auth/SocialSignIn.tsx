@@ -52,7 +52,7 @@ const SocialSignIn = () => {
                 {/* Google Button */}
                 <button
                     onClick={() => signIn('google')}
-                    className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white p-3.5 text-sm font-bold text-slate-700 transition-all hover:bg-slate-50 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                    className="flex w-full items-center justify-center gap-3 rounded-xl border border-border bg-card p-3 text-sm font-semibold text-foreground transition-colors hover:bg-accent hover:border-border-strong"
                 >
                     <GoogleIcon />
                     {t('auth.google')}

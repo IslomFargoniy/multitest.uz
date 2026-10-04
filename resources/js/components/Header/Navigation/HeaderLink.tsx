@@ -31,11 +31,11 @@ const HeaderLink: React.FC<{ item: HeaderItem }> = ({ item }) => {
                 currentHash === item.href));
 
     const baseClasses =
-        "text-lg flex items-center gap-1 transition-colors duration-200 relative";
+        "text-sm font-semibold flex items-center gap-1 transition-colors relative py-1";
     const activeClasses =
-        "text-black dark:text-white after:absolute after:w-8 after:h-1 after:bg-primary after:rounded-full after:-bottom-1";
+        "text-foreground after:absolute after:w-6 after:h-0.5 after:bg-primary after:rounded-full after:-bottom-1";
     const inactiveClasses =
-        "text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white";
+        "text-muted-foreground hover:text-foreground";
 
     return (
         <div className="group relative">

@@ -20,7 +20,7 @@ export default function Register() {
             <RegisterCard />
 
             {/* Help/Support Text (Optional) */}
-            <p className="mt-4 text-center text-xs text-slate-400 sm:mt-8 dark:text-slate-500">{t('register.terms_agreement')}</p>
+            <p className="mt-4 text-center text-xs text-muted-foreground sm:mt-8">{t('register.terms_agreement')}</p>
         </AuthLayout>
     );
 }

@@ -15,33 +15,31 @@ const MobileHeaderLink: React.FC<{ item: HeaderItem }> = ({ item }) => {
     };
 
     return (
-        <div className="relative w-full border-b border-slate-50 last:border-0 dark:border-slate-800/50">
+        <div className="relative w-full border-b border-border last:border-0">
             <a
                 href={item.href || '#'}
                 onClick={handleToggle}
-                className={`flex w-full items-center justify-between px-2 py-4 text-base font-semibold transition-all duration-200 focus:outline-none ${submenuOpen ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'} `}
+                className={`flex w-full items-center justify-between px-2 py-3.5 text-sm font-semibold transition-colors ${submenuOpen ? 'text-primary' : 'text-muted-foreground hover:text-foreground'} `}
             >
-                {/* Translate the label using the key from menuData */}
                 {t(item.label)}
 
                 {item.submenu && (
                     <Icon
                         icon="tabler:chevron-down"
-                        className={`text-xl transition-transform duration-300 ${submenuOpen ? 'rotate-180 text-indigo-600' : 'text-slate-400'}`}
+                        className={`text-lg transition-transform duration-300 ${submenuOpen ? 'rotate-180 text-primary' : 'text-muted-foreground'}`}
                     />
                 )}
             </a>
 
             {/* Submenu rendering */}
             {submenuOpen && item.submenu && (
-                <div className="mb-2 ml-4 overflow-hidden rounded-xl border-l-2 border-slate-100 bg-slate-50/50 py-1 dark:border-slate-800 dark:bg-slate-900/30">
+                <div className="mb-2 ml-4 overflow-hidden rounded-xl border-l-2 border-border bg-surface-2 py-1">
                     {item.submenu.map((subItem, index) => (
                         <a
                             key={index}
                             href={subItem.href || '#'}
-                            className="block px-5 py-3 text-sm font-medium text-slate-500 transition-colors hover:bg-white hover:text-indigo-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-indigo-400"
+                            className="block px-4 py-2.5 text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
                         >
-                            {/* Translate submenu labels too */}
                             {t(subItem.label)}
                         </a>
                     ))}

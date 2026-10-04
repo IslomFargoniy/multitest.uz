@@ -19,24 +19,24 @@ const MobileSearchModal = ({ data, setData, handleSubmit, roles }: Props) => {
     return (
         <>
             {/* Button to open modal - only visible on mobile */}
-            <button onClick={() => setIsOpen(true)} className="rounded-md bg-blue-600 px-4 py-1 text-white lg:hidden">
+            <button onClick={() => setIsOpen(true)} className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground lg:hidden">
                 {t('mobile_search.open_button')}
             </button>
 
             {/* Modal Overlay */}
             {isOpen && (
-                <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black lg:hidden">
-                    <div className="relative max-h-[90vh] w-11/12 overflow-y-auto rounded-lg bg-white p-4 shadow-lg dark:bg-gray-800">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 lg:hidden">
+                    <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-card border border-border p-6 shadow-2xl">
                         {/* Close Button */}
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="absolute top-2 right-2 text-gray-700 hover:text-red-600 dark:text-white"
+                            className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
                             aria-label={t('navigation.close')}
                         >
-                            <X size={24} />
+                            <X size={20} />
                         </button>
 
-                        <h1 className={'mb-3 text-center text-2xl font-bold dark:text-white'}>{t('mobile_search.filter_title')}</h1>
+                        <h2 className="mb-4 text-center text-xl font-bold text-foreground">{t('mobile_search.filter_title')}</h2>
 
                         {/* Search form instance */}
                         <SearchForm

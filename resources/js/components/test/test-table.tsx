@@ -3,7 +3,6 @@ import CreateAttemptModal from '@/components/mock/create-attempt-modal';
 import UpdateTestModal from '@/components/test/update-test-modal';
 import { Auth, SearchData, type TestPaginate } from '@/types';
 import { Link, useForm, usePage } from '@inertiajs/react';
-import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import React, { useEffect, useRef, useState } from 'react';
@@ -99,73 +98,23 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
     };
 
     return (
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {/* 🗃️ TEST CARDS GRID */}
-            <div className="grid grid-cols-2 gap-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+        <div>
+            {/* TEST CARDS GRID */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {items.map((item, index) => {
                     const globalIndex = index + 1;
-
-                    if (isStudent) {
-                        return (
-                            <div
-                                key={item.id}
-                                className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white p-4 shadow-xs transition-all hover:border-indigo-500/30 hover:shadow-md dark:bg-slate-900"
-                            >
-                                <div>
-                                    <div className="flex items-center justify-between gap-1 mb-2">
-                                        <span className="text-xs font-bold text-slate-400">
-                                            #{globalIndex.toString().padStart(2, '0')}
-                                        </span>
-                                        {item.is_public ? (
-                                            <span className="rounded-md bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                                                {t('common.public', 'Public')}
-                                            </span>
-                                        ) : (
-                                            <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-bold text-slate-500 dark:text-slate-400">
-                                                {t('common.private', 'Private')}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <Link
-                                        href={`/test/${item.id}`}
-                                        className="block text-base font-bold text-slate-900 dark:text-white hover:text-indigo-600 transition-colors"
-                                    >
-                                        <div className="line-clamp-2 min-h-[2.5rem] break-words">
-                                            {item.name}
-                                        </div>
-                                    </Link>
-                                    <div className="mt-1.5 flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                                        {item.language?.flag && <span>{item.language.flag}</span>}
-                                        <span>
-                                            {i18n.language === 'uz'
-                                                ? item.language?.name_uz
-                                                : i18n.language === 'ru'
-                                                  ? item.language?.name_ru
-                                                  : item.language?.name_en}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div className="mt-4">
-                                    <div className="transform transition-transform active:scale-95">
-                                        <CreateAttemptModal test={item} label={t('start', 'Boshlash')} />
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    }
 
                     return (
                         <div
                             key={item.id}
-                            className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-5 transition-all duration-200 hover:border-indigo-500/40 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
+                            className="group relative flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-sm dark:shadow-none transition-colors hover:border-border-strong"
                         >
                             <div className="min-w-0">
                                 {/* Top bar info */}
                                 <div className="mb-3 flex items-center justify-between gap-2">
-                                    <div className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400">
-                                        <span className="font-mono text-slate-400">#{globalIndex.toString().padStart(2, '0')}</span>
-                                        <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+                                    <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+                                        <span className="font-mono text-muted-foreground">#{globalIndex.toString().padStart(2, '0')}</span>
+                                        <span className="h-1 w-1 rounded-full bg-border" />
                                         {item.language?.flag && <span className="text-sm">{item.language.flag}</span>}
                                         <span className="truncate">
                                             {i18n.language === 'uz'
@@ -177,11 +126,11 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
                                     </div>
 
                                     {item.is_public ? (
-                                        <span className="inline-flex items-center rounded-lg bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-800/40">
+                                        <span className="inline-flex items-center rounded-md bg-success/10 px-2 py-0.5 text-xs font-semibold text-success border border-success/20">
                                             {t('common.public', 'Public')}
                                         </span>
                                     ) : (
-                                        <span className="inline-flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                                        <span className="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-xs font-semibold text-muted-foreground border border-border">
                                             {t('common.private', 'Private')}
                                         </span>
                                     )}
@@ -189,17 +138,19 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
 
                                 <Link
                                     href={`/test/${item.id}`}
-                                    className="block text-base font-bold text-slate-900 transition-colors hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400"
+                                    className="block text-base font-bold text-foreground transition-colors hover:text-primary"
                                 >
                                     <span className="line-clamp-2 min-h-[2.5rem] break-words">{item.name}</span>
                                 </Link>
 
-                                <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-                                    {item.description || t('common.no_description', 'Tavsif mavjud emas')}
-                                </p>
+                                {!isStudent && (
+                                    <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                                        {item.description || t('common.no_description', 'Tavsif mavjud emas')}
+                                    </p>
+                                )}
 
                                 {(isAdmin || isTeacher) && item.audio_path && (
-                                    <div className="mt-3 rounded-xl border border-slate-100 bg-slate-50 p-2 transition-colors dark:border-slate-800 dark:bg-slate-950/50">
+                                    <div className="mt-3 rounded-lg border border-border bg-surface-2 p-2">
                                         <audio
                                             preload="none"
                                             controls
@@ -212,15 +163,15 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
                                 )}
                             </div>
 
-                            <div className="mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex flex-col gap-2.5">
-                                <div className="transform transition-transform active:scale-95">
+                            <div className="mt-5 pt-3.5 border-t border-border flex flex-col gap-2.5">
+                                <div className="transform transition-transform active:scale-[0.98]">
                                     <CreateAttemptModal test={item} label={t('start', 'Boshlash')} />
                                 </div>
 
-                                {(isAdmin || auth?.user.id == item.user_id) && (
+                                {(isAdmin || auth?.user.id === item.user_id) && (
                                     <div className="flex items-center justify-center gap-2 mt-1">
                                         <UpdateTestModal test={item} />
-                                        <span className="h-1 w-1 rounded-full bg-slate-200 dark:bg-slate-700" />
+                                        <span className="h-1 w-1 rounded-full bg-border" />
                                         <DeleteItemModal item={item} onDelete={handleDelete} />
                                     </div>
                                 )}
@@ -233,19 +184,19 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
             {/* Infinite Scroll Sentinel & Loading Indicator */}
             <div ref={sentinelRef} className="py-6 flex flex-col items-center justify-center gap-4 w-full">
                 {isLoading && (
-                    <div className="grid grid-cols-2 gap-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4 w-full">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full">
                         {Array.from({ length: 4 }).map((_, idx) => (
-                            <div key={idx} className="rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3 animate-pulse">
-                                <div className="h-5 bg-slate-200 dark:bg-slate-800 rounded w-3/4" />
-                                <div className="h-4 bg-slate-100 dark:bg-slate-800/60 rounded w-full" />
-                                <div className="h-4 bg-slate-100 dark:bg-slate-800/60 rounded w-2/3" />
-                                <div className="h-10 bg-slate-100 dark:bg-slate-800 rounded-xl mt-4" />
+                            <div key={idx} className="rounded-xl border border-border bg-card p-5 space-y-3 animate-pulse">
+                                <div className="h-5 bg-surface-2 rounded w-3/4" />
+                                <div className="h-4 bg-surface-2 rounded w-full" />
+                                <div className="h-4 bg-surface-2 rounded w-2/3" />
+                                <div className="h-10 bg-surface-2 rounded-lg mt-4" />
                             </div>
                         ))}
                     </div>
                 )}
                 {!hasMore && items.length > 0 && (
-                    <div className="text-xs font-bold text-slate-400 dark:text-slate-600 uppercase tracking-wider py-2">
+                    <div className="text-xs font-semibold text-muted-foreground py-2">
                         {t('common.no_more_items', 'Barcha testlar yuklandi')}
                     </div>
                 )}

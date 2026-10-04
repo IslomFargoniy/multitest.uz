@@ -1,5 +1,4 @@
 import { useIsMobile } from '@/hooks/use-mobile';
-import { getImagePrefix } from '@/utils/util';
 import { Icon } from '@iconify/react';
 import { Link, usePage } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
@@ -103,33 +102,32 @@ const Hero = () => {
     }, []);
 
     return (
-        <section id="home-section" className="relative overflow-hidden bg-gradient-to-b from-indigo-50/50 via-background to-background pt-28 sm:pt-32 md:pt-36 lg:pt-40 pb-16 dark:from-indigo-950/20 dark:via-background dark:to-background md:pb-24">
+        <section id="home-section" className="relative overflow-hidden bg-background pt-28 sm:pt-32 md:pt-36 lg:pt-40 pb-16 md:pb-24">
             {/* Background Glow Orbs */}
-            <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 rounded-full bg-gradient-to-br from-indigo-400/20 to-purple-500/20 blur-3xl dark:from-indigo-600/10 dark:to-purple-800/10" />
-            <div className="pointer-events-none absolute top-1/3 -right-20 -z-10 h-80 w-80 rounded-full bg-pink-400/10 blur-3xl dark:bg-pink-600/5" />
+            <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
 
             <div className="container mx-auto px-4 md:max-w-screen-md lg:max-w-screen-xl">
                 <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
                     {/* Left Column: Headline & Action */}
                     <div className="col-span-1 flex flex-col gap-6 text-left lg:col-span-7">
                         {/* Top Pill / Badge */}
-                        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-indigo-200/80 bg-indigo-50/80 px-3.5 py-1.5 text-xs font-bold text-indigo-700 backdrop-blur-sm dark:border-indigo-900/50 dark:bg-indigo-950/50 dark:text-indigo-300">
-                            <span className="flex h-2 w-2 rounded-full bg-indigo-600 animate-pulse" />
-                            <Icon icon="solar:verified-check-bold" className="text-base text-indigo-600 dark:text-indigo-400" />
+                        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1.5 text-xs font-semibold text-primary">
+                            <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
+                            <Icon icon="solar:verified-check-bold" className="text-base text-primary" />
                             <span>{t('hero.badge')}</span>
                         </div>
 
                         {/* Main Heading */}
-                        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl md:text-5xl lg:text-6xl dark:text-white leading-[1.15]">
+                        <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl leading-[1.15]">
                             {t('hero.title_prefix', 'UzBMB CEFR & IELTS ')}
-                            <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                            <span className="text-primary font-display font-black">
                                 {t('hero.title_accent', 'Speaking AI')}
                             </span>
                             {t('hero.title_suffix', ' Simulyatori')}
                         </h1>
 
                         {/* Description */}
-                        <p className="max-w-2xl text-base leading-relaxed text-slate-600 dark:text-slate-300 sm:text-lg">
+                        <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
                             {t('hero.description')}
                         </p>
 
@@ -137,7 +135,7 @@ const Hero = () => {
                         <div className="flex flex-wrap items-center gap-4 pt-2">
                             <Link
                                 href={auth?.user ? route('dashboard') : '/test'}
-                                className="group inline-flex items-center gap-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 px-7 py-3.5 text-base font-bold text-white shadow-xl shadow-indigo-500/25 transition-all hover:scale-105 hover:shadow-indigo-500/35 active:scale-95"
+                                className="group inline-flex items-center gap-3 rounded-xl bg-primary px-7 py-3.5 text-base font-bold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 active:scale-95"
                             >
                                 <Icon icon="solar:play-circle-bold" className="text-2xl transition-transform group-hover:rotate-12" />
                                 <span>{t('hero.start_mock', 'Mock Testni Boshlash')}</span>
@@ -145,42 +143,42 @@ const Hero = () => {
 
                             <a
                                 href="#cefr-structure"
-                                className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white/80 px-6 py-3.5 text-base font-bold text-slate-700 shadow-sm backdrop-blur-sm transition-all hover:bg-slate-100 hover:text-indigo-600 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-indigo-400"
+                                className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3.5 text-base font-semibold text-foreground shadow-xs transition-colors hover:bg-accent"
                             >
-                                <Icon icon="solar:document-text-bold" className="text-xl" />
+                                <Icon icon="solar:document-text-bold" className="text-xl text-primary" />
                                 <span>{t('hero.exam_format', 'Imtihon Formati')}</span>
                             </a>
                         </div>
 
                         {/* Key Pillars */}
                         <div className="grid grid-cols-2 gap-3 pt-4 sm:grid-cols-3">
-                            <div className="flex items-center gap-2.5 rounded-xl border border-slate-200/60 bg-white/60 p-2.5 backdrop-blur-xs dark:border-slate-800/60 dark:bg-slate-900/60">
-                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400">
+                            <div className="flex items-center gap-2.5 rounded-xl border border-border bg-card p-3">
+                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                                     <Icon icon="solar:shield-check-bold" className="text-lg" />
                                 </div>
                                 <div className="text-xs">
-                                    <p className="font-bold text-slate-900 dark:text-white">{t('hero.accuracy', '98.5% Aniqlik')}</p>
-                                    <p className="text-slate-500 dark:text-slate-400">{t('hero.accuracy_desc', 'UzBMB standarti')}</p>
+                                    <p className="font-bold text-foreground">{t('hero.accuracy', '98.5% Aniqlik')}</p>
+                                    <p className="text-muted-foreground">{t('hero.accuracy_desc', 'UzBMB standarti')}</p>
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-2.5 rounded-xl border border-slate-200/60 bg-white/60 p-2.5 backdrop-blur-xs dark:border-slate-800/60 dark:bg-slate-900/60">
-                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-purple-50 text-purple-600 dark:bg-purple-950 dark:text-purple-400">
+                            <div className="flex items-center gap-2.5 rounded-xl border border-border bg-card p-3">
+                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-warning/10 text-warning">
                                     <Icon icon="solar:bolt-bold" className="text-lg" />
                                 </div>
                                 <div className="text-xs">
-                                    <p className="font-bold text-slate-900 dark:text-white">{t('hero.instant_time', '60 Soniyada')}</p>
-                                    <p className="text-slate-500 dark:text-slate-400">{t('hero.instant_desc', 'Lahzali baho')}</p>
+                                    <p className="font-bold text-foreground">{t('hero.instant_time', '60 Soniyada')}</p>
+                                    <p className="text-muted-foreground">{t('hero.instant_desc', 'Lahzali baho')}</p>
                                 </div>
                             </div>
 
-                            <div className="col-span-2 flex items-center gap-2.5 rounded-xl border border-slate-200/60 bg-white/60 p-2.5 backdrop-blur-xs sm:col-span-1 dark:border-slate-800/60 dark:bg-slate-900/60">
-                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
-                                    <Icon icon="solar:medal-ribbon-star-bold" className="text-lg" />
+                            <div className="col-span-2 flex items-center gap-2.5 rounded-xl border border-border bg-card p-3 sm:col-span-1">
+                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-success-bg text-success-text">
+                                    <Icon icon="solar:medal-ribbon-star-bold" className="text-lg text-success" />
                                 </div>
                                 <div className="text-xs">
-                                    <p className="font-bold text-slate-900 dark:text-white">{t('hero.levels_title', 'B1 • B2 • C1')}</p>
-                                    <p className="text-slate-500 dark:text-slate-400">{t('hero.levels_desc', 'To\'liq darajalar')}</p>
+                                    <p className="font-bold text-foreground">{t('hero.levels_title', 'B1 • B2 • C1')}</p>
+                                    <p className="text-muted-foreground">{t('hero.levels_desc', 'To\'liq darajalar')}</p>
                                 </div>
                             </div>
                         </div>
@@ -190,71 +188,71 @@ const Hero = () => {
                     <div className="col-span-1 lg:col-span-5">
                         <div className="relative mx-auto w-full max-w-md">
                             {/* Decorative Floating Badges */}
-                            <div className="absolute -top-4 -left-4 z-20 flex items-center gap-2 rounded-2xl border border-white/40 bg-white/90 px-3.5 py-2 shadow-xl backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/90 animate-bounce [animation-duration:4s]">
-                                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 text-white">
+                            <div className="absolute -top-3 -left-3 z-20 flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2 shadow-lg">
+                                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-success-bg text-success">
                                     <Icon icon="solar:cup-star-bold" className="text-sm" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase">{t('hero.card_latest_result', 'So\'nggi Natija')}</p>
-                                    <p className="text-xs font-black text-emerald-600 dark:text-emerald-400">{t('hero.card_result_val', 'CEFR C1 (71 ball)')}</p>
+                                    <p className="text-xs font-semibold text-muted-foreground uppercase">{t('hero.card_latest_result', 'So\'nggi Natija')}</p>
+                                    <p className="text-xs font-bold text-success-text">{t('hero.card_result_val', 'CEFR C1 (71 ball)')}</p>
                                 </div>
                             </div>
 
-                            <div className="absolute -right-3 bottom-8 z-20 flex items-center gap-2 rounded-2xl border border-white/40 bg-white/90 px-3.5 py-2 shadow-xl backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/90">
-                                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-600 text-white">
+                            <div className="absolute -right-3 bottom-8 z-20 flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2 shadow-lg">
+                                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary">
                                     <Icon icon="solar:microphone-3-bold" className="text-sm" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase">{t('hero.card_ai_eval', 'AI Baholash')}</p>
-                                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200">{t('hero.card_ai_eval_sub', '98% Aniq Transkript')}</p>
+                                    <p className="text-xs font-semibold text-muted-foreground uppercase">{t('hero.card_ai_eval', 'AI Baholash')}</p>
+                                    <p className="text-xs font-bold text-foreground">{t('hero.card_ai_eval_sub', '98% Aniq Transkript')}</p>
                                 </div>
                             </div>
 
                             {/* Main Card UI Preview */}
-                            <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+                            <div className="overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xl">
                                 {/* Simulated Mock Header */}
-                                <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+                                <div className="flex items-center justify-between border-b border-border pb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-600 text-white font-black text-sm shadow-md">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold text-sm shadow-xs">
                                             DTM
                                         </div>
                                         <div>
-                                            <h4 className="text-sm font-bold text-slate-900 dark:text-white">{t('hero.card_mock_title', 'Multilevel Speaking Mock')}</h4>
-                                            <p className="text-xs text-indigo-600 font-medium dark:text-indigo-400">{t('hero.card_mock_part', 'Part 2: Comparison & Solution')}</p>
+                                            <h4 className="text-sm font-bold text-foreground">{t('hero.card_mock_title', 'Multilevel Speaking Mock')}</h4>
+                                            <p className="text-xs text-primary font-medium">{t('hero.card_mock_part', 'Part 2: Comparison & Solution')}</p>
                                         </div>
                                     </div>
-                                    <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                                    <span className="rounded-full bg-success-bg border border-success/20 px-2.5 py-1 text-xs font-semibold text-success-text">
                                         {t('hero.card_live_badge', 'Jonli Sinov')}
                                     </span>
                                 </div>
 
                                 {/* Simulated Question Card */}
-                                <div className="mt-5 rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/50">
-                                    <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+                                <div className="mt-4 rounded-xl bg-surface-2 border border-border p-4">
+                                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
                                         {t('hero.card_task_title', 'Topshiriq 2')}
                                     </p>
-                                    <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                                    <p className="text-sm font-medium text-foreground">
                                         {t('hero.card_task_content', '"Compare these two ways of studying: online vs traditional classroom. Which one is more effective?"')}
                                     </p>
                                 </div>
 
                                 {/* Simulated Audio Wave Visualizer */}
-                                <div className="mt-5 flex flex-col items-center justify-center rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/50 to-purple-50/50 p-5 dark:border-indigo-950 dark:from-indigo-950/30 dark:to-purple-950/30">
+                                <div className="mt-4 flex flex-col items-center justify-center rounded-xl border border-border bg-surface-2 p-5">
                                     <div className="mb-3 flex items-center justify-between w-full px-1">
                                         <div className="flex items-center gap-3">
                                             <button
                                                 type="button"
                                                 onClick={togglePlayAudio}
-                                                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/30 transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+                                                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-transform hover:scale-105 active:scale-95 cursor-pointer"
                                                 title={isPlayingDemo ? "To'xtatish" : "Tinglash"}
                                             >
                                                 <Icon icon={isPlayingDemo ? "solar:pause-bold" : "solar:play-bold"} className="text-xl ml-0.5" />
                                             </button>
                                             <div className="text-left">
-                                                <p className="text-xs font-bold text-slate-800 dark:text-slate-200">{t('hero.card_audio_sample', 'Ovoz namunasi')}</p>
-                                                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                                <p className="text-xs font-bold text-foreground">{t('hero.card_audio_sample', 'Ovoz namunasi')}</p>
+                                                <p className="text-xs text-muted-foreground">
                                                     {isPlayingDemo ? (
-                                                        <span className="text-indigo-600 dark:text-indigo-400 font-semibold animate-pulse">Tinglanmoqda...</span>
+                                                        <span className="text-primary font-semibold animate-pulse">Tinglanmoqda...</span>
                                                     ) : (
                                                         t('hero.card_click_listen', 'Tinglash uchun bosing')
                                                     )}
@@ -262,7 +260,7 @@ const Hero = () => {
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <span className="font-mono text-xs font-bold text-slate-600 dark:text-slate-300">
+                                            <span className="font-mono text-xs font-semibold text-muted-foreground">
                                                 {formatTime(currentTime)} / {formatTime(duration)}
                                             </span>
                                         </div>
@@ -287,37 +285,37 @@ const Hero = () => {
                                                      }}
                                                      className={`w-1 rounded-full transition-all duration-150 group-hover/wave:opacity-90 ${
                                                          isPlayed
-                                                             ? 'bg-gradient-to-t from-indigo-600 to-purple-500 shadow-xs'
-                                                             : 'bg-slate-300 dark:bg-slate-700'
+                                                             ? 'bg-primary shadow-xs'
+                                                             : 'bg-muted'
                                                      }`}
                                                  />
                                              );
                                          })}
-                                     </div>
-                                 </div>
+                                    </div>
+                                </div>
 
-                                 {/* Score Breakdown Snippet */}
-                                 <div className="mt-5 grid grid-cols-4 gap-2 text-center">
-                                     <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
-                                         <p className="text-[10px] text-slate-400">{t('hero.card_fluency', 'Fluency')}</p>
-                                         <p className="text-xs font-extrabold text-indigo-600 dark:text-indigo-400">B2 (58)</p>
-                                     </div>
-                                     <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
-                                         <p className="text-[10px] text-slate-400">{t('hero.card_lexicon', 'Lexicon')}</p>
-                                         <p className="text-xs font-extrabold text-purple-600 dark:text-purple-400">C1 (72)</p>
-                                     </div>
-                                     <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
-                                         <p className="text-[10px] text-slate-400">{t('hero.card_grammar', 'Grammar')}</p>
-                                         <p className="text-xs font-extrabold text-pink-600 dark:text-pink-400">B2 (62)</p>
-                                     </div>
-                                     <div className="rounded-xl bg-slate-50 p-2 dark:bg-slate-800/40">
-                                         <p className="text-[10px] text-slate-400">{t('hero.card_pronounce', 'Pronounce')}</p>
-                                         <p className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400">C1 (74)</p>
-                                     </div>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
+                                {/* Score Breakdown Snippet */}
+                                <div className="mt-4 grid grid-cols-4 gap-2 text-center">
+                                    <div className="rounded-xl bg-secondary p-2">
+                                        <p className="text-xs text-muted-foreground">{t('hero.card_fluency', 'Fluency')}</p>
+                                        <p className="text-xs font-bold text-foreground">B2 (58)</p>
+                                    </div>
+                                    <div className="rounded-xl bg-secondary p-2">
+                                        <p className="text-xs text-muted-foreground">{t('hero.card_lexicon', 'Lexicon')}</p>
+                                        <p className="text-xs font-bold text-foreground">C1 (72)</p>
+                                    </div>
+                                    <div className="rounded-xl bg-secondary p-2">
+                                        <p className="text-xs text-muted-foreground">{t('hero.card_grammar', 'Grammar')}</p>
+                                        <p className="text-xs font-bold text-foreground">B2 (62)</p>
+                                    </div>
+                                    <div className="rounded-xl bg-secondary p-2">
+                                        <p className="text-xs text-muted-foreground">{t('hero.card_pronounce', 'Pronounce')}</p>
+                                        <p className="text-xs font-bold text-foreground">C1 (74)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

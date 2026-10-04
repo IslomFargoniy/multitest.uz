@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
-import { baseButton } from '@/components/ui/baseButton';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Question } from '@/types';
@@ -76,23 +75,23 @@ export default function UpdateQuestionModal({ question }: UpdateQuestionModalPro
             <button
                 onClick={() => setOpen(true)}
                 type="button"
-                className={`${baseButton} flex h-9 w-9 items-center justify-center border border-slate-200 bg-white p-0 text-slate-600 transition-all hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-indigo-900/40`}
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-surface-2 p-0 text-muted-foreground transition-colors hover:border-border-strong hover:text-foreground cursor-pointer"
             >
                 <Pencil className="h-4 w-4 shrink-0" />
             </button>
 
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="flex max-h-[95vh] !w-[1100px] !max-w-[95vw] flex-col gap-0 overflow-hidden rounded-[2.5rem] border-none bg-white p-0 shadow-2xl dark:bg-slate-900">
-                    <div className="flex-none border-b border-slate-100 bg-slate-50/80 px-10 py-8 dark:border-slate-800 dark:bg-slate-800/40">
-                        <div className="flex items-center gap-4">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-200 dark:shadow-none">
-                                <FileText className="h-6 w-6" />
+                <DialogContent className="flex max-h-[95vh] !w-[1100px] !max-w-[95vw] flex-col gap-0 overflow-hidden rounded-xl border border-border bg-card p-0 shadow-lg">
+                    <div className="flex-none border-b border-border bg-surface-2 px-6 py-5">
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
+                                <FileText className="h-5 w-5" />
                             </div>
                             <div>
-                                <DialogTitle className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+                                <DialogTitle className="text-xl font-bold text-foreground">
                                     {t('test_show.update_question_title')}
                                 </DialogTitle>
-                                <DialogDescription className="font-medium text-slate-500 dark:text-slate-400">
+                                <DialogDescription className="text-xs text-muted-foreground">
                                     {t('test_show.update_question_description')}
                                 </DialogDescription>
                             </div>
@@ -100,14 +99,14 @@ export default function UpdateQuestionModal({ question }: UpdateQuestionModalPro
                     </div>
 
                     <form onSubmit={submit} className="flex flex-1 flex-col overflow-hidden">
-                        <div className="flex-1 space-y-8 overflow-y-auto p-10">
+                        <div className="flex-1 space-y-6 overflow-y-auto p-6">
                             {/* Editor Section */}
-                            <div className="space-y-3">
-                                <Label className="text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500">
+                            <div className="space-y-2">
+                                <Label className="text-xs font-semibold text-muted-foreground">
                                     {t('test_show.question_text_prompt')}
                                 </Label>
-                                <div className="rounded-3xl border border-slate-200 bg-white p-1 focus-within:ring-4 focus-within:ring-indigo-500/5 dark:border-slate-800 dark:bg-slate-950">
-                                    <Suspense fallback={<Skeleton className="h-[600px] w-full rounded-3xl" />}>
+                                <div className="rounded-xl border border-border bg-surface-2 p-1">
+                                    <Suspense fallback={<Skeleton className="h-[400px] w-full rounded-xl" />}>
                                         <TextEditor
                                             value={data.textarea}
                                             onChange={(content) => setData('textarea', content)}
@@ -118,43 +117,43 @@ export default function UpdateQuestionModal({ question }: UpdateQuestionModalPro
                             </div>
 
                             {/* Settings Grid */}
-                            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                                <div className="space-y-3">
-                                    <Label className="flex items-center gap-2 text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase">
-                                        <Timer className="h-3.5 w-3.5 text-amber-500" />
+                            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                                <div className="space-y-1.5">
+                                    <Label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+                                        <Timer className="h-3.5 w-3.5 text-warning" />
                                         {t('test_show.preparation_time_sec')}
                                     </Label>
                                     <Input
                                         type="number"
-                                        className="h-14 rounded-2xl border-slate-200 bg-slate-50/50 px-6 font-mono text-lg font-bold dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                                        className="h-11 rounded-lg border-border bg-surface-2 font-mono text-base font-bold"
                                         value={data.ready_second}
                                         onChange={(e) => setData('ready_second', Number(e.target.value))}
                                     />
                                     <InputError message={errors.ready_second} />
                                 </div>
 
-                                <div className="space-y-3">
-                                    <Label className="flex items-center gap-2 text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase">
-                                        <Timer className="h-3.5 w-3.5 text-emerald-500" />
+                                <div className="space-y-1.5">
+                                    <Label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+                                        <Timer className="h-3.5 w-3.5 text-success" />
                                         {t('test_show.speaking_time_sec')}
                                     </Label>
                                     <Input
                                         type="number"
-                                        className="h-14 rounded-2xl border-slate-200 bg-slate-50/50 px-6 font-mono text-lg font-bold dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                                        className="h-11 rounded-lg border-border bg-surface-2 font-mono text-base font-bold"
                                         value={data.answer_second}
                                         onChange={(e) => setData('answer_second', Number(e.target.value))}
                                     />
                                     <InputError message={errors.answer_second} />
                                 </div>
 
-                                <div className="space-y-3">
-                                    <Label className="flex items-center gap-2 text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase">
-                                        <Headphones className="h-3.5 w-3.5 text-indigo-500" />
+                                <div className="space-y-1.5">
+                                    <Label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+                                        <Headphones className="h-3.5 w-3.5 text-primary" />
                                         {t('test_show.audio_prompt_file')}
                                     </Label>
-                                    <div className="group relative flex h-14 items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50 transition-all hover:border-indigo-400 dark:border-slate-800 dark:bg-slate-950">
-                                        <UploadCloud className="absolute left-4 h-5 w-5 text-slate-400 group-hover:text-indigo-500" />
-                                        <span className="max-w-[200px] truncate pl-6 text-xs font-bold text-slate-500 dark:text-slate-400">
+                                    <div className="group relative flex h-11 items-center justify-center rounded-lg border-2 border-dashed border-border bg-surface-2 transition-colors">
+                                        <UploadCloud className="absolute left-3 h-4 w-4 text-muted-foreground" />
+                                        <span className="max-w-[180px] truncate pl-4 text-xs font-medium text-muted-foreground">
                                             {data.audio_path ? (data.audio_path as File).name : t('test_table.replace_audio_optional')}
                                         </span>
                                         <Input
@@ -173,12 +172,12 @@ export default function UpdateQuestionModal({ question }: UpdateQuestionModalPro
                             </div>
                         </div>
 
-                        <div className="flex-none border-t border-slate-100 bg-slate-50/80 px-10 py-6 dark:border-slate-800 dark:bg-slate-800/40">
+                        <div className="flex-none border-t border-border bg-surface-2 px-6 py-4">
                             <div className="flex w-full items-center justify-end gap-3">
                                 <DialogClose asChild>
                                     <Button
                                         variant="ghost"
-                                        className="h-12 rounded-2xl px-8 font-bold text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800"
+                                        type="button"
                                         onClick={() => {
                                             reset();
                                             clearErrors();
@@ -192,7 +191,7 @@ export default function UpdateQuestionModal({ question }: UpdateQuestionModalPro
                                 <Button
                                     type="submit"
                                     disabled={processing}
-                                    className="h-12 min-w-[160px] rounded-2xl bg-indigo-600 px-8 font-black text-white shadow-xl shadow-indigo-500/20 active:scale-95 disabled:opacity-50 dark:bg-indigo-500 dark:shadow-none"
+                                    className="min-w-[140px]"
                                 >
                                     {processing ? t('common.updating') : t('common.save_changes')}
                                 </Button>

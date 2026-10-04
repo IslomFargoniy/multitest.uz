@@ -11,14 +11,14 @@ interface PartTableProps {
 }
 
 const PartTable = ({ test }: PartTableProps) => {
-    const { t } = useTranslation(); // Using the translation hook
+    const { t } = useTranslation();
 
     const { auth } = usePage().props as unknown as { auth?: Auth };
 
     const isAdmin = auth?.user?.roles?.some((role) => role.name === 'Admin');
     const isTeacher = auth?.user?.roles?.some((role) => role.name === 'Teacher');
 
-    const { delete: deletePart, reset, errors: deleteError, clearErrors } = useForm();
+    const { delete: deletePart, reset, clearErrors } = useForm();
 
     const handleDelete = (id: number) => {
         deletePart(route('part.destroy', id), {
@@ -26,12 +26,11 @@ const PartTable = ({ test }: PartTableProps) => {
             onSuccess: () => {
                 reset();
                 clearErrors();
-                toast.success(t('deleted_successfully')); // Success message
+                toast.success(t('deleted_successfully'));
             },
             onError: (err) => {
-                // Display a friendly error message if available
-                const errorMessage = err?.error || t('delete_failed'); // Use fallback error message
-                toast.error(errorMessage); // Display error message
+                const errorMessage = err?.error || t('delete_failed');
+                toast.error(errorMessage);
             },
         });
     };
@@ -39,7 +38,7 @@ const PartTable = ({ test }: PartTableProps) => {
     return (
         <div>
             <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">{t('part')}</h2>
+                <h2 className="text-xl font-bold text-foreground">{t('part')}</h2>
                 {(isAdmin || isTeacher) && <CreatePartModal test={test} />}
             </div>
 
@@ -51,18 +50,18 @@ const PartTable = ({ test }: PartTableProps) => {
                     return (
                         <div
                             key={item.id}
-                            className="flex flex-col justify-between rounded-lg border border-gray-300 bg-white p-4 shadow-md transition hover:shadow-lg dark:border-gray-700 dark:bg-gray-800"
+                            className="flex flex-col justify-between rounded-xl border border-border bg-card p-4 shadow-xs transition hover:border-border-strong"
                         >
                             {/* Header */}
                             <div className="flex items-start justify-between">
-                                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                                <h3 className="text-base font-bold text-foreground hover:text-primary">
                                     <Link href={`/part/${item.id}`}>{item.name}</Link>
                                 </h3>
-                                <span className="text-xs text-gray-500">#{globalIndex}</span>
+                                <span className="text-xs text-muted-foreground font-mono">#{globalIndex}</span>
                             </div>
 
                             {/* Comment */}
-                            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{item.description || t('no_description')}</p>
+                            <p className="mt-2 text-sm text-muted-foreground">{item.description || t('no_description')}</p>
 
                             <div>
                                 <audio preload="none" controls className="mt-4 w-full">
@@ -75,7 +74,6 @@ const PartTable = ({ test }: PartTableProps) => {
                             {(isAdmin || isTeacher) && (
                                 <div className="mt-4 flex gap-2">
                                     <UpdatePartModal part={item} />
-
                                     <DeleteItemModal item={item} onDelete={handleDelete} />
                                 </div>
                             )}

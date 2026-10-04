@@ -47,23 +47,23 @@ export default function TestShow() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`${test.name} | ${t('nav.test_details')}`} />
 
-            <div className="animate-in fade-in flex flex-col gap-3 rounded-xl p-2 duration-500 sm:gap-4 sm:p-4 lg:gap-6 lg:p-6">
-                {/* 🧭 NAVIGATION & ACTIONS HEADER */}
+            <div className="flex flex-col gap-4 rounded-xl p-4 lg:gap-6 lg:p-6 max-w-7xl mx-auto w-full">
+                {/* NAVIGATION & ACTIONS HEADER */}
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between sm:gap-6">
                     <div className="space-y-2">
                         <Link
                             href="/test"
-                            className="group inline-flex items-center gap-2 text-sm font-bold text-indigo-600 transition-colors hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+                            className="group inline-flex items-center gap-1.5 text-xs font-semibold text-primary transition-colors hover:underline"
                         >
-                            <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                            <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
                             {t('common.back_to_library')}
                         </Link>
 
                         <div className="flex items-center gap-3">
-                            <div className="rounded-xl bg-indigo-600 p-2 text-white shadow-lg shadow-indigo-200 dark:shadow-none">
+                            <div className="rounded-lg bg-surface-2 p-2 text-foreground border border-border">
                                 <BookOpen className="h-6 w-6" />
                             </div>
-                            <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl dark:text-white">{test.name}</h1>
+                            <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">{test.name}</h1>
                         </div>
                     </div>
 
@@ -75,15 +75,15 @@ export default function TestShow() {
                     </div>
                 </div>
 
-                {/* 📂 CONTENT SECTION */}
-                <div className="relative rounded-xl border border-slate-200 bg-white/50 p-4 shadow-sm backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/50">
-                    <div className="mb-6 flex flex-col justify-between gap-4 border-b border-slate-100 pb-4 sm:mb-8 sm:flex-row sm:items-center sm:pb-6 dark:border-slate-800">
+                {/* CONTENT SECTION */}
+                <div className="relative rounded-xl border border-border bg-card p-4 sm:p-6 shadow-sm dark:shadow-none">
+                    <div className="mb-6 flex flex-col justify-between gap-4 border-b border-border pb-4 sm:flex-row sm:items-center sm:pb-6">
                         <div>
-                            <h2 className="flex items-center gap-2 text-xl font-extrabold text-slate-800 dark:text-slate-100">
-                                <LayoutGrid className="h-5 w-5 text-indigo-50" />
+                            <h2 className="flex items-center gap-2 text-lg font-bold text-foreground">
+                                <LayoutGrid className="h-5 w-5 text-muted-foreground" />
                                 {t('test_table.test_sections')}
                             </h2>
-                            <p className="mt-1 text-sm font-medium text-slate-500 dark:text-slate-400">{t('test_table.manage_parts_description')}</p>
+                            <p className="mt-1 text-sm text-muted-foreground">{t('test_table.manage_parts_description')}</p>
                         </div>
 
                         {(isAdmin || isTeacher) && (

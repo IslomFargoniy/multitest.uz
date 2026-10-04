@@ -34,46 +34,46 @@ const FAQSection: React.FC = () => {
             <div className="container mx-auto px-4 md:max-w-screen-md lg:max-w-screen-xl">
                 {/* Header */}
                 <div className="text-center max-w-3xl mx-auto mb-16">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200/80 bg-indigo-50/80 px-3.5 py-1 text-xs font-bold text-indigo-700 dark:border-indigo-900/50 dark:bg-indigo-950/50 dark:text-indigo-300 mb-4">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary mb-4">
                         <Icon icon="solar:question-circle-bold" className="text-sm" />
                         <span>{t('landing_faq.badge', 'Savollaringiz Bormi?')}</span>
                     </div>
-                    <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                    <h2 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">
                         {t('landing_faq.title', 'Ko\'p Beriladigan Savollar (FAQ)')}
                     </h2>
-                    <p className="mt-4 text-base md:text-lg text-slate-600 dark:text-slate-300">
+                    <p className="mt-3 text-base md:text-lg text-muted-foreground">
                         {t('landing_faq.subtitle', 'CEFR Multi-level imtihonlari va platformamiz imkoniyatlari haqida barcha muhim ma\'lumotlar')}
                     </p>
                 </div>
 
                 {/* FAQ Accordion List */}
-                <div className="max-w-3xl mx-auto space-y-4">
+                <div className="max-w-3xl mx-auto space-y-3">
                     {faqs.map((faq, index) => {
                         const isOpen = openIndex === index;
                         return (
                             <div
                                 key={index}
-                                className={`overflow-hidden rounded-2xl border transition-all duration-200 ${
+                                className={`overflow-hidden rounded-xl border transition-colors ${
                                     isOpen
-                                        ? 'border-indigo-300 bg-white shadow-md dark:border-indigo-700 dark:bg-slate-900'
-                                        : 'border-slate-200/80 bg-white/70 hover:bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/60'
+                                        ? 'border-primary/50 bg-card shadow-xs'
+                                        : 'border-border bg-card hover:border-border-strong'
                                 }`}
                             >
                                 <button
                                     type="button"
                                     onClick={() => setOpenIndex(isOpen ? null : index)}
-                                    className="flex w-full items-center justify-between p-5 text-left transition-colors"
+                                    className="flex w-full items-center justify-between p-5 text-left transition-colors cursor-pointer"
                                 >
-                                    <span className="text-base font-bold text-slate-900 dark:text-white pr-4">
+                                    <span className="text-base font-semibold text-foreground pr-4">
                                         {faq.q}
                                     </span>
-                                    <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-transform duration-200 ${isOpen ? 'bg-indigo-600 text-white rotate-180' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'}`}>
+                                    <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-transform ${isOpen ? 'bg-primary text-primary-foreground rotate-180' : 'bg-secondary text-muted-foreground'}`}>
                                         <Icon icon="solar:alt-arrow-down-bold" className="text-base" />
                                     </div>
                                 </button>
 
                                 {isOpen && (
-                                    <div className="px-5 pb-5 pt-1 text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800/80">
+                                    <div className="px-5 pb-5 pt-1 text-sm text-muted-foreground leading-relaxed border-t border-border">
                                         {faq.a}
                                     </div>
                                 )}

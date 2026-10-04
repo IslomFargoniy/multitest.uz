@@ -13,11 +13,8 @@ import {
     Palette,
     LogOut,
     ChevronRight,
-    ShieldCheck,
-    Send,
 } from 'lucide-react';
 
-import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -75,11 +72,11 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
             <SettingsLayout>
                 <div className="space-y-6">
                     {/* Header */}
-                    <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                        <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+                    <div className="border-b border-border pb-3">
+                        <h3 className="text-base sm:text-lg font-bold text-foreground">
                             {t('profile_settings.heading', "Profil ma'lumotlari")}
                         </h3>
-                        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                        <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
                             {t('profile_settings.description', "Ismingiz, telefon raqamingiz va kontakt ma'lumotlaringizni yangilang")}
                         </p>
                     </div>
@@ -88,14 +85,14 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                     <form onSubmit={submit} className="space-y-4 sm:space-y-5">
                         {/* Name Field */}
                         <div className="space-y-1.5">
-                            <Label htmlFor="name" className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <Label htmlFor="name" className="text-xs font-semibold text-foreground">
                                 {t('profile_settings.name', "To'liq ism")}
                             </Label>
                             <div className="relative">
-                                <UserIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                <UserIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     id="name"
-                                    className="h-11 pl-10 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 font-medium text-sm focus-visible:ring-indigo-500"
+                                    className="h-11 pl-10 rounded-xl border-border bg-secondary font-medium text-sm text-foreground focus-visible:ring-primary/20"
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
                                     required
@@ -108,14 +105,14 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
                         {/* Username Field */}
                         <div className="space-y-1.5">
-                            <Label htmlFor="username" className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <Label htmlFor="username" className="text-xs font-semibold text-foreground">
                                 {t('profile_settings.username', "Foydalanuvchi nomi")}
                             </Label>
                             <div className="relative">
-                                <AtSign className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                <AtSign className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     id="username"
-                                    className="h-11 pl-10 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 font-medium text-sm focus-visible:ring-indigo-500"
+                                    className="h-11 pl-10 rounded-xl border-border bg-secondary font-medium text-sm text-foreground focus-visible:ring-primary/20"
                                     value={data.username}
                                     onChange={(e) => setData('username', e.target.value)}
                                     autoComplete="username"
@@ -127,14 +124,14 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
                         {/* Phone Field */}
                         <div className="space-y-1.5">
-                            <Label htmlFor="phone" className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <Label htmlFor="phone" className="text-xs font-semibold text-foreground">
                                 {t('profile_settings.phone', "Telefon raqami")}
                             </Label>
                             <div className="relative">
-                                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     id="phone"
-                                    className="h-11 pl-10 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 font-medium text-sm focus-visible:ring-indigo-500"
+                                    className="h-11 pl-10 rounded-xl border-border bg-secondary font-medium text-sm text-foreground focus-visible:ring-primary/20"
                                     value={data.phone}
                                     onChange={(e) => setData('phone', e.target.value)}
                                     autoComplete="tel"
@@ -146,15 +143,15 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
                         {/* Email Field */}
                         <div className="space-y-1.5">
-                            <Label htmlFor="email" className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <Label htmlFor="email" className="text-xs font-semibold text-foreground">
                                 {t('profile_settings.email', "Email manzili")}
                             </Label>
                             <div className="relative">
-                                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     id="email"
                                     type="email"
-                                    className="h-11 pl-10 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 font-medium text-sm focus-visible:ring-indigo-500"
+                                    className="h-11 pl-10 rounded-xl border-border bg-secondary font-medium text-sm text-foreground focus-visible:ring-primary/20"
                                     value={data.email}
                                     onChange={(e) => setData('email', e.target.value)}
                                     autoComplete="email"
@@ -165,21 +162,21 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         </div>
 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (
-                            <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50">
-                                <p className="text-xs font-medium text-amber-800 dark:text-amber-300">
+                            <div className="p-3 rounded-xl bg-warning/10 border border-warning/20">
+                                <p className="text-xs font-medium text-warning-text">
                                     {t('profile_settings.unverified_email', "Email manzilingiz tasdiqlanmagan.")}{' '}
                                     <Link
                                         href={route('verification.send')}
                                         method="post"
                                         as="button"
-                                        className="font-bold underline underline-offset-2 hover:text-amber-900"
+                                        className="font-bold underline underline-offset-2 hover:text-warning"
                                     >
                                         {t('profile_settings.resend_verification_email', "Qayta yuborish")}
                                     </Link>
                                 </p>
 
                                 {status === 'verification-link-sent' && (
-                                    <div className="mt-1.5 text-xs font-bold text-emerald-600">
+                                    <div className="mt-1.5 text-xs font-bold text-success-text">
                                         {t('profile_settings.verification_link_sent', "Tasdiqlash havolasi yuborildi.")}
                                     </div>
                                 )}
@@ -191,7 +188,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             <Button
                                 type="submit"
                                 disabled={processing}
-                                className="w-full sm:w-auto h-11 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md active:scale-98 cursor-pointer transition-all flex items-center justify-center gap-2"
+                                className="w-full sm:w-auto h-11 px-6 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm shadow-sm active:scale-98 cursor-pointer transition-all flex items-center justify-center gap-2"
                             >
                                 <Save className="h-4 w-4" />
                                 <span>{processing ? t('saving', 'Saqlanmoqda...') : t('profile_settings.save', 'Saqlash')}</span>
@@ -204,7 +201,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 leave="transition ease-in-out duration-300"
                                 leaveTo="opacity-0"
                             >
-                                <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1">
+                                <p className="text-xs font-bold text-success-text mt-2 flex items-center gap-1">
                                     <Check className="h-3.5 w-3.5" />
                                     {t('profile_settings.saved', "Ma'lumotlar muvaffaqiyatli saqlandi")}
                                 </p>
@@ -214,72 +211,72 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
                     {/* Mobile Quick Settings Menu Group */}
                     <div className="block md:hidden pt-4 space-y-2.5">
-                        <div className="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 px-1">
+                        <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground px-1">
                             {t('quick_actions', 'Tezkor amallar')}
                         </div>
 
-                        <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden">
+                        <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
                             <Link
                                 href="/settings/password"
                                 onClick={() => impact('light')}
-                                className="flex items-center justify-between p-3.5 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors"
+                                className="flex items-center justify-between p-3.5 hover:bg-accent transition-colors"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
                                         <Lock className="h-4 w-4" />
                                     </div>
                                     <div>
-                                        <div className="text-xs font-bold text-slate-900 dark:text-white">
+                                        <div className="text-xs font-semibold text-foreground">
                                             {t('settings_layout.password', 'Xavfsizlik & Parol')}
                                         </div>
-                                        <div className="text-[10px] text-slate-500 dark:text-slate-400">
+                                        <div className="text-xs text-muted-foreground">
                                             Parolni o'zgartirish va himoya
                                         </div>
                                     </div>
                                 </div>
-                                <ChevronRight className="h-4 w-4 text-slate-400" />
+                                <ChevronRight className="h-4 w-4 text-muted-foreground" />
                             </Link>
 
                             <Link
                                 href="/settings/appearance"
                                 onClick={() => impact('light')}
-                                className="flex items-center justify-between p-3.5 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors"
+                                className="flex items-center justify-between p-3.5 hover:bg-accent transition-colors"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400">
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
                                         <Palette className="h-4 w-4" />
                                     </div>
                                     <div>
-                                        <div className="text-xs font-bold text-slate-900 dark:text-white">
+                                        <div className="text-xs font-semibold text-foreground">
                                             {t('settings_layout.appearance', 'Ilova ko\'rinishi')}
                                         </div>
-                                        <div className="text-[10px] text-slate-500 dark:text-slate-400">
+                                        <div className="text-xs text-muted-foreground">
                                             Yorug' / Qorong'u rejim
                                         </div>
                                     </div>
                                 </div>
-                                <ChevronRight className="h-4 w-4 text-slate-400" />
+                                <ChevronRight className="h-4 w-4 text-muted-foreground" />
                             </Link>
 
                             <button
                                 type="button"
                                 onClick={handleLogout}
-                                className="w-full flex items-center justify-between p-3.5 hover:bg-rose-50/50 dark:hover:bg-rose-950/20 text-rose-600 dark:text-rose-400 transition-colors text-left cursor-pointer"
+                                className="w-full flex items-center justify-between p-3.5 hover:bg-destructive-bg/50 text-destructive transition-colors text-left cursor-pointer"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400">
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-destructive-bg text-destructive-text">
                                         <LogOut className="h-4 w-4" />
                                     </div>
                                     <div>
-                                        <div className="text-xs font-bold text-rose-600 dark:text-rose-400">
+                                        <div className="text-xs font-semibold text-destructive">
                                             {t('logout', 'Tizimdan chiqish')}
                                         </div>
-                                        <div className="text-[10px] text-rose-500/70">
+                                        <div className="text-xs text-muted-foreground">
                                             Hisobdan chiqish
                                         </div>
                                     </div>
                                 </div>
-                                <ChevronRight className="h-4 w-4 text-rose-400" />
+                                <ChevronRight className="h-4 w-4 text-destructive" />
                             </button>
                         </div>
                     </div>

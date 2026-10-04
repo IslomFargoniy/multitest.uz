@@ -23,30 +23,30 @@ export default function Practice() {
         <AppShell>
             <Head title={t('nav.tests')} />
 
-            <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950">
+            <div className="min-h-screen bg-background">
                 {/* 1. Top Navigation & Progress */}
-                <div className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
-                    <div className="mx-auto max-w-5xl px-2">
+                <div className="border-b border-border bg-surface-2">
+                    <div className="mx-auto max-w-5xl px-4">
                         <StepTabs attempt_parts={attempt?.attempt_parts ?? []} active={0} />
                     </div>
                 </div>
 
-                <div className="mx-auto max-w-5xl px-2.5 py-5 sm:px-8 sm:py-12">
-                    <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
+                <div className="mx-auto max-w-5xl px-4 py-6 sm:px-8 sm:py-12">
+                    <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
                         {/* 📝 Left Side: Test Context (Col 7) */}
-                        <div className="space-y-8 lg:col-span-7">
-                            <div className="space-y-4">
-                                <div className="inline-flex items-center gap-2 rounded-xl bg-indigo-50 px-3 py-1.5 text-[10px] font-black tracking-[0.2em] text-indigo-600 uppercase dark:bg-indigo-500/10 dark:text-indigo-400">
+                        <div className="space-y-6 lg:col-span-7">
+                            <div className="space-y-3">
+                                <div className="inline-flex items-center gap-2 rounded-lg bg-primary/10 border border-primary/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
                                     <span className="relative flex h-2 w-2">
-                                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75"></span>
-                                        <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-600"></span>
+                                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
+                                        <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
                                     </span>
                                     {t('practice.speaking_session_active')}
                                 </div>
-                                <h1 className="text-3xl md:text-4xl lg:text-5xl leading-tight font-extrabold tracking-tight text-slate-900 dark:text-white">
+                                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
                                     {attempt.mock?.name || attempt.test?.name}
                                 </h1>
-                                <div className="max-w-none text-base md:text-lg leading-relaxed text-slate-500 dark:text-slate-400">
+                                <div className="text-base leading-relaxed text-muted-foreground">
                                     {attempt.mock?.description || attempt.test?.description}
                                 </div>
                             </div>
@@ -56,18 +56,18 @@ export default function Practice() {
                                 <InfoCard
                                     label={t('practice.total_parts')}
                                     value={attempt.attempt_parts?.length ?? 0}
-                                    icon={<Layers className="h-5 w-5 text-blue-500" />}
+                                    icon={<Layers className="h-5 w-5 text-primary" />}
                                 />
                                 <InfoCard
                                     label={t('practice.estimated_time')}
                                     value="15-20 min"
-                                    icon={<Timer className="h-5 w-5 text-amber-500" />}
+                                    icon={<Timer className="h-5 w-5 text-warning" />}
                                 />
                             </div>
 
                             {/* Hardware Checklist */}
-                            <div className="rounded-3xl border border-dashed border-slate-200 bg-white/50 p-6 dark:border-slate-800 dark:bg-slate-900/40">
-                                <h4 className="mb-4 flex items-center gap-2 text-xs font-black tracking-widest text-slate-400 uppercase">
+                            <div className="rounded-2xl border border-dashed border-border bg-card p-6">
+                                <h4 className="mb-4 flex items-center gap-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                                     <Info className="h-4 w-4" /> {t('practice.before_you_start')}
                                 </h4>
                                 <div className="flex flex-wrap gap-6">
@@ -80,32 +80,30 @@ export default function Practice() {
 
                         {/* 🎙️ Right Side: Immersive Audio Card (Col 5) */}
                         <div className="lg:col-span-5">
-                            <div className="sticky top-8 overflow-hidden rounded-2xl sm:rounded-[2.5rem] bg-slate-900 p-5 sm:p-10 text-white shadow-2xl shadow-blue-500/20 dark:bg-slate-900 dark:ring-1 dark:ring-white/10">
-                                <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px]"></div>
-
-                                <div className="relative space-y-8">
+                            <div className="sticky top-8 overflow-hidden rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xl">
+                                <div className="relative space-y-6">
                                     <div>
-                                        <h3 className="text-2xl font-black tracking-tight">{t('practice.instructions')}</h3>
-                                        <p className="mt-2 text-sm leading-relaxed font-medium text-slate-400">
+                                        <h3 className="text-xl font-bold tracking-tight text-foreground">{t('practice.instructions')}</h3>
+                                        <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                                             {t('practice.listen_to_intro_instruction')}
                                         </p>
                                     </div>
 
                                     {/* Visual Audio Player */}
-                                    <div className="group rounded-[2rem] border border-white/5 bg-white/5 p-6 backdrop-blur-xl transition-all hover:bg-white/10">
-                                        <div className="mb-6 flex items-center gap-4">
+                                    <div className="rounded-xl border border-border bg-surface-2 p-5">
+                                        <div className="mb-4 flex items-center gap-3">
                                             <div
-                                                className={`flex h-14 w-14 items-center justify-center rounded-2xl transition-all duration-500 ${
-                                                    isPlaying ? 'scale-105 bg-blue-600 shadow-lg shadow-blue-500/40' : 'scale-100 bg-slate-800'
+                                                className={`flex h-12 w-12 items-center justify-center rounded-xl transition-all ${
+                                                    isPlaying ? 'bg-primary text-primary-foreground shadow-sm' : 'bg-secondary text-muted-foreground'
                                                 }`}
                                             >
-                                                {isPlaying ? <Volume2 className="h-6 w-6 animate-pulse" /> : <Play className="h-6 w-6" />}
+                                                {isPlaying ? <Volume2 className="h-5 w-5 animate-pulse" /> : <Play className="h-5 w-5" />}
                                             </div>
                                             <div className="overflow-hidden">
-                                                <p className="text-[10px] font-black tracking-widest text-blue-400 uppercase">
+                                                <p className="text-xs font-semibold tracking-wider text-primary uppercase">
                                                     {t('practice.playing_audio')}
                                                 </p>
-                                                <p className="truncate font-bold text-slate-200">{t('practice.test_introduction')}</p>
+                                                <p className="truncate font-bold text-foreground text-sm">{t('practice.test_introduction')}</p>
                                             </div>
                                         </div>
 
@@ -115,24 +113,24 @@ export default function Practice() {
                                                 onPlay={() => setIsPlaying(true)}
                                                 onPause={() => setIsPlaying(false)}
                                                 onEnded={handleAudioEnd}
-                                                className="h-10 w-full rounded-full opacity-40 transition-opacity hover:opacity-100"
+                                                className="h-10 w-full rounded-full opacity-60 transition-opacity hover:opacity-100"
                                                 controls
                                                 controlsList="nodownload"
                                             >
                                                 <source src={attempt.mock?.audio_path ?? attempt.test?.audio_path} type="audio/mpeg" />
                                             </audio>
                                         ) : (
-                                            <p className="text-xs text-slate-400 italic">{t('practice.no_audio_available')}</p>
+                                            <p className="text-xs text-muted-foreground italic">{t('practice.no_audio_available')}</p>
                                         )}
                                     </div>
 
                                     {firstPartId && (
                                         <Link
                                             href={route('practice.show', firstPartId)}
-                                            className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-white py-5 text-center font-black text-slate-900 transition-all hover:bg-blue-50 dark:hover:bg-blue-950/40 active:scale-[0.98]"
+                                            className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary text-center font-bold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 active:scale-98"
                                         >
                                             <span>{t('practice.skip_to_first_part')}</span>
-                                            <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                                            <ChevronRight className="h-4 w-4" />
                                         </Link>
                                     )}
                                 </div>
@@ -147,13 +145,13 @@ export default function Practice() {
 
 function InfoCard({ label, value, icon }: { label: string; value: string | number; icon: React.ReactNode }) {
     return (
-        <div className="group flex items-center gap-4 rounded-3xl border border-slate-100 bg-white p-5 transition-all hover:border-indigo-100 hover:shadow-xl hover:shadow-indigo-500/5 dark:border-slate-800 dark:bg-slate-900">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-50 transition-colors group-hover:bg-indigo-50 dark:bg-slate-800 dark:group-hover:bg-indigo-900/30">
+        <div className="flex items-center gap-3.5 rounded-2xl border border-border bg-card p-4 transition-colors hover:border-border-strong">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary">
                 {icon}
             </div>
             <div>
-                <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">{label}</p>
-                <p className="text-lg font-black text-slate-900 dark:text-white">{value}</p>
+                <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">{label}</p>
+                <p className="text-lg font-bold text-foreground font-mono">{value}</p>
             </div>
         </div>
     );
@@ -161,8 +159,8 @@ function InfoCard({ label, value, icon }: { label: string; value: string | numbe
 
 function CheckItem({ icon, text }: { icon: React.ReactNode; text: string }) {
     return (
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-400">
-            <div className="text-indigo-500">{icon}</div>
+        <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+            <div className="text-primary">{icon}</div>
             {text}
         </div>
     );
