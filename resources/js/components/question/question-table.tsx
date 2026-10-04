@@ -1,6 +1,7 @@
 import DeleteItemModal from '@/components/delete-item-modal';
 import CreateQuestionModal from '@/components/question/create-question-modal';
 import UpdateQuestionModal from '@/components/question/update-question-modal';
+import SafeHtml from '@/components/safe-html';
 import { Auth, Part } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
 import { Headphones, MessageSquare, Timer } from 'lucide-react';
@@ -74,9 +75,9 @@ const QuestionTable = ({ part }: QuestionTableProps) => {
                                 </div>
 
                                 {/* Content Area */}
-                                <div
+                                <SafeHtml
                                     className="prose prose-slate dark:prose-invert prose-p:text-slate-600 dark:prose-p:text-slate-300 prose-img:rounded-2xl prose-strong:text-indigo-600 max-w-none flex-1 text-sm leading-relaxed"
-                                    dangerouslySetInnerHTML={{ __html: item?.textarea }}
+                                    html={item?.textarea}
                                 />
 
                                 {/* Audio Player Section */}

@@ -1,4 +1,5 @@
 import AudioWaveform from '@/components/AudioWaveform';
+import SafeHtml from '@/components/safe-html';
 import { AttemptAnswer } from '@/types';
 import { AlertCircle, BrainCircuit, Clock, FileText, Mic, Sparkles, Volume2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +19,7 @@ const AttemptAnswerComponent = ({ attempt_answers }: QuestionTableProps) => {
                 return (
                     <div
                         key={item.id}
-                        className="group relative overflow-hidden rounded-2xl sm:rounded-[2.5rem] border border-slate-100 bg-white p-1 shadow-sm transition-all hover:shadow-xl dark:border-slate-800 dark:bg-slate-900"
+                        className="group relative overflow-hidden rounded-2xl border border-slate-100 bg-white p-1 shadow-sm transition-all hover:shadow-xl sm:rounded-[2.5rem] dark:border-slate-800 dark:bg-slate-900"
                     >
                         <div className="flex flex-col lg:flex-row">
                             {/* 📝 LEFT SIDE: THE QUESTION */}
@@ -46,9 +47,9 @@ const AttemptAnswerComponent = ({ attempt_answers }: QuestionTableProps) => {
                                     </div>
                                 </div>
 
-                                <div
+                                <SafeHtml
                                     className="prose prose-slate dark:prose-invert prose-p:leading-relaxed prose-img:rounded-3xl prose-p:text-slate-700 dark:prose-p:text-slate-300 max-w-none"
-                                    dangerouslySetInnerHTML={{ __html: item.question?.textarea ?? '' }}
+                                    html={item.question?.textarea ?? ''}
                                 />
                             </div>
 
@@ -117,7 +118,7 @@ const AttemptAnswerComponent = ({ attempt_answers }: QuestionTableProps) => {
 /* --- AI Review Helper --- */
 function AIReviewHelper({ review }: { review: string }) {
     const { t } = useTranslation();
-    
+
     try {
         const data = JSON.parse(review);
         if (typeof data !== 'object' || data === null) throw new Error('Not an object');
@@ -136,39 +137,29 @@ function AIReviewHelper({ review }: { review: string }) {
                 {(data.score || data.level) && (
                     <div className="flex items-center justify-between border-b border-purple-50 bg-purple-50/30 px-4 py-3 dark:border-purple-900/30 dark:bg-purple-900/20">
                         <div className="flex items-center gap-3">
-                            {data.level && (
-                                <span className="rounded-lg bg-purple-600 px-2.5 py-1 text-xs font-black text-white">
-                                    {data.level}
-                                </span>
-                            )}
-                            <span className="text-xs font-bold text-purple-700 dark:text-purple-300">
-                                {t('response_card.estimated_level')}
-                            </span>
+                            {data.level && <span className="rounded-lg bg-purple-600 px-2.5 py-1 text-xs font-black text-white">{data.level}</span>}
+                            <span className="text-xs font-bold text-purple-700 dark:text-purple-300">{t('response_card.estimated_level')}</span>
                         </div>
-                        {data.score && (
-                            <span className="text-lg font-black text-purple-600 dark:text-purple-400">
-                                {data.score} / 75
-                            </span>
-                        )}
+                        {data.score && <span className="text-lg font-black text-purple-600 dark:text-purple-400">{data.score} / 75</span>}
                     </div>
                 )}
 
                 {/* Criteria Details */}
                 <div className="divide-y divide-slate-50 dark:divide-slate-800">
-                    {criteria.map((c) => data[c.key] && (
-                        <div key={c.key} className="p-4 transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
-                            <div className="mb-1 flex items-center gap-2">
-                                <span className="text-xs">{c.icon}</span>
-                                <span className="text-[10px] font-black tracking-wider text-slate-400 uppercase break-words leading-tight">
-                                    {c.label}
-                                </span>
-                            </div>
-                            <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-                                {data[c.key]}
-                            </p>
-                        </div>
-                    ))}
-
+                    {criteria.map(
+                        (c) =>
+                            data[c.key] && (
+                                <div key={c.key} className="p-4 transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
+                                    <div className="mb-1 flex items-center gap-2">
+                                        <span className="text-xs">{c.icon}</span>
+                                        <span className="text-[10px] leading-tight font-black tracking-wider break-words text-slate-400 uppercase">
+                                            {c.label}
+                                        </span>
+                                    </div>
+                                    <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">{data[c.key]}</p>
+                                </div>
+                            ),
+                    )}
                 </div>
 
                 {/* Fallback for general feedback if exists */}
@@ -177,9 +168,7 @@ function AIReviewHelper({ review }: { review: string }) {
                         <div className="mb-1 text-[10px] font-black tracking-wider text-purple-400 uppercase">
                             {t('response_card.general_feedback')}
                         </div>
-                        <p className="text-sm italic leading-relaxed text-slate-600 dark:text-slate-300">
-                            {data.feedback}
-                        </p>
+                        <p className="text-sm leading-relaxed text-slate-600 italic dark:text-slate-300">{data.feedback}</p>
                     </div>
                 )}
             </div>

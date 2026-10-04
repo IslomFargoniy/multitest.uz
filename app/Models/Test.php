@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Test extends Model
@@ -13,6 +12,14 @@ class Test extends Model
     /** @use HasFactory<\Database\Factories\TestFactory> */
     use HasFactory, SoftDeletes;
 
+    protected static function booted(): void
+    {
+        static::saving(function (self $model) {
+            if ($model->isDirty('description')) {
+                $model->description = $model->description === null ? null : \App\Support\HtmlSanitizer::clean($model->description);
+            }
+        });
+    }
 
     protected $fillable = [
         'user_id',

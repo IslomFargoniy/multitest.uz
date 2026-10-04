@@ -80,9 +80,7 @@ npm run dev
 ```
 *(Optionally you can run `php artisan serve` and `npm run dev` in separate terminals).*
 
-> 🔑 **Default Admin Login:**
-> - **Username:** `admin@gmail.com`
-> - **Password:** `123456`
+> 🔑 **Admin:** set `ADMIN_EMAIL` and `ADMIN_PASSWORD` (min 12 characters) in `.env` before running `php artisan db:seed`.
 
 ---
 

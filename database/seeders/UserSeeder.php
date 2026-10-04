@@ -9,26 +9,32 @@ use Illuminate\Support\Facades\Hash;
 class UserSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Seeds the initial admin. Credentials come from ADMIN_EMAIL / ADMIN_PASSWORD.
+     * Outside local/testing environments a missing or short password aborts the seeding.
      */
     public function run(): void
     {
-        $users = [
+        $email = env('ADMIN_EMAIL', 'admin@gmail.com');
+        $password = env('ADMIN_PASSWORD');
+
+        if (app()->environment(['local', 'testing'])) {
+            $password ??= 'password';
+        }
+
+        if (! $password || (! app()->environment(['local', 'testing']) && strlen($password) < 12)) {
+            $this->command?->error('Set ADMIN_PASSWORD (min 12 characters) in .env before seeding the admin user.');
+
+            return;
+        }
+
+        $admin = User::updateOrCreate(
+            ['email' => $email],
             [
                 'name' => 'Admin',
-                'email' => 'admin@gmail.com',
-                'phone' => '998901234567',
-                'password' => Hash::make('123456'), // Always hash passwords
-            ],
-        ];
-
-        foreach ($users as $user) {
-            $new_user = User::updateOrCreate(
-                ['email' => $user['email']], // unique condition
-                $user
-            );
-
-            $new_user->assignRole('Admin');
-        }
+                'phone' => env('ADMIN_PHONE', '998901234567'),
+                'password' => Hash::make($password),
+            ]
+        );
+        $admin->assignRole('Admin');
     }
 }

@@ -1,3 +1,4 @@
+import SafeHtml from '@/components/safe-html';
 import CircularTimer from '@/components/practice/CircularTimer';
 import { useTelegramBackButton, useHaptic } from '@/components/telegram-theme-provider';
 import { router } from '@inertiajs/react';
@@ -419,10 +420,8 @@ export default function QuestionPlayer({ attempt_part }: any) {
                         {phase === 'introduction' ? (
                             <div className="space-y-4">
                                 <h2 className="text-2xl md:text-3xl font-extrabold leading-snug text-slate-800 dark:text-slate-100">{attempt_part.part.name}</h2>
-                                <div
-                                    className="text-base md:text-lg leading-relaxed text-slate-600 dark:text-slate-300"
-                                    dangerouslySetInnerHTML={{ __html: attempt_part.part.description }}
-                                />
+                                <SafeHtml
+                                    className="text-base md:text-lg leading-relaxed text-slate-600 dark:text-slate-300" html={attempt_part.part.description} />
                             </div>
                         ) : phase === 'uploading' ? (
                             <div className="flex h-full flex-col items-center justify-center space-y-4 py-20 text-center">
@@ -430,10 +429,8 @@ export default function QuestionPlayer({ attempt_part }: any) {
                                 <p className="text-slate-500 dark:text-slate-400">{t('question_player.uploading_desc')}</p>
                             </div>
                         ) : (
-                            <div
-                                className="tinymce-content prose prose-slate dark:prose-invert prose-p:text-slate-600 dark:prose-p:text-slate-200 prose-img:rounded-2xl prose-strong:text-indigo-600 max-w-none flex-1 text-lg md:text-xl leading-relaxed dark:text-slate-200"
-                                dangerouslySetInnerHTML={{ __html: question?.textarea }}
-                            />
+                            <SafeHtml
+                                className="tinymce-content prose prose-slate dark:prose-invert prose-p:text-slate-600 dark:prose-p:text-slate-200 prose-img:rounded-2xl prose-strong:text-indigo-600 max-w-none flex-1 text-lg md:text-xl leading-relaxed dark:text-slate-200" html={question?.textarea} />
                         )}
                     </div>
                 </div>

@@ -16,7 +16,7 @@ class QuestionObserver
             $oldHtml = $question->getOriginal('textarea') ?? '';
 
             // 1. Process the content (Saves new Base64, leaves existing URLs alone)
-            $newHtml = $this->processImages($question->textarea);
+            $newHtml = \App\Support\HtmlSanitizer::clean($this->processImages($question->textarea));
 
             // 2. Cleanup (If updating, check what was removed)
             if ($question->exists) {
