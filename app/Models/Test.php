@@ -27,6 +27,23 @@ class Test extends Model
         'is_public' => 'boolean',
     ];
 
+    /**
+     * Tests a user may read/use: admin = all, otherwise public ones plus their own. Guest = public only.
+     */
+    public function scopeVisibleTo($query, ?User $user)
+    {
+        if ($user && $user->hasRole('Admin')) {
+            return $query;
+        }
+
+        return $query->where(function ($q) use ($user) {
+            $q->where('is_public', true);
+            if ($user) {
+                $q->orWhere('user_id', $user->id);
+            }
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

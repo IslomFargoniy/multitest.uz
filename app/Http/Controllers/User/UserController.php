@@ -24,9 +24,7 @@ class UserController extends Controller
             $per_page = 10;
         }
 
-        if (!Auth::user()->hasRole('Admin')) {
-            return back()->with('error', "You are not allowed to access this page");
-        }
+        $this->authorize('viewAny', User::class);
 
         $user = User::with([
             'roles',
@@ -78,10 +76,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-
-        if (!Auth::user()->hasRole('Admin')) {
-            return back()->with('error', "You are not allowed to access this page");
-        }
+        $this->authorize('view', $user);
 
         return Inertia::render('user/show', [
             'user' => $user->loadCount(['attempts', 'tests', 'mocks'])->load(['last_attempt.test']),
@@ -111,9 +106,14 @@ class UserController extends Controller
                 unset($validated['password']); // Don't update if password is empty
             }
 
+            if ($request->filled('role') && $user->id === Auth::id() && !$user->hasRole($request->role)) {
+                throw ValidationException::withMessages(['role' => ['You cannot change your own role.']]);
+            }
+
+            unset($validated['role']);
             $user->update($validated);
 
-            if ($request->role) {
+            if ($request->filled('role')) {
                 $user->syncRoles($request->role);
             }
 
@@ -132,6 +132,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
+        abort_if($user->id === Auth::id(), 403, 'You cannot delete your own account here.');
+
         try {
 
             $user->delete();

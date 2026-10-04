@@ -50,6 +50,10 @@ class PartController extends Controller
             Part::create($data);
             return redirect()->back()->with('success', 'Part created successfully');
 
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+            throw $exception;
+
         } catch (\Exception $exception) {
             // Proper Inertia error response
             throw ValidationException::withMessages([
@@ -98,6 +102,10 @@ class PartController extends Controller
 
             return redirect()->back()->with('success', 'Part updated successfully.');
 
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+            throw $exception;
+
         } catch (\Exception $exception) {
             // Proper Inertia error response
             throw ValidationException::withMessages([
@@ -120,6 +128,10 @@ class PartController extends Controller
             }
 
             return redirect()->back()->with('success', 'Part deleted successfully.');
+
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+            throw $exception;
 
         } catch (\Exception $exception) {
             // Proper Inertia error response

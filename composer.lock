@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "17c989284dda85f00d82d2f468915d0c",
+    "content-hash": "5cefd686f6a06dd03c5185ad6d5a75f0",
     "packages": [
         {
             "name": "brick/math",
@@ -847,68 +847,6 @@
                 }
             ],
             "time": "2023-10-12T05:21:21+00:00"
-        },
-        {
-            "name": "goodoneuz/pay-uz",
-            "version": "2.2.24",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/shaxzodbek-uzb/pay-uz.git",
-                "reference": "2253ceed0d6cab267c7eb6155153b0458a5dc6da"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/shaxzodbek-uzb/pay-uz/zipball/2253ceed0d6cab267c7eb6155153b0458a5dc6da",
-                "reference": "2253ceed0d6cab267c7eb6155153b0458a5dc6da",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": "*",
-                "php": "^7.1|^8.0",
-                "stripe/stripe-php": "*"
-            },
-            "require-dev": {
-                "orchestra/testbench": "3.7.*|^6.2",
-                "phpunit/phpunit": "^7.0|^9.3.3"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "aliases": {
-                        "PayUz": "Goodoneuz\\PayUz\\PayUzFacade"
-                    },
-                    "providers": [
-                        "Goodoneuz\\PayUz\\PayUzServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Goodoneuz\\PayUz\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Shaxzodbek",
-                    "email": "shaxzodbek.qambaraliyev@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Payment: Click, Payme, Uzcard, Visa",
-            "homepage": "https://github.com/shaxzodbek-uzb/pay-uz",
-            "keywords": [
-                "blaze",
-                "pay-uz"
-            ],
-            "support": {
-                "issues": "https://github.com/shaxzodbek-uzb/pay-uz/issues",
-                "source": "https://github.com/shaxzodbek-uzb/pay-uz/tree/2.2.24"
-            },
-            "time": "2025-01-30T11:37:58+00:00"
         },
         {
             "name": "google-gemini-php/client",
@@ -5107,65 +5045,6 @@
                 }
             ],
             "time": "2025-01-13T13:04:43+00:00"
-        },
-        {
-            "name": "stripe/stripe-php",
-            "version": "v17.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "893946057e43b145826b0dfd7f398673e381e2ae"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/893946057e43b145826b0dfd7f398673e381e2ae",
-                "reference": "893946057e43b145826b0dfd7f398673e381e2ae",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "ext-mbstring": "*",
-                "php": ">=5.6.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "3.72.0",
-                "phpstan/phpstan": "^1.2",
-                "phpunit/phpunit": "^5.7 || ^9.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Stripe\\": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Stripe and contributors",
-                    "homepage": "https://github.com/stripe/stripe-php/contributors"
-                }
-            ],
-            "description": "Stripe PHP Library",
-            "homepage": "https://stripe.com/",
-            "keywords": [
-                "api",
-                "payment processing",
-                "stripe"
-            ],
-            "support": {
-                "issues": "https://github.com/stripe/stripe-php/issues",
-                "source": "https://github.com/stripe/stripe-php/tree/v17.4.0"
-            },
-            "time": "2025-07-01T20:23:15+00:00"
         },
         {
             "name": "swagger-api/swagger-ui",
@@ -11401,12 +11280,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }

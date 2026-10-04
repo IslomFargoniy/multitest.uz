@@ -10,13 +10,13 @@ use Illuminate\Support\Str;
 
 class TelegramLoginController extends Controller
 {
-    public function handle(Request $request)
+    public function handle(Request $request, \App\Services\Telegram\TelegramAuthValidator $validator)
     {
         // Telegram sends user info via POST
         $data = $request->all();
 
         // Validate Telegram login
-        if (!$this->isTelegramDataValid($data)) {
+        if (!$validator->validateWidgetData($data)) {
             return redirect()->route('dashboard')->with('error', 'Invalid Telegram login.');
         }
 
@@ -24,7 +24,7 @@ class TelegramLoginController extends Controller
         $user = User::updateOrCreate(
             ['telegram_id' => $data['id']],
             [
-                'name' => $data['first_name'] . ' ' . ($data['last_name'] ?? ''),
+                'name' => trim(($data['first_name'] ?? '') . ' ' . ($data['last_name'] ?? '')),
                 'username' => $data['username'] ?? null,
                 'avatar' => $data['photo_url'] ?? null
             ]
@@ -36,31 +36,8 @@ class TelegramLoginController extends Controller
         }
 
         Auth::login($user);
+        $request->session()->regenerate();
 
         return redirect()->route('dashboard');
-    }
-
-    private function isTelegramDataValid(array $data): bool
-    {
-        $botToken = config('services.telegram.bot_token');
-        if (!isset($data['hash'])) {
-            return false;
-        }
-
-        $checkHash = $data['hash'];
-        unset($data['hash']);
-
-        $dataCheckArr = [];
-        foreach ($data as $key => $value) {
-            $dataCheckArr[] = $key . '=' . $value;
-        }
-
-        sort($dataCheckArr);
-        $dataCheckString = implode("\n", $dataCheckArr);
-
-        $secretKey = hash('sha256', $botToken, true);
-        $hash = hash_hmac('sha256', $dataCheckString, $secretKey);
-
-        return hash_equals($hash, $checkHash);
     }
 }

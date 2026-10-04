@@ -39,6 +39,12 @@ class PracticeController extends Controller
             ]);
 
 
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+
+            throw $exception;
+
+
         } catch (\Exception $exception) {
             // Proper Inertia error response
             throw ValidationException::withMessages([
@@ -59,6 +65,8 @@ class PracticeController extends Controller
             return inertia('practice/show', [
                 'attempt_part' => $attemptPart,
             ]);
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+            throw $exception;
         } catch (\Exception $exception) {
             // Proper Inertia error response
             throw ValidationException::withMessages([
@@ -126,6 +134,12 @@ class PracticeController extends Controller
             return redirect()->to($redirectUrl)->with('success', 'Answers saved successfully.');
 
 
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+
+            throw $exception;
+
+
         } catch (\Exception $exception) {
             DB::rollBack();
             Log::error($exception->getMessage());
@@ -147,6 +161,8 @@ class PracticeController extends Controller
                 'success' => true,
                 'tab_switch_count' => $attempt->fresh()->tab_switch_count,
             ]);
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

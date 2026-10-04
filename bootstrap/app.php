@@ -26,7 +26,6 @@ return Application::configure(basePath: dirname(__DIR__))
         // ✅ Telegram webhook va Practice save uchun CSRF istisno
         $middleware->validateCsrfTokens(except: [
             'bot/webhook',
-            'webapp-login',
             'bot/MultitestUzBot/webhook',
             'practice/attempt_part/*/save',
         ]);
@@ -39,26 +38,3 @@ return Application::configure(basePath: dirname(__DIR__))
             return redirect()->route('dashboard');
         });
     })->create();
-
-if (!function_exists('telegramlog')) {
-    function telegramlog($text)
-    {
-        $token = "7763950049:AAFyTjSgv47GC-76zSez6Q9pPzNNYPH6kqA";
-        $chat_id = "531110501";
-        try {
-            $telegram = new \Telegram\Bot\Api($token);
-
-            $telegram->sendMessage([
-                'chat_id' => $chat_id,
-                'text' => $text,
-                'parse_mode' => 'html',
-            ]);
-
-            return 1;
-        } catch (\Exception $exception) {
-            \Illuminate\Support\Facades\Log::error('Telegram API Error: ' . $exception->getMessage());
-            return $exception->getMessage();
-        }
-
-    }
-}

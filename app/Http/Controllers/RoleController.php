@@ -21,6 +21,8 @@ class RoleController extends Controller
                 'status' => 'success',
                 'data' => $tests
             ]);
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+            throw $exception;
         } catch (\Exception $exception) {
             return response()->json([
                 'status' => 'error',

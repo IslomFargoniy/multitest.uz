@@ -13,7 +13,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->can('update', $this->route('user')) ?? false;
     }
 
     /**
@@ -25,7 +25,7 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'digits_between:9,12'],
+            'phone' => ['nullable', 'string', 'digits_between:9,12', Rule::unique('users', 'phone')->ignore($this->route('user')->id)],
 
             'email' => [
                 'nullable',
@@ -35,7 +35,8 @@ class UpdateUserRequest extends FormRequest
                 'max:255',
                 Rule::unique('users', 'email')->ignore($this->route('user')->id)
             ],
-            'password' => 'nullable',
+            'password' => ['nullable', \Illuminate\Validation\Rules\Password::defaults()],
+            'role' => ['nullable', 'string', Rule::exists('roles', 'name')],
             'create_test_limit' => ['nullable', 'integer', 'min:0'],
         ];
     }

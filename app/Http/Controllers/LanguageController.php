@@ -24,6 +24,8 @@ class LanguageController extends Controller
                 'status' => 'success',
                 'data' => $languages,
             ]);
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+            throw $exception;
         } catch (\Exception $exception) {
             return response()->json([
                 'status' => 'error',
@@ -55,6 +57,8 @@ class LanguageController extends Controller
                 'status' => 'success',
                 'data' => $languages,
             ]);
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+            throw $exception;
         } catch (\Exception $exception) {
             return response()->json([
                 'status' => 'error',
@@ -132,6 +136,10 @@ class LanguageController extends Controller
                 'test' => $test,
                 'language' => $language,
             ]);
+
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+            throw $exception;
 
         } catch (\Exception $exception) {
             // Proper Inertia error response

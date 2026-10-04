@@ -119,6 +119,8 @@ class MockController extends Controller
             Mock::create($data);
 
             return back()->with('success', __('success.mock_created') ?? 'Mock test muvaffaqiyatli yaratildi');
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             throw ValidationException::withMessages([
                 'error' => [$e->getMessage()],
@@ -171,6 +173,8 @@ class MockController extends Controller
 
             $mock->update($data);
             return back()->with('success', __('success.mock_updated') ?? 'Mock test muvaffaqiyatli yangilandi');
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             throw ValidationException::withMessages([
                 'error' => [$e->getMessage()],
@@ -196,6 +200,8 @@ class MockController extends Controller
             });
 
             return redirect()->route('mock.index')->with('success', __('success.mock_deleted') ?? "Mock o'chirildi");
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             return redirect()->route('mock.index')->withErrors([
                 'error' => $e->getMessage(),

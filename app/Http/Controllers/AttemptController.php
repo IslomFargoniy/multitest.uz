@@ -98,6 +98,10 @@ class AttemptController extends Controller
                 'attempt' => $attempt,
             ]);
 
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+            throw $exception;
+
         } catch (\Exception $exception) {
             // Proper Inertia error response
             throw ValidationException::withMessages([
@@ -121,51 +125,48 @@ class AttemptController extends Controller
     {
         try {
             $data = $request->validated();
+            $data['name'] = (!empty($data['mock_id']) ? \App\Models\Mock::whereKey($data['mock_id'])->value('name') : null)
+                ?? \App\Models\Test::whereKey($data['test_id'])->value('name')
+                ?? 'Attempt';
 
-            DB::beginTransaction();
+            $attempt = DB::transaction(function () use ($data, $request) {
+                $attempt = Attempt::create($data);
+                $attempt->load('test.parts');
 
-            // Eager load parts with test
-            $attempt = Attempt::create($data);
-            $attempt->load('test.parts');
+                if ($attempt->test->parts->isEmpty()) {
+                    throw new \Exception('The selected test has no parts defined.');
+                }
 
-            if ($attempt->test->parts->isEmpty()) {
-                throw new \Exception('The selected test has no parts defined.');
-            }
+                $partIds = $request->input('part_ids');
+                $partsToAttempt = $attempt->test->parts;
 
-            // Filter parts if part_ids are provided
-            $partIds = $request->input('part_ids');
-            $partsToAttempt = $attempt->test->parts;
+                if (is_array($partIds) && count($partIds) > 0) {
+                    $partsToAttempt = $partsToAttempt->whereIn('id', $partIds);
+                }
 
-            if (is_array($partIds) && count($partIds) > 0) {
-                $partsToAttempt = $partsToAttempt->whereIn('id', $partIds);
-            }
+                if ($partsToAttempt->isEmpty()) {
+                    throw new \Exception('No valid parts selected for the attempt.');
+                }
 
-            if ($partsToAttempt->isEmpty()) {
-                throw new \Exception('No valid parts selected for the attempt.');
-            }
+                $attempt->attempt_parts()->createMany(
+                    $partsToAttempt->map(fn ($part) => ['part_id' => $part->id, 'started_at' => now()])->values()->toArray()
+                );
 
-            // Create attempt parts
-            $attemptParts = $partsToAttempt->map(function ($part) {
-                return [
-                    'part_id' => $part->id,
-                    'started_at' => now(),
-                ];
-            })->toArray();
-
-            $attempt->attempt_parts()->createMany($attemptParts);
-
-            DB::commit();
+                return $attempt;
+            });
 
             return redirect()->route('practice.index', $attempt->id)
                 ->with('success', 'Attempt created successfully.');
 
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+            throw $exception;
         } catch (\Exception $exception) {
-            // Proper Inertia error response
             throw ValidationException::withMessages([
                 'error' => [$exception->getMessage()],
             ]);
         }
     }
+
 
     /**
      * Display the specified resource.
@@ -194,6 +195,10 @@ class AttemptController extends Controller
                 'attempt' => $resAttempt,
             ]);
 
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+            throw $exception;
+
         } catch (\Exception $exception) {
             throw ValidationException::withMessages([
                 'error' => [$exception->getMessage()],
@@ -220,7 +225,7 @@ class AttemptController extends Controller
     public function evaluate(Request $request, Attempt $attempt)
     {
         try {
-            $this->authorize('update', $attempt);
+            $this->authorize('evaluate', $attempt);
             $request->validate([
                 'score' => 'required|numeric|min:0|max:75',
                 'review' => 'nullable|string',
@@ -234,9 +239,15 @@ class AttemptController extends Controller
             // Send Telegram Notification if applicable
             try {
                 app(\App\Services\Telegram\MultitestUzBotService::class)->sendAttemptResultNotification($attempt);
+            } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $e) {
+                throw $e;
             } catch (\Exception $e) {
                 \Log::warning('Telegram notification failed on evaluate: '.$e->getMessage());
             }
+
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+            throw $exception;
 
         } catch (\Exception $exception) {
             throw ValidationException::withMessages([
@@ -255,6 +266,10 @@ class AttemptController extends Controller
             $attempt->delete();
 
             return redirect()->back()->with('success', 'Attempt deleted successfully.');
+
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+            throw $exception;
 
         } catch (\Exception $exception) {
             throw ValidationException::withMessages([
@@ -287,6 +302,10 @@ class AttemptController extends Controller
             }
 
             return redirect()->back()->with('success', 'Full re-evaluation started. All questions are being re-processed.');
+
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+            throw $exception;
 
         } catch (\Exception $exception) {
             throw ValidationException::withMessages([

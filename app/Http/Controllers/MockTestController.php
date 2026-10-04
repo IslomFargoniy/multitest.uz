@@ -41,6 +41,10 @@ class MockTestController extends Controller
 
             return redirect()->back()->with('success', 'Mock Tests added successfully');
 
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+            throw $exception;
+
         } catch (\Exception $exception) {
             // Proper Inertia error response
             throw ValidationException::withMessages([
@@ -81,6 +85,10 @@ class MockTestController extends Controller
         try {
             $mockTest->delete();
             return redirect()->back()->with('success', 'Mock Test deleted successfully');
+
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+            throw $exception;
 
         } catch (\Exception $exception) {
             // Proper Inertia error response

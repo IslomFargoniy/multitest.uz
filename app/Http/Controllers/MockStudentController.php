@@ -163,6 +163,8 @@ class MockStudentController extends Controller
                 }
 
                 \Illuminate\Support\Facades\DB::commit();
+            } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $e) {
+                throw $e;
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\DB::rollBack();
                 \Illuminate\Support\Facades\Log::error('MockStudent enter failed to create attempt: ' . $e->getMessage());

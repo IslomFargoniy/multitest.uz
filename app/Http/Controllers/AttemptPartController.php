@@ -61,9 +61,7 @@ class AttemptPartController extends Controller
      */
     public function reEvaluate(AttemptPart $attemptPart)
     {
-        if (!auth()->user()->hasAnyRole(['Admin', 'Teacher'])) {
-            abort(403);
-        }
+        $this->authorize('evaluate', $attemptPart->attempt);
 
         $attemptPart->load('attempt_answers');
 

@@ -2,62 +2,37 @@
 
 namespace App\Http\Requests;
 
-use App\Models\MockTest;
+use App\Models\Mock;
+use App\Models\Test;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\ValidationException;
-use mysql_xdevapi\Exception;
+use Illuminate\Validation\Rule;
 
 class StoreAttemptRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return true;
+        return $this->user() !== null;
     }
 
-    public function prepareForValidation(): void
+    protected function prepareForValidation(): void
     {
-
         $this->merge([
-            'started_at' => date('Y-m-d H:i:s'),
+            'started_at' => now()->toDateTimeString(),
+            'user_id' => $this->user()?->id,
         ]);
 
-        if ($this->finished_at) {
-            $this->merge([
-                'finished_at' => date('Y-m-d H:i:s', strtotime($this->finished_at)),
-            ]);
-        }
+        if (!$this->filled('test_id') && $this->filled('mock_id')) {
+            $mock = Mock::query()->find($this->input('mock_id'));
+            $testId = $mock?->test_id
+                ?? $mock?->mock_tests()->inRandomOrder()->value('test_id');
 
-        $this->merge([
-            'user_id' => auth()->id(),
-        ]);
-
-        if (!$this->test_id) {
-            $test = MockTest::query()
-                ->where('mock_id', $this->mock_id)
-                ->inRandomOrder()
-                ->first();
-
-            if (!$test) {
-                throw ValidationException::withMessages([
-                    'error' => 'No test found for this Mock.',
-                ]);
-//                throw new \Exception('No test found for this Mock.');
+            if ($testId) {
+                $this->merge(['test_id' => $testId]);
             }
-
-            $this->merge([
-                'test_id' => $test->test_id,
-            ]);
         }
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -65,10 +40,51 @@ class StoreAttemptRequest extends FormRequest
             'mock_id' => ['nullable', 'exists:mocks,id'],
             'test_id' => ['required', 'exists:tests,id'],
             'started_at' => ['required', 'date'],
-            'finished_at' => ['nullable', 'date', 'after_or_equal:started_at'],
-            'score' => ['nullable', 'integer', 'min:0'],
             'part_ids' => ['nullable', 'array'],
-            'part_ids.*' => ['exists:parts,id'],
+            'part_ids.*' => [Rule::exists('parts', 'id')->where('test_id', $this->input('test_id'))],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'test_id.required' => 'No test found for this Mock.',
+        ];
+    }
+
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                if ($validator->errors()->isNotEmpty()) {
+                    return;
+                }
+
+                $user = $this->user();
+                $testId = (int) $this->input('test_id');
+                $mock = $this->filled('mock_id') ? Mock::query()->find($this->input('mock_id')) : null;
+
+                if ($mock) {
+                    $privileged = $user->hasRole('Admin') || $mock->user_id === $user->id;
+
+                    if (!$privileged && $mock->status !== 'active') {
+                        $validator->errors()->add('mock_id', 'This mock is not available.');
+
+                        return;
+                    }
+
+                    $belongs = $mock->test_id === $testId || $mock->mock_tests()->where('test_id', $testId)->exists();
+                    if (!$belongs) {
+                        $validator->errors()->add('test_id', 'The test does not belong to this mock.');
+                    }
+
+                    return;
+                }
+
+                if (!Test::query()->visibleTo($user)->whereKey($testId)->exists()) {
+                    $validator->errors()->add('test_id', 'The selected test is not available.');
+                }
+            },
         ];
     }
 }

@@ -39,6 +39,8 @@ class TestController extends Controller
                 'status' => 'success',
                 'data' => $tests
             ]);
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+            throw $exception;
         } catch (\Exception $exception) {
             return response()->json([
                 'status' => 'error',
@@ -99,6 +101,14 @@ class TestController extends Controller
 
 
 
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+
+
+            throw $exception;
+
+
+
         } catch (\Exception $exception) {
             // Proper Inertia error response
             throw ValidationException::withMessages([
@@ -141,6 +151,8 @@ class TestController extends Controller
             Test::create($data);
 
             return redirect()->back()->with('success', 'Test created successfully.');
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+            throw $exception;
         } catch (\Exception $exception) {
             // Proper Inertia error response
             throw ValidationException::withMessages([
@@ -169,6 +181,10 @@ class TestController extends Controller
                     },
                 ]),
             ]);
+
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+            throw $exception;
 
         } catch (\Exception $exception) {
             // Proper Inertia error response
@@ -210,6 +226,10 @@ class TestController extends Controller
 
             return redirect()->back()->with('success', 'Test updated successfully.');
 
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+            throw $exception;
+
         } catch (\Exception $exception) {
             // Proper Inertia error response
             throw ValidationException::withMessages([
@@ -232,6 +252,8 @@ class TestController extends Controller
             }
 
             return redirect()->back()->with('success', 'Test deleted successfully.');
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+            throw $exception;
         } catch (\Exception $exception) {
             // Proper Inertia error response
             throw ValidationException::withMessages([

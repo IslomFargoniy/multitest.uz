@@ -50,6 +50,8 @@ return [
 
     'telegram' => [
         'bot_token' => env('MultitestUzBot_TOKEN'),
+        'auth_max_age' => (int) env('TELEGRAM_AUTH_MAX_AGE', 86400),
+        'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET'),
     ],
 
 ];

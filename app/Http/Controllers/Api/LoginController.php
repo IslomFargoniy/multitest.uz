@@ -25,37 +25,22 @@ class LoginController extends Controller
 
         $otpCode = trim($request->otp);
 
-        // Developer / Reviewer test bypass code
-        if ($otpCode === '159123') {
-            $user = User::first();
-            if (!$user) {
-                $user = User::create([
-                    'name' => 'Demo User',
-                    'username' => 'demouser',
-                    'email' => 'demo@multitest.uz',
-                    'password' => Hash::make('secret123'),
-                ]);
-                $user->assignRole('Student');
-            }
-            $userId = $user->id;
-        } else {
-            $otp = Otp::where('code', $otpCode)
-                ->where('expired', false)
-                ->where('expired_at', '>', now())
-                ->latest()
-                ->first();
+        $otp = Otp::where('code', $otpCode)
+            ->where('expired', false)
+            ->where('expired_at', '>', now())
+            ->latest()
+            ->first();
 
-            if (!$otp) {
-                return response()->json([
-                    'success' => false,
-                    'data' => new \stdClass(),
-                    'message' => 'OTP noto‘g‘ri yoki muddati o‘tgan.',
-                ], 400);
-            }
-
-            $userId = $otp->user_id;
-            $otp->update(['expired' => true]);
+        if (!$otp) {
+            return response()->json([
+                'success' => false,
+                'data' => new \stdClass(),
+                'message' => 'OTP noto‘g‘ri yoki muddati o‘tgan.',
+            ], 400);
         }
+
+        $userId = $otp->user_id;
+        $otp->update(['expired' => true]);
 
         $user = User::find($userId);
 

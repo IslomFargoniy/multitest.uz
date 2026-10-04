@@ -50,6 +50,10 @@ class QuestionController extends Controller
             Question::create($data);
             return redirect()->back()->with('success', 'Question created successfully');
 
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $e) {
+
+            throw $e;
+
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -95,6 +99,10 @@ class QuestionController extends Controller
 
             return redirect()->back()->with('success', 'Question updated successfully.');
 
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+            throw $exception;
+
         } catch (\Exception $exception) {
             return redirect()->back()->with('error', $exception->getMessage());
         }
@@ -114,6 +122,10 @@ class QuestionController extends Controller
             }
 
             return redirect()->back()->with('success', 'Question deleted successfully.');
+
+        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+
+            throw $exception;
 
         } catch (\Exception $exception) {
             return redirect()->back()->with('error', $exception->getMessage());
