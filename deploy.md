@@ -1,157 +1,78 @@
-# MultiTest.uz - Serverga Deploy Qo'llanmasi
+# MultiTest.uz — Deploy qo'llanmasi
 
-Ushbu hujjat **MultiTest.uz** loyihasini ishlab chiqarish (production) serveriga yuklash, yangilash va xizmatlarni boshqarish bo'yicha to'liq qo'llanmadir.
+Ishlab chiqarish (production) serveriga yuklash, yangilash va fon xizmatlarini boshqarish.
 
----
+> Server manzili, foydalanuvchi nomi va papka yo'llari bu hujjatda ataylab yozilmagan. Quyida
+> `<server>`, `<ilova_foydalanuvchisi>` va `<loyiha_papkasi>` o'rnini o'zingizning qiymatlaringiz bilan to'ldiring
+> (ularni repoga yozmang).
 
-## 🖥️ Server Ma'lumotlari
+## Talablar (serverda)
+- PHP 8.3 (`mbstring` **mbregex bilan**, `pdo_mysql`, `fileinfo`, `gd`), Composer
+- Node 22+ va npm
+- MySQL 8
+- **FFmpeg** (`ffmpeg -version` ishlashi kerak) — audio MP3 ga siqiladi
+- Supervisor (`queue:work` va `schedule:work` uchun)
+- Veb-server `public/storage` ichida PHP ni **bajarmasligi** kerak
 
-- **Host (IP):** `193.180.213.188`
-- **SSH Foydalanuvchi:** `younine`
-- **Loyiha katalogi:** `/var/www/multitest_uz_usr69/data/www/multitest.uz`
-- **Tizim foydalanuvchisi / guruhi:** `multitest_uz_usr69:multitest_uz_usr69`
-- **PHP versiyasi:** `8.3`
-- **Node versiyasi:** `v22.19.0` (npm `10.9.3`+)
+## Birinchi marta sozlash
+```bash
+cd <loyiha_papkasi>
+cp .env.example .env            # va ichini to'ldiring: APP_ENV=production, APP_DEBUG=false, DB_*, ADMIN_*, GEMINI_*, Telegram, Google
+php artisan key:generate
+php artisan storage:link
+```
+Muhim `.env` qiymatlari: `ADMIN_PASSWORD` (kamida 12 belgi), `TELEGRAM_WEBHOOK_SECRET`, `GOOGLE_ALLOWED_CLIENT_IDS`,
+`TELESCOPE_ENABLED=false`, `L5_SWAGGER_ENABLED=false`. To'liq ro'yxat: [`README.md`](README.md).
 
----
-
-## ⚡ 1-Qatorda Tezkor Deploy (Lokal kompyuterdan)
-
-Lokal terminalingizdan quyidagi buyruqni bering:
+## Yangilash (har deploy)
+Barcha buyruqlar **ilova foydalanuvchisi** nomidan bajariladi (`sudo` kerak emas; faqat `supervisorctl` uchun kerak).
 
 ```bash
-ssh younine@193.180.213.188 "cd /var/www/multitest_uz_usr69/data/www/multitest.uz && \
-sudo git pull origin main && \
-sudo composer install --no-dev --optimize-autoloader && \
-sudo npm install && \
-sudo npm run build && \
-sudo php artisan migrate --force && \
-sudo php artisan optimize:clear && \
-sudo chown -R multitest_uz_usr69:multitest_uz_usr69 storage bootstrap/cache && \
-sudo chmod -R 775 storage bootstrap/cache && \
-sudo supervisorctl restart multitest-worker:* multitest-schedule:*"
+ssh <ilova_foydalanuvchisi>@<server>
+cd <loyiha_papkasi>
+
+php artisan down
+git pull origin main
+composer install --no-dev --optimize-autoloader
+npm ci && npm run build
+php artisan migrate --force
+php artisan optimize           # config, route, view keshlari
+php artisan queue:restart      # worker yangi kod bilan qayta ishga tushadi
+php artisan up
 ```
 
----
+> Migratsiyadan oldin **ma'lumotlar bazasidan zaxira nusxa** oling (ayniqsa strict rejimga o'tishda: `attempt_parts` dagi
+> noto'g'ri sanalar tuzatiladi).
 
-## 📋 Qadamma-qadam Deploy Jarayoni
-
-### 1. Serverga SSH orqali ulanish
+Telegram webhook va bot buyruqlarini (birinchi marta yoki token/secret o'zgarganda) ro'yxatdan o'tkazing:
 ```bash
-ssh younine@193.180.213.188
+php artisan telegram:setup
 ```
 
-### 2. Loyiha katalogiga o'tish
+TinyMCE versiyasi yangilansa (`npm update tinymce`), `npm run sync:tinymce` bilan `public/vendor/tinymce` ni yangilang.
+
+## Supervisor
+Konfiguratsiyalar va o'rnatish: [`supervisor/README.md`](supervisor/README.md).
+1. **`multitest-worker`** — navbat: AI baholash, audio siqish, Telegram/email xabarlari.
+2. **`multitest-schedule`** — har kuni 03:00 da 30 kundan eski **audio fayllarni** o'chiradi (urinishlar va ballar saqlanadi).
+
 ```bash
-cd /var/www/multitest_uz_usr69/data/www/multitest.uz
-```
-
-### 3. Git orqali eng so'nggi kodni tortib olish
-```bash
-sudo git pull origin main
-```
-
-### 4. Backend (PHP Composer) bog'liqliklarini yangilash
-```bash
-sudo composer install --no-dev --optimize-autoloader
-```
-
-### 5. Frontend (NPM & Vite) assetlarini yig'ish
-```bash
-sudo npm install
-sudo npm run build
-```
-
-### 6. Ma'lumotlar bazasi migratsiyalari va keshni tozalash
-```bash
-sudo php artisan migrate --force
-sudo php artisan optimize:clear
-```
-
-### 7. Fayl ruxsatlarini (Permissions) to'g'rilash
-```bash
-sudo chown -R multitest_uz_usr69:multitest_uz_usr69 /var/www/multitest_uz_usr69/data/www/multitest.uz/storage /var/www/multitest_uz_usr69/data/www/multitest.uz/bootstrap/cache
-sudo chmod -R 775 /var/www/multitest_uz_usr69/data/www/multitest.uz/storage /var/www/multitest_uz_usr69/data/www/multitest.uz/bootstrap/cache
-```
-
----
-
-## ⚙️ Supervisor Xizmatlari (Background Workers)
-
-Loyihada **2 ta asosiy fon xizmati** mavjud:
-1. **`multitest-worker`** — Navbatdagi ishlarni (AI tahlili, Telegram bildirishnomalar, audio qayta ishlash) bajaradi.
-2. **`multitest-schedule`** — Har kuni kechasi 03:00 da 30 kundan eski audio fayllarni diskdan avtomatik tozalovchi vazifani bajaradi.
-
-### Supervisor konfiguratsiya fayllari joylashuvi:
-- `/etc/supervisor/conf.d/multitest-worker.conf`
-- `/etc/supervisor/conf.d/multitest-scheduler.conf`
-
-#### `multitest-worker.conf`:
-```ini
-[program:multitest-worker]
-process_name=%(program_name)s_%(process_num)02d
-directory=/var/www/multitest_uz_usr69/data/www/multitest.uz
-command=/usr/bin/php /var/www/multitest_uz_usr69/data/www/multitest.uz/artisan queue:work --sleep=3 --tries=3 --max-time=3600
-autostart=true
-autorestart=true
-stopasgroup=true
-killasgroup=true
-user=root
-numprocs=1
-redirect_stderr=true
-stdout_logfile=/var/www/multitest_uz_usr69/data/www/multitest.uz/storage/logs/worker.log
-stopwaitsecs=3600
-```
-
-#### `multitest-scheduler.conf`:
-```ini
-[program:multitest-schedule]
-process_name=%(program_name)s_%(process_num)02d
-directory=/var/www/multitest_uz_usr69/data/www/multitest.uz
-command=/usr/bin/php /var/www/multitest_uz_usr69/data/www/multitest.uz/artisan schedule:work
-autostart=true
-autorestart=true
-stopasgroup=true
-killasgroup=true
-user=root
-numprocs=1
-redirect_stderr=true
-stdout_logfile=/var/www/multitest_uz_usr69/data/www/multitest.uz/storage/logs/schedule.log
-stopwaitsecs=3600
-```
-
-### Supervisorni yangilash va qayta ishga tushirish:
-```bash
-sudo supervisorctl reread
-sudo supervisorctl update
+sudo supervisorctl reread && sudo supervisorctl update
 sudo supervisorctl restart multitest-worker:* multitest-schedule:*
-```
-
-### Supervisor holatini tekshirish:
-```bash
 sudo supervisorctl status multitest-worker:* multitest-schedule:*
 ```
 
----
-
-## 🧹 Qo'shimcha Foydali Buyruqlar
-
-### 30 kundan eski audio fayllarni qo'lda tozalash:
+## Foydali buyruqlar
 ```bash
-sudo php artisan attempts:clean-old 30
+php artisan attempts:clean-old 30          # 30 kundan eski audio fayllarni qo'lda tozalash
+php artisan attempts:evaluate-recent 10    # oxirgi 10 kundagi baholanmagan javoblarni qayta navbatga qo'yish
+php artisan content:sanitize --dry-run     # saqlangan HTML matnlarni tekshirish (o'zgartirmaydi)
 ```
 
-### Loglarni kuzatish:
+## Loglar
 ```bash
-# Laravel umumiy xatoliklar logi:
-tail -f /var/www/multitest_uz_usr69/data/www/multitest.uz/storage/logs/laravel.log
-
-# Supervisor Queue Worker logi:
-tail -f /var/www/multitest_uz_usr69/data/www/multitest.uz/storage/logs/worker.log
-
-# Supervisor Scheduler logi:
-tail -f /var/www/multitest_uz_usr69/data/www/multitest.uz/storage/logs/schedule.log
-
-# 30 kunlik audio tozalash logi:
-tail -f /var/www/multitest_uz_usr69/data/www/multitest.uz/storage/logs/audio_cleanup.log
+tail -f <loyiha_papkasi>/storage/logs/laravel.log
+tail -f <loyiha_papkasi>/storage/logs/worker.log
+tail -f <loyiha_papkasi>/storage/logs/schedule.log
+tail -f <loyiha_papkasi>/storage/logs/audio_cleanup.log
 ```

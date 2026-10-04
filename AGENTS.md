@@ -6,4 +6,4 @@ Har safar Android ilova build qilinganda (`assembleRelease`, `assembleDebug`):
 - Build natijasida `android/MultiTest_v{versionName}_{buildType}.apk` hosil bo'ladi.
 - Foydalanuvchiga versiya raqami va yangi fayl yo'lini taqdim eting.
 
-Batafsil ma'lumot: [`android/VERSIONING.md`](file:///Users/iosdevelopmentcenter/Desktop/AddProjects/multitest.uz/android/VERSIONING.md)
+Batafsil ma'lumot: [`android/VERSIONING.md`](android/VERSIONING.md)

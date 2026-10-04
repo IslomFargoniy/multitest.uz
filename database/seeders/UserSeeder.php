@@ -14,8 +14,8 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $email = env('ADMIN_EMAIL', 'admin@gmail.com');
-        $password = env('ADMIN_PASSWORD');
+        $email = config('multitest.admin.email');
+        $password = config('multitest.admin.password');
 
         if (app()->environment(['local', 'testing'])) {
             $password ??= 'password';
@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
             ['email' => $email],
             [
                 'name' => 'Admin',
-                'phone' => env('ADMIN_PHONE', '998901234567'),
+                'phone' => config('multitest.admin.phone'),
                 'password' => Hash::make($password),
             ]
         );

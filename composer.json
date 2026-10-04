@@ -1,11 +1,15 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/react-starter-kit",
+    "name": "multitest/multitest-uz",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "MultiTest.uz - AI-assisted CEFR/IELTS Speaking exam simulator.",
     "keywords": [
         "laravel",
-        "framework"
+        "inertia",
+        "react",
+        "speaking",
+        "cefr",
+        "ielts"
     ],
     "license": "MIT",
     "require": {
