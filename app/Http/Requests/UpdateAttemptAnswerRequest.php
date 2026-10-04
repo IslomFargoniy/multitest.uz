@@ -22,22 +22,17 @@ class UpdateAttemptAnswerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'attempt_id'    => ['required', 'exists:attempts,id'],
-            'question_id'   => ['required', 'exists:questions,id'],
-            'started_at'    => ['required', 'date'],
-            'finished_at'   => ['nullable', 'date', 'after_or_equal:started_at'],
-            'audio_path' => [
-                'nullable',
-                'file',
-                'max:12048',
-                'mimetypes:audio/mpeg,audio/wav,audio/x-wav,audio/mp4,audio/x-m4a,audio/ogg,video/mp4'
-            ],
-            'audio_second'  => ['nullable', 'numeric', 'min:0'],
-            'transcript'    => ['nullable', 'string'],
-            'review_ai'     => ['nullable', 'string'],
-            'review'        => ['nullable', 'string'],
-            'score_ai'      => ['nullable', 'integer', 'min:0'],
-            'score'         => ['nullable', 'integer', 'min:0'],
+            'attempt_id' => ['required', 'exists:attempts,id'],
+            'question_id' => ['required', 'exists:questions,id'],
+            'started_at' => ['required', 'date'],
+            'finished_at' => ['nullable', 'date', 'after_or_equal:started_at'],
+            'audio_path' => \App\Support\AudioUpload::rules(\App\Support\AudioUpload::MAX_PROMPT_KB),
+            'audio_second' => ['nullable', 'numeric', 'min:0'],
+            'transcript' => ['nullable', 'string'],
+            'review_ai' => ['nullable', 'string'],
+            'review' => ['nullable', 'string'],
+            'score_ai' => ['nullable', 'integer', 'min:0'],
+            'score' => ['nullable', 'integer', 'min:0'],
         ];
     }
 }

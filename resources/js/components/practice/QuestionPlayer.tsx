@@ -274,6 +274,7 @@ export default function QuestionPlayer({ attempt_part }: any) {
 
         const next = attempt_part.attempt.attempt_parts.find((p: any) => p.id > attempt_part.id);
         if (next) form.append('next_attempt_part_id', next.id);
+        else form.append('finish', '1');
 
         // Use fetch to avoid BodyStreamBuffer abort, then navigate after upload completes
         fetch(route('practice.save_answers', attempt_part.id), {

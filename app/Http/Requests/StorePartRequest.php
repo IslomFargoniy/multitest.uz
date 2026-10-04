@@ -32,12 +32,7 @@ class StorePartRequest extends FormRequest
             'test_id' => ['required', 'exists:tests,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:65535'],
-            'audio_path' => [
-                'nullable',
-                'file',
-                'max:12048',
-                'mimetypes:audio/mpeg,audio/wav,audio/x-wav,audio/mp4,audio/x-m4a,audio/ogg,video/mp4'
-            ],
+            'audio_path' => \App\Support\AudioUpload::rules(\App\Support\AudioUpload::MAX_PROMPT_KB),
         ];
     }
 }

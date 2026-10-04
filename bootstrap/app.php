@@ -25,9 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // ✅ Telegram webhook va Practice save uchun CSRF istisno
         $middleware->validateCsrfTokens(except: [
-            'bot/webhook',
             'bot/MultitestUzBot/webhook',
-            'practice/attempt_part/*/save',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
@@ -35,6 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('api/*')) {
                 return null;
             }
+
             return redirect()->route('dashboard');
         });
     })->create();

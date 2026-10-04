@@ -71,7 +71,7 @@ class AttemptController extends Controller
                 'test.language',
                 'attempt_parts.part.questions' => function ($query) {
                     $query->select('id', 'part_id', 'textarea', 'audio_path', 'ready_second', 'answer_second');
-                }
+                },
             ]);
 
             return response()->json([
@@ -81,7 +81,8 @@ class AttemptController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('API Attempt start error: ' . $e->getMessage());
+            Log::error('API Attempt start error: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
@@ -117,7 +118,8 @@ class AttemptController extends Controller
                 'message' => 'Imtihon ma\'lumoti topilmadi.',
             ], 404);
         } catch (\Exception $e) {
-            Log::error('API Attempt show error: ' . $e->getMessage());
+            Log::error('API Attempt show error: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
@@ -139,42 +141,67 @@ class AttemptController extends Controller
             ], 403);
         }
 
+        $finishedAt = $attemptPart->attempt->finished_at;
+        if ($finishedAt && $finishedAt->lt(now()->subMinutes(10))) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Imtihon allaqachon yakunlangan.',
+            ], 422);
+        }
+
+        $answers = $request->input('answers', []);
+        // Support JSON string if sent as formdata field
+        if (is_string($answers)) {
+            $answers = json_decode($answers, true) ?: [];
+        }
+        if (! is_array($answers) || count($answers) > 50) {
+            return response()->json(['success' => false, 'message' => 'Javoblar formati noto‘g‘ri.'], 422);
+        }
+
+        $allowedQuestionIds = $attemptPart->part->questions()->pluck('id')->all();
+
+        foreach ($request->allFiles() as $file) {
+            $files = is_array($file) ? \Illuminate\Support\Arr::flatten($file) : [$file];
+            foreach ($files as $upload) {
+                $validator = \Illuminate\Support\Facades\Validator::make(
+                    ['audio' => $upload],
+                    ['audio' => \App\Support\AudioUpload::rules()]
+                );
+                if ($validator->fails()) {
+                    return response()->json(['success' => false, 'message' => $validator->errors()->first('audio')], 422);
+                }
+            }
+        }
+
         try {
             DB::beginTransaction();
 
-            $answers = $request->input('answers', []);
-            // Support JSON string if sent as formdata field
-            if (is_string($answers)) {
-                $answers = json_decode($answers, true) ?: [];
-            }
-
             foreach ($answers as $index => $answerData) {
                 $questionId = $answerData['question_id'] ?? null;
-                if (!$questionId) continue;
+                if (! $questionId) {
+                    continue;
+                }
+
+                if (! in_array((int) $questionId, $allowedQuestionIds, true)) {
+                    DB::rollBack();
+
+                    return response()->json(['success' => false, 'message' => 'Savol ushbu bo‘limga tegishli emas.'], 422);
+                }
 
                 $payload = [
                     'started_at' => $answerData['started_at'] ?? now(),
                     'finished_at' => $answerData['finished_at'] ?? now(),
                 ];
 
-                // Check file upload in multipart (answers.0.audio, answers.0.audio_path, or audio_12)
-                $fileKey = "answers.{$index}.audio";
-                $altKey = "answers.{$index}.audio_path";
-                if ($request->hasFile($fileKey)) {
-                    $payload['audio_path'] = $this->fileUploadService->uploadAudio(
-                        $request->file($fileKey),
-                        'attempt_answers_audio'
-                    );
-                } elseif ($request->hasFile($altKey)) {
-                    $payload['audio_path'] = $this->fileUploadService->uploadAudio(
-                        $request->file($altKey),
-                        'attempt_answers_audio'
-                    );
-                } elseif ($request->hasFile("audio_{$questionId}")) {
-                    $payload['audio_path'] = $this->fileUploadService->uploadAudio(
-                        $request->file("audio_{$questionId}"),
-                        'attempt_answers_audio'
-                    );
+                // Check file upload in multipart (audio_12, or answers.0.audio / answers.0.audio_path)
+                foreach (["audio_{$questionId}", "answers.{$index}.audio", "answers.{$index}.audio_path"] as $fileKey) {
+                    if ($request->hasFile($fileKey)) {
+                        $payload['audio_path'] = $this->fileUploadService->uploadAudio(
+                            $request->file($fileKey),
+                            'attempt_answers_audio'
+                        );
+                        break;
+                    }
                 }
 
                 AttemptAnswer::updateOrCreate(
@@ -194,10 +221,11 @@ class AttemptController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('API upload answers error: ' . $e->getMessage());
+            report($e);
+
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Javoblarni saqlashda xatolik yuz berdi.',
             ], 500);
         }
     }
@@ -224,7 +252,8 @@ class AttemptController extends Controller
                 'message' => 'Imtihon topilmadi.',
             ], 404);
         } catch (\Exception $e) {
-            Log::error('API Attempt finish error: ' . $e->getMessage());
+            Log::error('API Attempt finish error: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
@@ -267,8 +296,7 @@ class AttemptController extends Controller
     public function recordViolation(Request $request, $id)
     {
         $attempt = Attempt::where('user_id', Auth::id())->findOrFail($id);
-        $count = (int) $request->input('count', 1);
-        $attempt->increment('tab_switch_count', $count);
+        $attempt->increment('tab_switch_count');
 
         return response()->json([
             'success' => true,

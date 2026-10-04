@@ -27,7 +27,7 @@ class UserController extends Controller
         $totalAttempts = Attempt::where('user_id', $user->id)->count();
         $completedAttempts = Attempt::where('user_id', $user->id)->whereNotNull('finished_at')->count();
         $averageScore = Attempt::where('user_id', $user->id)->whereNotNull('score')->avg('score');
-        if (!$averageScore) {
+        if (! $averageScore) {
             $avgAi = \Illuminate\Support\Facades\DB::table('attempts')
                 ->join('attempt_parts', 'attempts.id', '=', 'attempt_parts.attempt_id')
                 ->join('attempt_answers', 'attempt_parts.id', '=', 'attempt_answers.attempt_part_id')
@@ -69,10 +69,11 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
-            'avatar' => 'nullable|image|max:5120',
+            'avatar' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         if ($request->hasFile('avatar')) {
+            $this->fileUploadService->deleteFile($user->avatar);
             $data['avatar'] = $this->fileUploadService->uploadImage($request->file('avatar'), 'avatars');
         }
 

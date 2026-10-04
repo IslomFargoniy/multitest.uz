@@ -33,12 +33,7 @@ class UpdateTestRequest extends FormRequest
             'language_id' => ['required', 'exists:languages,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:65535'],
-            'audio_path' => [
-                'nullable',
-                'file',
-                'max:12048',
-                'mimetypes:audio/mpeg,audio/wav,audio/x-wav,audio/mp4,audio/x-m4a,audio/ogg,video/mp4'
-            ],
+            'audio_path' => \App\Support\AudioUpload::rules(\App\Support\AudioUpload::MAX_PROMPT_KB),
             'is_public' => ['required', 'boolean'],
         ];
     }

@@ -1,9 +1,8 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-use App\Http\Controllers\Auth\GoogleAuthController;
 
 Route::post('/webapp-login', [\App\Http\Controllers\Auth\TelegramAuthController::class, 'login']);
 Route::post('/mock-student/enter', [\App\Http\Controllers\MockStudentController::class, 'enter'])->name('mock-student.enter');
@@ -13,7 +12,7 @@ Route::any('/bot/MultitestUzBot/webhook', [\App\Http\Controllers\Telegram\Multit
 // 📱 Android App Deep Link Redirect
 Route::get('/app/open', function (Request $request) {
     $otp = $request->query('otp', '');
-    $schemeUrl = 'multitest://auth?otp=' . urlencode($otp);
+    $schemeUrl = 'multitest://auth?otp='.urlencode($otp);
     $html = <<<HTML
 <!DOCTYPE html>
 <html lang="uz">
@@ -87,6 +86,7 @@ Route::get('/app/open', function (Request $request) {
 </body>
 </html>
 HTML;
+
     return response($html);
 })->name('app.open');
 
@@ -130,13 +130,13 @@ Route::middleware([\App\Http\Middleware\EnsureCandidateOrAuthenticated::class])-
     Route::get('practice/{attempt}', [\App\Http\Controllers\PracticeController::class, 'index'])->name('practice.index');
     Route::get('practice/attempt_part/{attempt_part}', [\App\Http\Controllers\PracticeController::class, 'show'])->name('practice.show');
     Route::post('practice/attempt_part/{attempt_part}/save', [\App\Http\Controllers\PracticeController::class, 'save_answers'])->name('practice.save_answers');
-    Route::post('practice-attempt-violation/{attempt_id}', [\App\Http\Controllers\PracticeController::class, 'recordViolation'])->name('practice-attempt-violation');
+    Route::post('practice-attempt-violation/{attempt}', [\App\Http\Controllers\PracticeController::class, 'recordViolation'])->name('practice-attempt-violation');
 });
 
 Route::get('certificate/verify/{attempt}', [\App\Http\Controllers\CertificateController::class, 'verify'])->name('certificate.verify');
 
-require __DIR__ . '/settings.php';
-require __DIR__ . '/auth.php';
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';
 
 Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');
@@ -147,10 +147,11 @@ Route::get('/auth/github/callback', [\App\Http\Controllers\Auth\GithubAuthContro
 Route::any('/auth/telegram/callback', [\App\Http\Controllers\Auth\TelegramLoginController::class, 'handle'])->name('telegram.callback');
 
 Route::get('/lang/{locale}', function ($locale) {
-    if (!in_array($locale, ['en', 'uz', 'ru'])) {
+    if (! in_array($locale, ['en', 'uz', 'ru'])) {
         abort(400);
     }
     session(['locale' => $locale]);
     app()->setLocale($locale);
+
     return back();
 });

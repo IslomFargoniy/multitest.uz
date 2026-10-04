@@ -17,7 +17,7 @@ class StoreTestRequest extends FormRequest
             'user_id' => auth()->id(),
         ]);
 
-        if (!$this->filled('description')) {
+        if (! $this->filled('description')) {
             $this->merge([
                 'description' => 'This speaking test is powered by multitest.uz. All audio recordings are the exclusive property of this platform and are designed specifically for our users. Please follow the instructions carefully.',
             ]);
@@ -31,12 +31,7 @@ class StoreTestRequest extends FormRequest
             'language_id' => ['required', 'exists:languages,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:65535'],
-            'audio_path' => [
-                'nullable',
-                'file',
-                'max:12048',
-                'mimetypes:audio/mpeg,audio/wav,audio/x-wav,audio/mp4,audio/x-m4a,audio/ogg,video/mp4'
-            ],
+            'audio_path' => \App\Support\AudioUpload::rules(\App\Support\AudioUpload::MAX_PROMPT_KB),
         ];
     }
 }

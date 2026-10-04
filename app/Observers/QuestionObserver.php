@@ -3,10 +3,10 @@
 namespace App\Observers;
 
 use App\Models\Question;
+use DOMDocument;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
-use DOMDocument;
 
 class QuestionObserver
 {
@@ -35,9 +35,11 @@ class QuestionObserver
 
     private function processImages(?string $content): string
     {
-        if (empty($content)) return '';
+        if (empty($content)) {
+            return '';
+        }
 
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
         // Load with UTF-8 support
         @$dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 
@@ -48,9 +50,19 @@ class QuestionObserver
 
             // SCENARIO: User pasted/uploaded a NEW image (Base64)
             if (preg_match('/^data:image\/(\w+);base64,/', $src, $type)) {
-                $extension = strtolower($type[1]);
-                $data = base64_decode(substr($src, strpos($src, ',') + 1));
-                $fileName = 'question_images/' . Str::random(20) . '.' . $extension;
+                $extension = strtolower($type[1]) === 'jpeg' ? 'jpg' : strtolower($type[1]);
+                $data = base64_decode(substr($src, strpos($src, ',') + 1), true);
+                $info = $data === false || strlen($data) > 5 * 1024 * 1024 ? false : @getimagesizefromstring($data);
+                $mimeToExt = ['image/png' => 'png', 'image/jpeg' => 'jpg', 'image/gif' => 'gif', 'image/webp' => 'webp'];
+
+                if ($info === false || ! isset($mimeToExt[$info['mime']])) {
+                    $img->parentNode?->removeChild($img);
+
+                    continue;
+                }
+
+                $extension = $mimeToExt[$info['mime']];
+                $fileName = 'question_images/'.Str::random(20).'.'.$extension;
 
                 Storage::disk('public')->put($fileName, $data);
                 $img->setAttribute('src', Storage::url($fileName));
@@ -71,7 +83,7 @@ class QuestionObserver
         $imagesToDelete = array_diff($oldImages, $newImages);
 
         foreach ($imagesToDelete as $path) {
-            if (!empty($path) && !$this->isImageUsedByOthers($path, $currentId)) {
+            if (! empty($path) && ! $this->isImageUsedByOthers($path, $currentId)) {
                 Storage::disk('public')->delete($path);
             }
         }
@@ -81,15 +93,18 @@ class QuestionObserver
     {
         return DB::table('questions')
             ->where('id', '!=', $currentId)
-            ->where('textarea', 'LIKE', '%' . $path . '%')
+            ->where('textarea', 'LIKE', '%'.$path.'%')
             ->exists();
     }
 
     private function extractStoragePaths(string $content): array
     {
-        if (empty($content)) return [];
+        if (empty($content)) {
+            return [];
+        }
         // Extract the path relative to the public disk (question_images/filename.ext)
         preg_match_all('/question_images\/([^\s"\'\>]+)/', $content, $matches);
+
         return array_unique($matches[0] ?? []);
     }
 }

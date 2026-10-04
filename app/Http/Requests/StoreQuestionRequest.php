@@ -24,12 +24,7 @@ class StoreQuestionRequest extends FormRequest
         return [
             'part_id' => ['required', 'exists:parts,id'],
             'textarea' => ['required', 'string'],
-            'audio_path' => [
-                'nullable',
-                'file',
-                'max:12048',
-                'mimetypes:audio/mpeg,audio/wav,audio/x-wav,audio/mp4,audio/x-m4a,audio/ogg,video/mp4'
-            ],
+            'audio_path' => \App\Support\AudioUpload::rules(\App\Support\AudioUpload::MAX_PROMPT_KB),
             'audio_second' => ['nullable', 'numeric', 'min:0'],
             'ready_second' => ['required', 'integer', 'min:0'],
             'answer_second' => ['required', 'integer', 'min:0'],
