@@ -8,10 +8,16 @@ use App\Models\AttemptAnswer;
 use App\Models\AttemptPart;
 use App\Models\Test;
 use App\Services\FileUploadService;
+use App\Support\AudioUpload;
+use App\Support\ClientTime;
+use App\Support\Pagination;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class AttemptController extends Controller
 {
@@ -30,12 +36,12 @@ class AttemptController extends Controller
         $request->validate([
             'test_id' => 'required|exists:tests,id',
             'part_ids' => 'nullable|array',
-            'part_ids.*' => [\Illuminate\Validation\Rule::exists('parts', 'id')->where('test_id', $request->input('test_id'))],
+            'part_ids.*' => [Rule::exists('parts', 'id')->where('test_id', $request->input('test_id'))],
         ]);
 
         $test = Test::visibleTo(Auth::user())->with('parts.questions')->find($request->test_id);
 
-        if (!$test) {
+        if (! $test) {
             return response()->json([
                 'success' => false,
                 'message' => 'Test topilmadi.',
@@ -79,7 +85,7 @@ class AttemptController extends Controller
                 'test.language',
                 'attempt_parts.part.questions' => function ($query) {
                     $query->select('id', 'part_id', 'textarea', 'audio_path', 'ready_second', 'answer_second');
-                }
+                },
             ]);
 
             return response()->json([
@@ -89,6 +95,7 @@ class AttemptController extends Controller
             ]);
         } catch (\Exception $e) {
             report($e);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Imtihonni boshlashda xatolik yuz berdi.',
@@ -118,13 +125,14 @@ class AttemptController extends Controller
                 'success' => true,
                 'data' => $attempt,
             ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Imtihon ma\'lumoti topilmadi.',
             ], 404);
         } catch (\Exception $e) {
             report($e);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Xatolik yuz berdi.',
@@ -166,11 +174,11 @@ class AttemptController extends Controller
         $allowedQuestionIds = $attemptPart->part->questions()->pluck('id')->all();
 
         foreach ($request->allFiles() as $file) {
-            $files = is_array($file) ? \Illuminate\Support\Arr::flatten($file) : [$file];
+            $files = is_array($file) ? Arr::flatten($file) : [$file];
             foreach ($files as $upload) {
-                $validator = \Illuminate\Support\Facades\Validator::make(
+                $validator = Validator::make(
                     ['audio' => $upload],
-                    ['audio' => \App\Support\AudioUpload::rules()]
+                    ['audio' => AudioUpload::rules()]
                 );
                 if ($validator->fails()) {
                     return response()->json(['success' => false, 'message' => $validator->errors()->first('audio')], 422);
@@ -194,8 +202,8 @@ class AttemptController extends Controller
                 }
 
                 $payload = [
-                    'started_at' => $answerData['started_at'] ?? now(),
-                    'finished_at' => $answerData['finished_at'] ?? now(),
+                    'started_at' => ClientTime::parse($answerData['started_at'] ?? null),
+                    'finished_at' => ClientTime::parse($answerData['finished_at'] ?? null),
                 ];
 
                 // Check file upload in multipart (audio_12, or answers.0.audio / answers.0.audio_path)
@@ -251,13 +259,14 @@ class AttemptController extends Controller
                 'data' => $attempt,
                 'message' => 'Imtihon yakunlandi.',
             ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Imtihon topilmadi.',
             ], 404);
         } catch (\Exception $e) {
             report($e);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Xatolik yuz berdi.',
@@ -280,7 +289,7 @@ class AttemptController extends Controller
             ])
             ->where('user_id', Auth::id())
             ->latest()
-            ->paginate(\App\Support\Pagination::perPage($request, 15));
+            ->paginate(Pagination::perPage($request, 15));
 
         return response()->json([
             'success' => true,

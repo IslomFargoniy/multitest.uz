@@ -10,12 +10,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import uz.multitest.app.core.theme.RosePink
 import uz.multitest.app.presentation.components.GradientButton
-import uz.multitest.app.presentation.components.OtpInputField
 
 @Composable
 fun MockJoinDialog(
@@ -65,7 +70,7 @@ fun MockJoinDialog(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    text = "O'qituvchi bergan PIN kodni kiriting",
+                    text = "O'qituvchi bergan nomzod kodini kiriting (MS12345678)",
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     ),
@@ -74,11 +79,26 @@ fun MockJoinDialog(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                OtpInputField(
-                    otpValue = pinCode,
-                    onOtpChange = { pinCode = it },
-                    length = 6,
-                    onComplete = { onJoin(it) }
+                OutlinedTextField(
+                    value = pinCode,
+                    onValueChange = { input ->
+                        pinCode = input.uppercase().filter { it.isLetterOrDigit() }.take(12)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    placeholder = { Text("MS12345678") },
+                    textStyle = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        letterSpacing = 2.sp
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Characters,
+                        keyboardType = KeyboardType.Ascii,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(onDone = { if (pinCode.length >= 8) onJoin(pinCode) }),
+                    shape = RoundedCornerShape(16.dp)
                 )
 
                 if (errorMessage != null) {

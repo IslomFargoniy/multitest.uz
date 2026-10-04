@@ -26,6 +26,7 @@ enum class ExamPhase {
     PREPARATION,
     RECORDING,
     UPLOADING,
+    UPLOAD_FAILED,
     COMPLETED,
     ERROR
 }
@@ -67,6 +68,9 @@ class SpeakingExamViewModel @Inject constructor(
     // Map: partId -> List of recorded answers
     private val partAnswersMap = mutableMapOf<Long, MutableList<QuestionAnswerData>>()
     private var currentQuestionStartTime: String? = null
+
+    private enum class FailedStep { UPLOAD, FINISH }
+    private var failedStep: FailedStep? = null
 
     private var timerJob: Job? = null
 
@@ -146,6 +150,12 @@ class SpeakingExamViewModel @Inject constructor(
         }
     }
 
+    /** ISO-8601 in UTC with a fixed locale: independent of the device timezone and number formatting. */
+    private fun nowIsoUtc(): String =
+        java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", java.util.Locale.US)
+            .apply { timeZone = java.util.TimeZone.getTimeZone("UTC") }
+            .format(java.util.Date())
+
     private fun getCurrentPart(): AttemptPartDto? {
         val parts = _uiState.value.attempt?.attemptParts ?: return null
         val idx = _uiState.value.currentPartIndex
@@ -192,7 +202,7 @@ class SpeakingExamViewModel @Inject constructor(
             return
         }
 
-        currentQuestionStartTime = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
+        currentQuestionStartTime = nowIsoUtc()
 
         val hasAudio = !question.audioPath.isNullOrBlank()
 
@@ -296,7 +306,7 @@ class SpeakingExamViewModel @Inject constructor(
         val currentPart = getCurrentPart() ?: return
         val audioFile = audioRecorderManager.stopRecording()
 
-        val finishedTime = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
+        val finishedTime = nowIsoUtc()
 
         val answerData = QuestionAnswerData(
             questionId = question.id,
@@ -337,7 +347,11 @@ class SpeakingExamViewModel @Inject constructor(
                 when (result) {
                     is NetworkResult.Loading -> {}
                     is NetworkResult.Success -> {
-                        // Move to next part
+                        // Local recordings are removed only after the server confirmed them.
+                        recordedAnswers.forEach { it.audioFile?.delete() }
+                        partAnswersMap.remove(currentPart.id)
+                        failedStep = null
+
                         val nextPartIdx = _uiState.value.currentPartIndex + 1
                         val totalParts = _uiState.value.attempt?.attemptParts?.size ?: 0
 
@@ -349,19 +363,26 @@ class SpeakingExamViewModel @Inject constructor(
                         }
                     }
                     is NetworkResult.Error -> {
-                        // Retry or proceed
-                        val nextPartIdx = _uiState.value.currentPartIndex + 1
-                        val totalParts = _uiState.value.attempt?.attemptParts?.size ?: 0
-
-                        if (nextPartIdx < totalParts) {
-                            _uiState.update { it.copy(currentPartIndex = nextPartIdx) }
-                            startCurrentPart()
-                        } else {
-                            finishExam()
+                        // Never skip a part silently: keep the recordings and let the user retry.
+                        failedStep = FailedStep.UPLOAD
+                        _uiState.update {
+                            it.copy(
+                                phase = ExamPhase.UPLOAD_FAILED,
+                                errorMessage = result.message.ifBlank { "Javoblarni yuklab bo'lmadi. Internetni tekshiring." }
+                            )
                         }
                     }
                 }
             }
+        }
+    }
+
+    /** Re-runs the step that failed (part upload or attempt finish). Recordings are still on disk. */
+    fun retryUpload() {
+        when (failedStep) {
+            FailedStep.UPLOAD -> uploadCurrentPartAnswers()
+            FailedStep.FINISH -> finishExam()
+            null -> {}
         }
     }
 
@@ -374,9 +395,24 @@ class SpeakingExamViewModel @Inject constructor(
                 )
             }
 
-            examRepository.finishAttempt(attemptId).collect {
-                _uiState.update { it.copy(phase = ExamPhase.COMPLETED) }
-                _uiEvent.emit(SpeakingExamUiEvent.NavigateToResult(attemptId))
+            examRepository.finishAttempt(attemptId).collect { result ->
+                when (result) {
+                    is NetworkResult.Loading -> {}
+                    is NetworkResult.Success -> {
+                        failedStep = null
+                        _uiState.update { it.copy(phase = ExamPhase.COMPLETED) }
+                        _uiEvent.emit(SpeakingExamUiEvent.NavigateToResult(attemptId))
+                    }
+                    is NetworkResult.Error -> {
+                        failedStep = FailedStep.FINISH
+                        _uiState.update {
+                            it.copy(
+                                phase = ExamPhase.UPLOAD_FAILED,
+                                errorMessage = result.message.ifBlank { "Imtihonni yakunlab bo'lmadi. Internetni tekshiring." }
+                            )
+                        }
+                    }
+                }
             }
         }
     }

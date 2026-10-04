@@ -6,6 +6,7 @@ use App\Models\Attempt;
 use App\Models\AttemptPart;
 use App\Models\Question;
 use App\Models\Test as ExamTest;
+use App\Support\ClientTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -91,5 +92,28 @@ class ApiUploadTest extends TestCase
         $this->assertStringEndsWith('.png', $user->fresh()->avatar);
 
         $this->post('/api/v1/user/update', ['avatar' => UploadedFile::fake()->create('x.svg', 1, 'image/svg+xml')], ['Accept' => 'application/json'])->assertStatus(422);
+    }
+
+    public function test_client_iso_timestamps_are_converted_to_app_timezone(): void
+    {
+        Storage::fake('public');
+        $user = $this->student();
+        Sanctum::actingAs($user);
+        [$attemptPart, $question] = $this->scenario($user);
+
+        $this->post("/api/v1/attempts/{$attemptPart->id}/upload-answers", [
+            'answers' => json_encode([['question_id' => $question->id, 'started_at' => '2026-10-05T10:00:00Z', 'finished_at' => '2026-10-05T10:00:30Z']]),
+        ], ['Accept' => 'application/json'])->assertOk();
+
+        $answer = $attemptPart->attempt_answers()->firstOrFail();
+        // 10:00 UTC is 15:00 in Asia/Tashkent (UTC+5)
+        $this->assertSame('2026-10-05 15:00:00', $answer->started_at->format('Y-m-d H:i:s'));
+        $this->assertEquals(30, $answer->started_at->diffInSeconds($answer->finished_at));
+    }
+
+    public function test_garbage_timestamps_fall_back_to_now(): void
+    {
+        $this->assertTrue(ClientTime::parse('not a date')->diffInSeconds(now()) < 5);
+        $this->assertTrue(ClientTime::parse(null)->diffInSeconds(now()) < 5);
     }
 }

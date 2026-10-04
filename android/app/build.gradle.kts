@@ -19,6 +19,23 @@ val versionProps = Properties().apply {
 val vCode = versionProps.getProperty("VERSION_CODE", "1").toInt()
 val vName = versionProps.getProperty("VERSION_NAME", "1.0.0")
 
+// Release signing: android/keystore.properties (gitignored) with storeFile, storePassword, keyAlias, keyPassword.
+val keystoreProps = Properties().apply {
+    val file = File(rootDir, "keystore.properties")
+    if (file.exists()) load(FileInputStream(file))
+}
+val hasReleaseKeystore = keystoreProps.getProperty("storeFile") != null
+
+// Google OAuth *web* client ID: -PGOOGLE_WEB_CLIENT_ID=... or GOOGLE_WEB_CLIENT_ID in local.properties. Empty hides Google login.
+val localProps = Properties().apply {
+    val file = File(rootDir, "local.properties")
+    if (file.exists()) load(FileInputStream(file))
+}
+val googleWebClientId: String =
+    (project.findProperty("GOOGLE_WEB_CLIENT_ID") as String?)
+        ?: localProps.getProperty("GOOGLE_WEB_CLIENT_ID")
+        ?: ""
+
 android {
     namespace = "uz.multitest.app"
     compileSdk = 35
@@ -30,9 +47,22 @@ android {
         versionCode = vCode
         versionName = vName
 
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+    }
+
+    signingConfigs {
+        if (hasReleaseKeystore) {
+            create("release") {
+                storeFile = file(keystoreProps.getProperty("storeFile"))
+                storePassword = keystoreProps.getProperty("storePassword")
+                keyAlias = keystoreProps.getProperty("keyAlias")
+                keyPassword = keystoreProps.getProperty("keyPassword")
+            }
         }
     }
 
@@ -44,7 +74,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = when {
+                hasReleaseKeystore -> signingConfigs.getByName("release")
+                // Explicit opt-in for local test builds only; such an APK must never be published.
+                project.hasProperty("allowDebugSigning") -> signingConfigs.getByName("debug")
+                else -> null
+            }
         }
         debug {
             applicationIdSuffix = ".debug"
@@ -126,4 +161,17 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
     implementation(libs.coil.compose)
+}
+
+gradle.taskGraph.whenReady {
+    val releaseRequested = allTasks.any {
+        it.name.contains("Release") && (it.name.startsWith("assemble") || it.name.startsWith("bundle") || it.name.startsWith("package"))
+    }
+    if (releaseRequested && !hasReleaseKeystore && !project.hasProperty("allowDebugSigning")) {
+        throw GradleException(
+            "Release signing is not configured. Create android/keystore.properties " +
+                "(storeFile, storePassword, keyAlias, keyPassword) or, for a local test build only, " +
+                "pass -PallowDebugSigning=true (the APK is then signed with the debug key and must not be published)."
+        )
+    }
 }

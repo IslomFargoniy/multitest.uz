@@ -99,10 +99,6 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun fillDemoCode() {
-        onOtpChanged("159123")
-    }
-
     fun clearError() {
         _uiState.update { it.copy(errorMessage = null) }
     }

@@ -12,6 +12,7 @@ data class StartAttemptRequest(
 
 @Serializable
 data class JoinMockRequest(
+    // The candidate code (MSXXXXXXXX) given by the teacher; the backend field is called "pin".
     @SerialName("pin") val pin: String
 )
 
@@ -66,8 +67,9 @@ data class AttemptAnswerDto(
 data class MockDto(
     @SerialName("id") val id: Long,
     @SerialName("name") val name: String,
-    @SerialName("code") val code: String? = null,
     @SerialName("slug") val slug: String? = null,
+    @SerialName("started_at") val startedAt: String? = null,
+    @SerialName("finished_at") val finishedAt: String? = null,
     @Serializable(with = FlexibleBooleanSerializer::class)
-    @SerialName("is_active") val isActive: Boolean = true
+    @SerialName("active") val isActive: Boolean = true
 )

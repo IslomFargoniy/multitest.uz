@@ -1,6 +1,7 @@
 package uz.multitest.app.data.repository
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -19,6 +20,8 @@ import uz.multitest.app.data.models.AttemptDto
 import uz.multitest.app.data.models.JoinMockRequest
 import uz.multitest.app.data.models.StartAttemptRequest
 import java.io.File
+import java.io.IOException
+import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,6 +42,32 @@ class ExamRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             null
         }
+    }
+
+    private fun isRetryable(code: Int): Boolean = code >= 500 || code == 408 || code == 429
+
+    /**
+     * Runs [block] and retries on network errors and retryable HTTP codes (5xx, 408, 429)
+     * with 1s / 3s / 9s backoff. Returns the last response, or throws the last IOException.
+     */
+    private suspend fun <T> withRetry(block: suspend () -> Response<T>): Response<T> {
+        val delays = listOf(1_000L, 3_000L, 9_000L)
+        var lastResponse: Response<T>? = null
+        var lastError: IOException? = null
+
+        for (attempt in 0..delays.size) {
+            try {
+                val response = block()
+                if (response.isSuccessful || !isRetryable(response.code())) return response
+                lastResponse = response
+                lastError = null
+            } catch (e: IOException) {
+                lastError = e
+            }
+            if (attempt < delays.size) delay(delays[attempt])
+        }
+
+        return lastResponse ?: throw (lastError ?: IOException("Network error"))
     }
 
     override fun startAttempt(testId: Long, partIds: List<Long>?): Flow<NetworkResult<AttemptDto>> = flow {
@@ -110,26 +139,28 @@ class ExamRepositoryImpl @Inject constructor(
 
             // Build multipart files list
             val fileParts = mutableListOf<MultipartBody.Part>()
-            answers.forEachIndexed { index, item ->
+            answers.forEach { item ->
                 item.audioFile?.let { file ->
                     if (file.exists() && file.length() > 0) {
                         val requestFile = file.asRequestBody("audio/mp4".toMediaTypeOrNull())
                         fileParts.add(MultipartBody.Part.createFormData("audio_${item.questionId}", file.name, requestFile))
-                        fileParts.add(MultipartBody.Part.createFormData("answers.$index.audio", file.name, requestFile))
                     }
                 }
             }
 
-            val response = apiService.uploadPartAnswers(
-                attemptPartId = attemptPartId,
-                answers = answersRequestBody,
-                audioFiles = fileParts
-            )
+            val response = withRetry {
+                apiService.uploadPartAnswers(
+                    attemptPartId = attemptPartId,
+                    answers = answersRequestBody,
+                    audioFiles = fileParts
+                )
+            }
 
             if (response.isSuccessful) {
                 emit(NetworkResult.Success(Unit))
             } else {
-                emit(NetworkResult.Error(response.body()?.message ?: "Failed to upload answers", response.code()))
+                val message = extractErrorMessage(response.errorBody()?.string()) ?: "Failed to upload answers"
+                emit(NetworkResult.Error(message, response.code()))
             }
         } catch (e: Exception) {
             emit(NetworkResult.Error(e.localizedMessage ?: "Network connection error"))
@@ -139,11 +170,12 @@ class ExamRepositoryImpl @Inject constructor(
     override fun finishAttempt(id: Long): Flow<NetworkResult<AttemptDto>> = flow {
         emit(NetworkResult.Loading)
         try {
-            val response = apiService.finishAttempt(id)
+            val response = withRetry { apiService.finishAttempt(id) }
             if (response.isSuccessful && response.body()?.data != null) {
                 emit(NetworkResult.Success(response.body()!!.data!!))
             } else {
-                emit(NetworkResult.Error(response.body()?.message ?: "Failed to finish attempt", response.code()))
+                val message = extractErrorMessage(response.errorBody()?.string()) ?: "Failed to finish attempt"
+                emit(NetworkResult.Error(message, response.code()))
             }
         } catch (e: Exception) {
             emit(NetworkResult.Error(e.localizedMessage ?: "Network connection error"))

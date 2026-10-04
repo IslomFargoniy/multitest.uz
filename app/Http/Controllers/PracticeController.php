@@ -7,6 +7,7 @@ use App\Models\AttemptAnswer;
 use App\Models\AttemptPart;
 use App\Services\FileUploadService;
 use App\Support\AudioUpload;
+use App\Support\ClientTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -111,8 +112,8 @@ class PracticeController extends Controller
         DB::transaction(function () use ($data, $request, $attemptPart) {
             foreach ($data['answers'] ?? [] as $index => $answerData) {
                 $payload = [
-                    'started_at' => $answerData['started_at'] ?? now(),
-                    'finished_at' => $answerData['finished_at'] ?? now(),
+                    'started_at' => ClientTime::parse($answerData['started_at'] ?? null),
+                    'finished_at' => ClientTime::parse($answerData['finished_at'] ?? null),
                 ];
 
                 if ($request->hasFile("answers.$index.audio_path")) {

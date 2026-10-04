@@ -210,6 +210,13 @@ fun SpeakingExamScreen(
                     )
                 }
 
+                ExamPhase.UPLOAD_FAILED -> {
+                    ErrorStateView(
+                        message = uiState.errorMessage ?: "Javoblarni yuklab bo'lmadi",
+                        onRetry = { viewModel.retryUpload() }
+                    )
+                }
+
                 ExamPhase.UPLOADING, ExamPhase.COMPLETED -> {
                     LoadingStateView(message = uiState.uploadProgressMessage.ifBlank { "Saqlanmoqda..." })
                 }

@@ -5,7 +5,6 @@ object Constants {
     const val TELEGRAM_BOT_USERNAME = "MultitestUzBot"
     const val TELEGRAM_BOT_URL = "https://t.me/MultitestUzBot?start=is_android_otp"
     const val TELEGRAM_BOT_DIRECT_URL = "tg://resolve?domain=MultitestUzBot&start=is_android_otp"
-    const val GOOGLE_WEB_CLIENT_ID = "615967000000-dummy.apps.googleusercontent.com"
     
     const val DATASTORE_NAME = "multitest_preferences"
     const val KEY_AUTH_TOKEN = "auth_token"
