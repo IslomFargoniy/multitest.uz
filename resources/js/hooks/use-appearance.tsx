@@ -36,11 +36,13 @@ const mediaQuery = () => {
 
 const handleSystemThemeChange = () => {
     const currentAppearance = localStorage.getItem('appearance') as Appearance;
-    applyTheme(currentAppearance || 'system');
+    if (currentAppearance === 'system') {
+        applyTheme('system');
+    }
 };
 
 export function initializeTheme() {
-    const savedAppearance = (localStorage.getItem('appearance') as Appearance) || 'system';
+    const savedAppearance = (localStorage.getItem('appearance') as Appearance) || 'dark';
 
     applyTheme(savedAppearance);
 
@@ -55,7 +57,8 @@ export function useAppearance() {
             const saved = localStorage.getItem('appearance') as Appearance;
             if (saved) return saved;
         }
-        return (props.appearance as Appearance) || 'system';
+        const propAppearance = props.appearance as Appearance | undefined;
+        return propAppearance && propAppearance !== 'system' ? propAppearance : 'dark';
     });
 
     const updateAppearance = useCallback((mode: Appearance) => {
