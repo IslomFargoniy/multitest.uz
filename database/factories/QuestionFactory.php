@@ -17,7 +17,10 @@ class QuestionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'part_id' => \App\Models\Part::factory(),
+            'textarea' => '<p>'.fake()->sentence().'</p>',
+            'ready_second' => 5,
+            'answer_second' => 30,
         ];
     }
 }

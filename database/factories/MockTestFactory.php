@@ -17,7 +17,8 @@ class MockTestFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'mock_id' => \App\Models\Mock::factory(),
+            'test_id' => \App\Models\Test::factory(),
         ];
     }
 }

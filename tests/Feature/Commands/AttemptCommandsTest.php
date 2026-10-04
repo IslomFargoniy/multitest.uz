@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Commands;
 
+use App\Jobs\EvaluateSpeakingJob;
 use App\Models\Attempt;
 use App\Models\AttemptAnswer;
 use App\Models\AttemptPart;
@@ -11,9 +12,8 @@ use App\Models\Question;
 use App\Models\Test as ModelTest;
 use App\Models\User\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Queue;
-use App\Jobs\EvaluateSpeakingJob;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AttemptCommandsTest extends TestCase
@@ -38,6 +38,7 @@ class AttemptCommandsTest extends TestCase
             'test_id' => $test->id,
             'name' => 'Old Attempt',
             'started_at' => now()->subDays(11),
+            'created_at' => now()->subDays(11),
         ]);
         $part = Part::factory()->create([
             'test_id' => $test->id,
@@ -52,7 +53,7 @@ class AttemptCommandsTest extends TestCase
             'part_id' => $part->id,
             'textarea' => 'Question 1',
         ]);
-        $oldAnswer = new AttemptAnswer();
+        $oldAnswer = new AttemptAnswer;
         $oldAnswer->attempt_part_id = $oldAttemptPart->id;
         $oldAnswer->question_id = $question->id;
         $oldAnswer->started_at = now()->subDays(11);
@@ -68,13 +69,14 @@ class AttemptCommandsTest extends TestCase
             'test_id' => $test->id,
             'name' => 'Recent Attempt',
             'started_at' => now()->subDays(5),
+            'created_at' => now()->subDays(5),
         ]);
         $recentAttemptPart = AttemptPart::factory()->create([
             'attempt_id' => $recentAttempt->id,
             'part_id' => $part->id,
             'started_at' => now()->subDays(5),
         ]);
-        $recentAnswer = new AttemptAnswer();
+        $recentAnswer = new AttemptAnswer;
         $recentAnswer->attempt_part_id = $recentAttemptPart->id;
         $recentAnswer->question_id = $question->id;
         $recentAnswer->started_at = now()->subDays(5);
@@ -85,8 +87,8 @@ class AttemptCommandsTest extends TestCase
 
         // Run the artisan command for 10 days threshold
         $this->artisan('attempts:clean-old 10')
-            ->expectsOutputToContain('Found 1 attempts older than 10 days. Starting cleanup...')
-            ->expectsOutputToContain('Cleanup completed successfully.')
+            ->expectsOutputToContain('Starting cleanup for attempts older than 10 days')
+            ->expectsOutputToContain('Audio cleanup finished: 1 attempts, 1 audio files')
             ->assertSuccessful();
 
         // Assert old records are deleted
@@ -134,7 +136,7 @@ class AttemptCommandsTest extends TestCase
             'part_id' => $part->id,
             'started_at' => now()->subDays(11),
         ]);
-        $oldAnswer = new AttemptAnswer();
+        $oldAnswer = new AttemptAnswer;
         $oldAnswer->attempt_part_id = $oldAttemptPart->id;
         $oldAnswer->question_id = $question->id;
         $oldAnswer->started_at = now()->subDays(11);
@@ -153,7 +155,7 @@ class AttemptCommandsTest extends TestCase
             'part_id' => $part->id,
             'started_at' => now()->subDays(5),
         ]);
-        $recentAnswer = new AttemptAnswer();
+        $recentAnswer = new AttemptAnswer;
         $recentAnswer->attempt_part_id = $recentAttemptPart->id;
         $recentAnswer->question_id = $question->id;
         $recentAnswer->started_at = now()->subDays(5);
@@ -165,7 +167,7 @@ class AttemptCommandsTest extends TestCase
             'part_id' => $part->id,
             'textarea' => 'Question 2',
         ]);
-        $ratedAnswer = new AttemptAnswer();
+        $ratedAnswer = new AttemptAnswer;
         $ratedAnswer->attempt_part_id = $recentAttemptPart->id;
         $ratedAnswer->question_id = $question2->id;
         $ratedAnswer->started_at = now()->subDays(3);
@@ -183,18 +185,21 @@ class AttemptCommandsTest extends TestCase
         Queue::assertPushed(EvaluateSpeakingJob::class, function ($job) use ($recentAnswer) {
             $ref = new \ReflectionProperty($job, 'answerId');
             $ref->setAccessible(true);
+
             return $ref->getValue($job) === $recentAnswer->id;
         });
 
         Queue::assertNotPushed(EvaluateSpeakingJob::class, function ($job) use ($oldAnswer) {
             $ref = new \ReflectionProperty($job, 'answerId');
             $ref->setAccessible(true);
+
             return $ref->getValue($job) === $oldAnswer->id;
         });
 
         Queue::assertNotPushed(EvaluateSpeakingJob::class, function ($job) use ($ratedAnswer) {
             $ref = new \ReflectionProperty($job, 'answerId');
             $ref->setAccessible(true);
+
             return $ref->getValue($job) === $ratedAnswer->id;
         });
     }

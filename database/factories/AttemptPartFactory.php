@@ -17,7 +17,9 @@ class AttemptPartFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'attempt_id' => \App\Models\Attempt::factory(),
+            'part_id' => \App\Models\Part::factory(),
+            'started_at' => now(),
         ];
     }
 }

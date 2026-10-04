@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attempt;
 use App\Http\Requests\StoreAttemptRequest;
 use App\Http\Requests\UpdateAttemptRequest;
+use App\Models\Attempt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +34,7 @@ class AttemptController extends Controller
                     'mockStudent',
                     'test.language',
                     'attempt_parts' => function ($query) {
-                        $query->addSelect(\Illuminate\Support\Facades\DB::raw("aiScoreAvg(null, attempt_parts.id) as ai_score_avg"));
+                        $query->withAvg('attempt_answers as ai_score_avg', 'score_ai');
                     },
                 ])
                 ->orderByDesc('created_at');
@@ -57,17 +57,17 @@ class AttemptController extends Controller
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $attempt->whereHas('user', function ($query) use ($search) {
-                    $query->where('name', 'like', '%' . $search . '%')
-                          ->orWhere('email', 'like', '%' . $search . '%')
-                          ->orWhere('phone', 'like', '%' . $search . '%');
+                    $query->where('name', 'like', '%'.$search.'%')
+                        ->orWhere('email', 'like', '%'.$search.'%')
+                        ->orWhere('phone', 'like', '%'.$search.'%');
                 })->orWhereHas('test', function ($query) use ($search) {
-                    $query->where('name', 'like', '%' . $search . '%');
+                    $query->where('name', 'like', '%'.$search.'%');
                 })->orWhereHas('mock', function ($query) use ($search) {
-                    $query->where('name', 'like', '%' . $search . '%');
+                    $query->where('name', 'like', '%'.$search.'%');
                 });
             }
 
-            if ($request->has('role') && !empty($request->input('role')) && $request->input('role') !== '0') {
+            if ($request->has('role') && ! empty($request->input('role')) && $request->input('role') !== '0') {
                 $role = $request->input('role');
                 $attempt->whereHas('user.roles', function ($query) use ($role) {
                     $query->where('name', $role);
@@ -88,7 +88,6 @@ class AttemptController extends Controller
                 $attempt->where('user_id', Auth::id());
             }
 
-
             $attempt = $attempt->paginate($per_page);
 
             if ($request->wantsJson()) {
@@ -96,7 +95,7 @@ class AttemptController extends Controller
             }
 
             return Inertia::render('attempt/index', [
-                'attempt' => $attempt
+                'attempt' => $attempt,
             ]);
 
         } catch (\Exception $exception) {
@@ -136,7 +135,7 @@ class AttemptController extends Controller
             // Filter parts if part_ids are provided
             $partIds = $request->input('part_ids');
             $partsToAttempt = $attempt->test->parts;
-            
+
             if (is_array($partIds) && count($partIds) > 0) {
                 $partsToAttempt = $partsToAttempt->whereIn('id', $partIds);
             }
@@ -168,7 +167,6 @@ class AttemptController extends Controller
         }
     }
 
-
     /**
      * Display the specified resource.
      */
@@ -187,8 +185,7 @@ class AttemptController extends Controller
                     'attempt_parts.attempt_answers.question',
                     'attempt_parts.part',
                     'attempt_parts' => function ($query) {
-                        $query->select('attempt_parts.*')
-                            ->addSelect(DB::raw("aiScoreAvg(null, attempt_parts.id) as ai_score_avg"));
+                        $query->withAvg('attempt_answers as ai_score_avg', 'score_ai');
                     },
                 ])
                 ->firstOrFail();
@@ -238,7 +235,7 @@ class AttemptController extends Controller
             try {
                 app(\App\Services\Telegram\MultitestUzBotService::class)->sendAttemptResultNotification($attempt);
             } catch (\Exception $e) {
-                \Log::warning('Telegram notification failed on evaluate: ' . $e->getMessage());
+                \Log::warning('Telegram notification failed on evaluate: '.$e->getMessage());
             }
 
         } catch (\Exception $exception) {
@@ -270,7 +267,7 @@ class AttemptController extends Controller
     {
         try {
             $this->authorize('update', $attempt);
-            if (!auth()->user()->hasAnyRole(['Admin', 'Teacher'])) {
+            if (! auth()->user()->hasAnyRole(['Admin', 'Teacher'])) {
                 abort(403);
             }
 

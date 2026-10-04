@@ -17,7 +17,10 @@ class LanguageFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'code' => fake()->unique()->lexify('??'),
+            'name_uz' => fake()->word(),
+            'name_ru' => fake()->word(),
+            'name_en' => 'English',
         ];
     }
 }

@@ -13,7 +13,6 @@ use App\Models\Question;
 use App\Models\Test as ModelTest;
 use App\Models\User\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -21,6 +20,15 @@ use Tests\TestCase;
 class CompressAudioJobTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        if (trim((string) @shell_exec('command -v ffmpeg')) === '') {
+            $this->markTestSkipped('ffmpeg is not installed.');
+        }
+    }
 
     public function test_compress_audio_job_successfully_compresses_audio_and_updates_model()
     {
@@ -61,20 +69,20 @@ class CompressAudioJobTest extends TestCase
         $physicalTempPath = Storage::disk('public')->path($path);
 
         // Generate a valid 1-second silent WebM audio file using FFmpeg
-        $generateCommand = "ffmpeg -y -f lavfi -i anullsrc=r=44100:cl=mono -t 1 " . escapeshellarg($physicalTempPath) . " 2>&1";
+        $generateCommand = 'ffmpeg -y -f lavfi -i anullsrc=r=44100:cl=mono -t 1 '.escapeshellarg($physicalTempPath).' 2>&1';
         exec($generateCommand);
 
-        $audioUrl = '/storage/' . $path;
+        $audioUrl = '/storage/'.$path;
 
         // Create the answer record (saved triggers observer)
         // We temporarily disable queue or save to avoid automatic dispatch in observer
         // so we can test the job execution explicitly.
-        $answer = new AttemptAnswer();
+        $answer = new AttemptAnswer;
         $answer->attempt_part_id = $attemptPart->id;
         $answer->question_id = $question->id;
         $answer->started_at = now();
         $answer->audio_path = $audioUrl;
-        
+
         // Save quietly so observer doesn't trigger the job automatically during setup
         $answer->saveQuietly();
 
@@ -86,7 +94,7 @@ class CompressAudioJobTest extends TestCase
 
         // Check if the file was compressed to mp3
         $this->assertStringEndsWith('.mp3', $answer->audio_path);
-        
+
         $cleanPath = str_replace('/storage/', '', $answer->audio_path);
         Storage::disk('public')->assertExists($cleanPath);
         Storage::disk('public')->assertMissing('attempt_answers_audio/test-audio.webm');

@@ -17,7 +17,9 @@ class AttemptAnswerFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'attempt_part_id' => \App\Models\AttemptPart::factory(),
+            'question_id' => \App\Models\Question::factory(),
+            'started_at' => now(),
         ];
     }
 }

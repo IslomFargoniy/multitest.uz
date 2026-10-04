@@ -17,7 +17,9 @@ class PartFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'test_id' => \App\Models\Test::factory(),
+            'name' => 'Part '.fake()->numberBetween(1, 3),
+            'description' => fake()->sentence(),
         ];
     }
 }

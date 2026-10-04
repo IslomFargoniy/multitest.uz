@@ -17,7 +17,10 @@ class AttemptFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->sentence(2),
+            'user_id' => \App\Models\User\User::factory(),
+            'test_id' => \App\Models\Test::factory(),
+            'started_at' => now(),
         ];
     }
 }

@@ -32,7 +32,7 @@ class Attempt extends Model
         'evaluated_at',
         'score',
         'tab_switch_count',
-        'review'
+        'review',
     ];
 
     protected $casts = [
@@ -40,6 +40,7 @@ class Attempt extends Model
         'finished_at' => 'datetime',
         'score' => 'integer',
         'tab_switch_count' => 'integer',
+        'evaluated_at' => 'datetime',
     ];
 
     public function user()
@@ -54,7 +55,7 @@ class Attempt extends Model
 
     public function scopeWithAiScoreAvg($query)
     {
-        return $query->addSelect(\Illuminate\Support\Facades\DB::raw("aiScoreAvg(attempts.id, null) as ai_score_avg"));
+        return $query->withAvg('attempt_answers as ai_score_avg', 'score_ai');
     }
 
     public function mock()
@@ -70,5 +71,10 @@ class Attempt extends Model
     public function attempt_parts()
     {
         return $this->hasMany(AttemptPart::class, 'attempt_id');
+    }
+
+    public function attempt_answers()
+    {
+        return $this->hasManyThrough(AttemptAnswer::class, AttemptPart::class, 'attempt_id', 'attempt_part_id');
     }
 }

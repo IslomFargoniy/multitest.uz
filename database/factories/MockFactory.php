@@ -17,7 +17,15 @@ class MockFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => \App\Models\User\User::factory(),
+            'test_id' => \App\Models\Test::factory(),
+            'name' => fake()->sentence(3),
+            'slug' => fake()->unique()->slug(),
+            'started_at' => now()->subHour(),
+            'starts_at' => now()->subHour(),
+            'finished_at' => now()->addDay(),
+            'active' => true,
+            'open' => true,
         ];
     }
 }
