@@ -124,4 +124,3 @@ export function useTelegramBackButton(show: boolean, onClick: () => void) {
         };
     }, [show, onClick]);
 }
-
