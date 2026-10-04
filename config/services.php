@@ -42,10 +42,6 @@ return [
         'allowed_client_ids' => array_values(array_filter(array_map('trim', explode(',', (string) env('GOOGLE_ALLOWED_CLIENT_IDS', ''))))),
     ],
 
-    'openai' => [
-        'api_key' => env('OPENAI_API_KEY'),
-    ],
-
     'gemini' => [
         'api_key' => env('GEMINI_API_KEY'),
     ],

@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Models\AttemptAnswer;
 use App\Services\GeminiAiService;
-use App\Services\OpenAIService;
 use App\Services\NotificationService;
 
 use Illuminate\Bus\Queueable;
