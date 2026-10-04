@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') == 'dark'])>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'dark') !== 'light'])>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,17 +26,24 @@
 
         @laravelPWA
 
-        {{-- Inline script to detect system dark mode preference and apply it immediately --}}
+        {{-- Inline script to detect dark mode preference and apply it immediately (default dark) --}}
         <script>
             (function() {
-                const appearance = '{{ $appearance ?? "system" }}';
-
-                if (appearance === 'system') {
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-                    if (prefersDark) {
+                try {
+                    const saved = localStorage.getItem('appearance');
+                    if (saved === 'light') {
+                        document.documentElement.classList.remove('dark');
+                    } else if (saved === 'dark') {
+                        document.documentElement.classList.add('dark');
+                    } else if (saved === 'system') {
+                        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                        document.documentElement.classList.toggle('dark', prefersDark);
+                    } else {
+                        // default dark for new visitors
                         document.documentElement.classList.add('dark');
                     }
+                } catch (e) {
+                    document.documentElement.classList.add('dark');
                 }
             })();
         </script>
@@ -44,11 +51,11 @@
         {{-- Inline style to set the HTML background color based on our theme in app.css --}}
         <style>
             html {
-                background-color: oklch(1 0 0);
+                background-color: #F5F7FB;
             }
 
             html.dark {
-                background-color: oklch(0.145 0 0);
+                background-color: #0B1020;
             }
         </style>
 
@@ -173,8 +180,9 @@
         }
         </script>
 
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
         @routes
         @viteReactRefresh
