@@ -1,7 +1,8 @@
 import AttemptAnswerComponent from '@/components/attempt/AttemptAnswer';
+import { Button } from '@/components/ui/button';
 import { AttemptPart } from '@/types';
 import { router } from '@inertiajs/react';
-import { CheckCircle2, ChevronDown, Info, Sparkles, Star } from 'lucide-react';
+import { ChevronDown, Info, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -13,7 +14,7 @@ interface PartAccordionProps {
 
 export default function AttemptPartAccordion({ attempt_parts, isAdmin, isTeacher }: PartAccordionProps) {
     const { t } = useTranslation();
-    const [openIndex, setOpenIndex] = useState<number | null>(0); // Default open the first part
+    const [openIndex, setOpenIndex] = useState<number | null>(0); // Default open first part
 
     const toggle = (index: number) => {
         setOpenIndex(openIndex === index ? null : index);
@@ -24,136 +25,84 @@ export default function AttemptPartAccordion({ attempt_parts, isAdmin, isTeacher
             {attempt_parts.map((item: AttemptPart, index: number) => {
                 const isOpen = openIndex === index;
                 const globalIndex = index + 1;
-
-                // Calculate total score for this specific part
                 const partScore = Number(item?.ai_score_avg ?? 0);
                 const totalQuestions = item.attempt_answers?.length || 0;
 
                 return (
                     <div
                         key={item.id}
-                        className={`overflow-hidden rounded-[2rem] border transition-all duration-500 ease-in-out ${
-                            isOpen
-                                ? 'border-blue-200 bg-white shadow-2xl shadow-blue-500/10 dark:border-blue-500/30 dark:bg-slate-900'
-                                : 'border-slate-100 bg-slate-50/50 hover:bg-white dark:border-slate-800 dark:bg-slate-900/50 dark:hover:bg-slate-900'
-                        }`}
+                        className="overflow-hidden rounded-xl border border-border bg-card shadow-sm dark:shadow-none transition-colors"
                     >
                         <button
                             type="button"
                             onClick={() => toggle(index)}
-                            className="group flex w-full items-center justify-between px-4 py-4 sm:px-6 sm:py-5 focus:outline-none"
+                            className="flex w-full items-center justify-between p-4 sm:p-5 text-left cursor-pointer"
                         >
-                            <div className="flex items-center gap-5">
-                                {/* Number Indicator */}
-                                <div
-                                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-sm font-black transition-all duration-300 ${
-                                        isOpen
-                                            ? 'scale-110 bg-blue-600 text-white shadow-lg shadow-blue-200 dark:shadow-none'
-                                            : 'border border-slate-100 bg-white text-slate-400 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-500'
-                                    }`}
-                                >
+                            <div className="flex items-center gap-4">
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface-2 font-display text-sm font-bold text-accent-text">
                                     {globalIndex.toString().padStart(2, '0')}
                                 </div>
 
-                                <div className="text-left">
-                                    <h3
-                                        className={`text-lg font-black tracking-tight transition-colors duration-300 ${isOpen ? 'text-blue-600 dark:text-blue-400' : 'text-slate-900 dark:text-white'}`}
-                                    >
+                                <div>
+                                    <h3 className="text-base font-bold text-foreground">
                                         {item.part?.name}
                                     </h3>
-                                    <div className="mt-0.5 flex items-center gap-2">
-                                        <CheckCircle2 className={`h-3 w-3 ${totalQuestions > 0 ? 'text-emerald-500' : 'text-slate-300'}`} />
-                                        <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">
-                                            {totalQuestions} {t('attempt_details.questions_answered')}
-                                        </p>
-                                    </div>
+                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                        {totalQuestions} {t('attempt_details.questions_answered', 'savol')}
+                                    </p>
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-8">
-                                {/* Score Badge */}
-                                <div className="hidden items-center gap-3 border-l border-slate-100 pl-8 sm:flex dark:border-slate-800">
-                                    <div className="text-right">
-                                        <p className="mb-1 text-[9px] leading-none font-black tracking-tighter text-slate-400 uppercase">
-                                            {t('attempt_details.part_score')}
-                                        </p>
-                                        <p className="text-xl leading-none font-black text-slate-900 dark:text-white">{partScore.toFixed(1)}</p>
-                                    </div>
-                                    <div
-                                        className={`flex h-10 w-10 items-center justify-center rounded-full ${partScore > 0 ? 'bg-amber-50 dark:bg-amber-900/20' : 'bg-slate-50 dark:bg-slate-800'}`}
-                                    >
-                                        <Star className={`h-5 w-5 ${partScore > 0 ? 'fill-amber-500 text-amber-500' : 'text-slate-200'}`} />
-                                    </div>
+                            <div className="flex items-center gap-4">
+                                <div className="text-right">
+                                    <p className="text-xs font-semibold text-muted-foreground">
+                                        {t('attempt_details.part_score', 'Qism bali')}
+                                    </p>
+                                    <p className="font-display text-lg font-bold text-foreground tabular-nums">
+                                        {partScore > 0 ? partScore.toFixed(1) : '—'}
+                                    </p>
                                 </div>
 
-                                <div
-                                    className={`flex h-8 w-8 items-center justify-center rounded-full transition-all duration-300 ${isOpen ? 'rotate-180 bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400' : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500'}`}
-                                >
-                                    <ChevronDown className="h-5 w-5" />
+                                <div className={`flex h-8 w-8 items-center justify-center rounded-lg bg-surface-2 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-180 text-foreground' : ''}`}>
+                                    <ChevronDown className="h-4 w-4" />
                                 </div>
                             </div>
                         </button>
 
-                        {/* Re-evaluate Button Row (visible when open and authorized) */}
+                        {/* Re-evaluate row */}
                         {isOpen && (isAdmin || isTeacher) && (
-                            <div className="flex justify-end gap-3 border-t border-slate-50 px-6 py-3 dark:border-slate-800">
-                                <button
+                            <div className="flex justify-end border-t border-border px-4 py-2.5 bg-surface-sunken">
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
                                     onClick={() => {
                                         if (confirm(t('common.are_you_sure'))) {
-                                            router.post(route('attempt_part.re_evaluate', { attempt_part: item.id }), {}, {
-                                                onSuccess: () => {
-                                                    // Success handled by toast/redirect
-                                                }
-                                            });
+                                            router.post(route('attempt_part.re_evaluate', { attempt_part: item.id }));
                                         }
                                     }}
-                                    className="inline-flex items-center gap-2 rounded-xl bg-blue-50 px-4 py-2 text-xs font-bold text-blue-600 transition-colors hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400"
+                                    className="gap-2"
                                 >
                                     <Sparkles className="h-3.5 w-3.5" />
-                                    {t('attempt_details.re_evaluate')}
-                                </button>
+                                    <span>{t('attempt_details.re_evaluate', 'Qayta baholash')}</span>
+                                </Button>
                             </div>
                         )}
 
-                        {/* Accordion Content with CSS Grid for smooth height animation */}
-                        <div
-                            className={`grid transition-all duration-500 ease-in-out ${
-                                isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
-                            }`}
-                        >
-                            <div className="overflow-hidden">
-                                <div className="space-y-6 border-t border-slate-50 p-3 sm:p-8 dark:border-slate-800">
-                                    {/* Description/Instruction Box */}
-                                    {item.part?.description && (
-                                        <div className="flex gap-4 rounded-[1.5rem] border border-blue-100/50 bg-blue-50/30 p-5 dark:border-blue-500/10 dark:bg-blue-500/5">
-                                            <Info className="mt-0.5 h-5 w-5 shrink-0 text-blue-500" />
-                                            <div>
-                                                <p className="mb-1 text-[10px] font-black tracking-widest text-blue-500 uppercase">
-                                                    {t('common.instructions')}
-                                                </p>
-                                                <p className="text-sm leading-relaxed font-medium text-slate-600 dark:text-slate-400">
-                                                    {item.part.description}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Answers List Container */}
-                                    <div className="space-y-6">
-                                        <div className="flex items-center gap-4">
-                                            <span className="text-[10px] font-black tracking-[0.25em] whitespace-nowrap text-slate-400 uppercase">
-                                                {t('attempt_details.response_details')}
-                                            </span>
-                                            <div className="h-px flex-1 bg-slate-100 dark:bg-slate-800/50" />
-                                        </div>
-
-                                        <div className="rounded-2xl bg-transparent sm:bg-slate-50/50 p-0 sm:p-2 dark:bg-transparent dark:sm:bg-slate-950/30">
-                                            <AttemptAnswerComponent attempt_answers={item.attempt_answers ?? []} />
-                                        </div>
+                        {/* Accordion Content */}
+                        {isOpen && (
+                            <div className="border-t border-border p-4 sm:p-6 space-y-4">
+                                {item.part?.description && (
+                                    <div className="flex gap-3 rounded-lg border border-border bg-surface-sunken p-3.5">
+                                        <Info className="h-4 w-4 shrink-0 text-accent-text mt-0.5" />
+                                        <p className="text-xs leading-relaxed text-muted-foreground">
+                                            {item.part.description}
+                                        </p>
                                     </div>
-                                </div>
+                                )}
+
+                                <AttemptAnswerComponent attempt_answers={item.attempt_answers ?? []} />
                             </div>
-                        </div>
+                        )}
                     </div>
                 );
             })}
