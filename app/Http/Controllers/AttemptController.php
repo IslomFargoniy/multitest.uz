@@ -19,11 +19,7 @@ class AttemptController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->per_page) {
-                $per_page = $request->per_page;
-            } else {
-                $per_page = 10;
-            }
+            $per_page = \App\Support\Pagination::perPage($request, 10);
 
             $attempt = Attempt::query()
                 ->select('attempts.*')
@@ -39,52 +35,46 @@ class AttemptController extends Controller
                 ])
                 ->orderByDesc('created_at');
 
-            if ($request->has('user_id')) {
-                $user_id = $request->input('user_id');
-                $attempt->where('user_id', $user_id);
+            foreach (['user_id', 'mock_id', 'test_id'] as $column) {
+                if ($request->filled($column)) {
+                    $attempt->where($column, $request->input($column));
+                }
             }
 
-            if ($request->has('mock_id')) {
-                $mock_id = $request->input('mock_id');
-                $attempt->where('mock_id', $mock_id);
-            }
-
-            if ($request->has('test_id')) {
-                $test_id = $request->input('test_id');
-                $attempt->where('test_id', $test_id);
-            }
-
-            if ($request->has('search')) {
-                $search = $request->input('search');
-                $attempt->whereHas('user', function ($query) use ($search) {
-                    $query->where('name', 'like', '%'.$search.'%')
-                        ->orWhere('email', 'like', '%'.$search.'%')
-                        ->orWhere('phone', 'like', '%'.$search.'%');
-                })->orWhereHas('test', function ($query) use ($search) {
-                    $query->where('name', 'like', '%'.$search.'%');
-                })->orWhereHas('mock', function ($query) use ($search) {
-                    $query->where('name', 'like', '%'.$search.'%');
+            if ($request->filled('search')) {
+                $search = '%' . $request->input('search') . '%';
+                $attempt->where(function ($outer) use ($search) {
+                    $outer->where('attempts.name', 'like', $search)
+                        ->orWhereHas('user', function ($query) use ($search) {
+                            $query->where(function ($w) use ($search) {
+                                $w->where('name', 'like', $search)
+                                    ->orWhere('email', 'like', $search)
+                                    ->orWhere('phone', 'like', $search);
+                            });
+                        })
+                        ->orWhereHas('mockStudent', fn ($q) => $q->where('name', 'like', $search))
+                        ->orWhereHas('test', fn ($q) => $q->where('name', 'like', $search))
+                        ->orWhereHas('mock', fn ($q) => $q->where('name', 'like', $search));
                 });
             }
 
-            if ($request->has('role') && ! empty($request->input('role')) && $request->input('role') !== '0') {
+            if ($request->filled('role') && $request->input('role') !== '0') {
                 $role = $request->input('role');
                 $attempt->whereHas('user.roles', function ($query) use ($role) {
                     $query->where('name', $role);
                 });
             }
 
-            if (Auth::user()->hasRole('Teacher')) {
+            $authUser = Auth::user();
+            if ($authUser->hasRole('Admin')) {
+                // Admin sees every attempt
+            } elseif ($authUser->hasRole('Teacher')) {
                 $attempt->where(function ($query) {
-                    $query->whereHas('mock', function ($query) {
-                        $query->where('user_id', Auth::id());
-                    })
-                        ->orWhereHas('test', function ($query) {
-                            $query->where('user_id', Auth::id());
-                        })
+                    $query->whereHas('mock', fn ($q) => $q->where('user_id', Auth::id()))
+                        ->orWhereHas('test', fn ($q) => $q->where('user_id', Auth::id()))
                         ->orWhere('user_id', Auth::id());
                 });
-            } elseif (Auth::user()->hasRole('Student')) {
+            } else {
                 $attempt->where('user_id', Auth::id());
             }
 

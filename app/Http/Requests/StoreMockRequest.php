@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Test;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
@@ -40,6 +42,21 @@ class StoreMockRequest extends FormRequest
             'test_id' => 'required|exists:tests,id',
             'slug' => 'required|string|max:255|unique:mocks,slug',
             'active' => 'nullable|boolean',
+        ];
+    }
+
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                if ($validator->errors()->has('test_id') || !$this->filled('test_id')) {
+                    return;
+                }
+
+                if (!Test::query()->visibleTo($this->user())->whereKey($this->input('test_id'))->exists()) {
+                    $validator->errors()->add('test_id', 'The selected test is not available.');
+                }
+            },
         ];
     }
 }

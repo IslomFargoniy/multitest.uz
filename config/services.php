@@ -38,6 +38,8 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URI'),
+        // Comma-separated OAuth client IDs (web + Android) whose ID tokens are accepted by the API.
+        'allowed_client_ids' => array_values(array_filter(array_map('trim', explode(',', (string) env('GOOGLE_ALLOWED_CLIENT_IDS', ''))))),
     ],
 
     'openai' => [

@@ -147,12 +147,12 @@
             <div class="info-group" style="border-bottom: none; margin-bottom: 0;">
                 <div class="label">Imtihon Natijasi</div>
                 <div class="score-pill">
-                    ★ {{ is_numeric($score) ? number_format($score, 1) : $score }}
+                    ★ {{ is_numeric($score) ? number_format($score, 1) : $score }}@if($level) · {{ $level }}@endif
                 </div>
             </div>
 
             @if(auth()->check() || session('mock_student_id'))
-                <a href="{{ route('certificate.download', $attempt->id) }}" class="btn-download">
+                <a href="{{ route('attempt.certificate', $attempt->id) }}" class="btn-download">
                     📥 PDF Sertifikatni Yuklab Olish
                 </a>
             @endif

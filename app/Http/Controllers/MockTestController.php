@@ -2,99 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MockTest;
 use App\Http\Requests\StoreMockTestRequest;
-use App\Http\Requests\UpdateMockTestRequest;
+use App\Models\Mock;
+use App\Models\MockTest;
+use App\Models\Test;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class MockTestController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreMockTestRequest $request)
     {
-        try {
+        $mock = Mock::findOrFail($request->mock_id);
+        $this->authorize('update', $mock);
 
-            foreach ($request->testIds as $testId) {
-                MockTest::create([
-                    'mock_id' => $request->mock_id,
-                    'test_id' => $testId,
-                ]);
-            }
+        $testIds = array_unique($request->testIds);
+        $visible = Test::query()->visibleTo($request->user())->whereIn('id', $testIds)->pluck('id')->all();
 
-            return redirect()->back()->with('success', 'Mock Tests added successfully');
-
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
-
-            throw $exception;
-
-        } catch (\Exception $exception) {
-            // Proper Inertia error response
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
+        if (count($visible) !== count($testIds)) {
+            throw ValidationException::withMessages(['testIds' => ['One or more selected tests are not available.']]);
         }
+
+        DB::transaction(function () use ($mock, $testIds) {
+            foreach ($testIds as $testId) {
+                MockTest::firstOrCreate(['mock_id' => $mock->id, 'test_id' => $testId]);
+            }
+        });
+
+        return redirect()->back()->with('success', 'Mock Tests added successfully');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(MockTest $mockTest)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(MockTest $mockTest)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateMockTestRequest $request, MockTest $mockTest)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(MockTest $mockTest)
     {
-        try {
-            $mockTest->delete();
-            return redirect()->back()->with('success', 'Mock Test deleted successfully');
+        $this->authorize('update', $mockTest->mock);
 
-        } catch (\Illuminate\Auth\Access\AuthorizationException | \Illuminate\Database\Eloquent\ModelNotFoundException | \Illuminate\Validation\ValidationException $exception) {
+        $mockTest->delete();
 
-            throw $exception;
-
-        } catch (\Exception $exception) {
-            // Proper Inertia error response
-            throw ValidationException::withMessages([
-                'error' => [$exception->getMessage()],
-            ]);
-        }
+        return redirect()->back()->with('success', 'Mock Test deleted successfully');
     }
 }

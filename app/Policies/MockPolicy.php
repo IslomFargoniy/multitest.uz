@@ -20,7 +20,7 @@ class MockPolicy
      */
     public function view(User $user, Mock $mock): bool
     {
-        return $user->hasRole('Admin') || $mock->user_id === $user->id || $mock->active == 1;
+        return $user->hasRole('Admin') || $mock->user_id === $user->id;
     }
 
     public function create(User $user): bool

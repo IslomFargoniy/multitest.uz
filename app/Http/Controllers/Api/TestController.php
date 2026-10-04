@@ -19,16 +19,18 @@ class TestController extends Controller
         $tests = Test::query()
             ->with(['language', 'parts'])
             ->withCount('parts')
-            ->where('is_public', true)
+            ->visibleTo(null)
             ->when($search, function ($query, $search) {
-                $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('description', 'like', "%{$search}%");
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                });
             })
             ->when($languageId, function ($query, $languageId) {
                 $query->where('language_id', $languageId);
             })
             ->latest()
-            ->paginate($request->input('per_page', 20));
+            ->paginate(\App\Support\Pagination::perPage($request, 20));
 
         return response()->json([
             'success' => true,
@@ -47,7 +49,7 @@ class TestController extends Controller
      */
     public function show($id)
     {
-        $test = Test::with([
+        $test = Test::visibleTo(null)->with([
             'language',
             'parts.questions' => function ($query) {
                 $query->select('id', 'part_id', 'textarea', 'audio_path', 'ready_second', 'answer_second');

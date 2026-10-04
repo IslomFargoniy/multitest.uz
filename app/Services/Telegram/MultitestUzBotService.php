@@ -344,7 +344,7 @@ class MultitestUzBotService
         $score = $attempt->score ?? ($attempt->ai_score_avg ? number_format($attempt->ai_score_avg, 1) : 'Tayyor');
         $tabViolations = $attempt->tab_switch_count ?? 0;
         $attemptUrl = route('attempt.show', $attempt->id);
-        $certificateUrl = route('certificate.verify', $attempt->id);
+        $certificateUrl = route('certificate.verify', $attempt->verify_code);
 
         $text = "🎉 <b>Tabriklaymiz, natijangiz tayyor!</b>\n\n"
             . "👤 <b>Nomzod:</b> {$studentName}\n"

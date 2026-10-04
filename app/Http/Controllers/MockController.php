@@ -137,7 +137,7 @@ class MockController extends Controller
 
         $mock->load([
             'test',
-            'user',
+            'user:id,name',
             'students.attempt',
             'attempts.user',
             'attempts.mockStudent',

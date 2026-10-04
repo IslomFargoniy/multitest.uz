@@ -225,7 +225,7 @@ export default function MockShow() {
                     <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-xs">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-sm font-bold text-gray-900 dark:text-white">
-                                {t('mock_exam.students_list') || "O'quvchilar Ro'yxati va Kodlar (MSXXXXXX)"}
+                                {t('mock_exam.students_list') || "O'quvchilar Ro'yxati va Kodlar (MSXXXXXXXX)"}
                             </h3>
                             <MockStudentManager
                                 mockId={mock.id}
@@ -247,7 +247,7 @@ export default function MockShow() {
                                         <tr>
                                             <th className="px-4 py-3">#</th>
                                             <th className="px-4 py-3">{t('mock_exam.student_name') || "O'quvchi Ismi"}</th>
-                                            <th className="px-4 py-3">{t('mock_exam.candidate_code') || "Nomzod Kodi (MSXXXXXX)"}</th>
+                                            <th className="px-4 py-3">{t('mock_exam.candidate_code') || "Nomzod Kodi (MSXXXXXXXX)"}</th>
                                             <th className="px-4 py-3 text-center">{t('mock_exam.attendance') || "Davomat"}</th>
                                             <th className="px-4 py-3 text-right">{t('mock_exam.attempt') || "Urinish"}</th>
                                         </tr>

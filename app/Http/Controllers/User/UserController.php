@@ -18,11 +18,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->per_page) {
-            $per_page = $request->per_page;
-        } else {
-            $per_page = 10;
-        }
+        $per_page = \App\Support\Pagination::perPage($request, 10);
 
         $this->authorize('viewAny', User::class);
 

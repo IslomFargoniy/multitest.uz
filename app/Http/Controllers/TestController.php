@@ -24,9 +24,9 @@ class TestController extends Controller
     {
         try {
 
-            $tests = Test::query();
+            $tests = Test::query()->visibleTo(Auth::user());
 
-            if ($request->has('mock_id')) {
+            if ($request->filled('mock_id')) {
                 $mock_id = $request->input('mock_id');
                 $tests->whereDoesntHave('mock_tests', function ($query) use ($mock_id) {
                     $query->where('mock_id', $mock_id);
@@ -55,11 +55,7 @@ class TestController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->per_page) {
-                $per_page = $request->per_page;
-            } else {
-                $per_page = 25;
-            }
+            $per_page = \App\Support\Pagination::perPage($request, 25);
 
             $testQuery = Test::query()
                 ->with([
@@ -76,9 +72,11 @@ class TestController extends Controller
                 });
             }
 
-            if (Auth::user()->hasRole('Teacher')) {
+            if (Auth::user()->hasRole('Admin')) {
+                // Admin sees every test
+            } elseif (Auth::user()->hasRole('Teacher')) {
                 $testQuery->where('user_id', Auth::id());
-            } elseif (Auth::user()->hasRole('Student')) {
+            } else {
                 $testQuery->where('is_public', true);
             }
 

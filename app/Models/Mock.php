@@ -28,7 +28,6 @@ class Mock extends Model
 
     protected $with = [
         'test',
-        'user',
     ];
 
     protected $appends = [

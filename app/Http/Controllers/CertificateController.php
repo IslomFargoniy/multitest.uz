@@ -3,35 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attempt;
-use Illuminate\Http\Request;
 use Spatie\LaravelPdf\Facades\Pdf;
 
 class CertificateController extends Controller
 {
-    public function download(Attempt $attempt)
+    public function download(int $attempt)
     {
-        $attempt->load(['user', 'mock', 'mockStudent', 'test']);
+        $attempt = Attempt::query()
+            ->select('attempts.*')
+            ->withAiScoreAvg()
+            ->with(['user', 'mock', 'mockStudent', 'test'])
+            ->findOrFail($attempt);
 
-        // Security check: allow owner user, candidate in session, or admin/teacher
+        // Security check: allow owner, the candidate in session, or an admin / the teacher who owns the exam
         $candidateStudentId = session('mock_student_id');
-        $isOwner = auth()->check() && auth()->id() === $attempt->user_id;
-        $isCandidate = $candidateStudentId && (int) $candidateStudentId === (int) $attempt->mock_student_id;
-        $isStaff = auth()->check() && auth()->user()->hasRole(['Admin', 'Teacher']);
+        $isCandidate = $candidateStudentId && $attempt->mock_student_id && (int) $candidateStudentId === (int) $attempt->mock_student_id;
 
-        if (!$isOwner && !$isCandidate && !$isStaff) {
-            abort(403, 'Ruxsat berilmagan.');
+        if (!$isCandidate) {
+            abort_unless(auth()->check() && auth()->user()->can('view', $attempt), 403, 'Ruxsat berilmagan.');
         }
 
-        if (!$attempt->score && !$attempt->ai_score_avg) {
+        if ($attempt->final_score === null) {
             return back()->with('error', 'Natijalar hali tayyor emas.');
         }
 
-        $verifyUrl = route('certificate.verify', $attempt->id);
-        $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode($verifyUrl);
+        $verifyUrl = route('certificate.verify', $attempt->verify_code);
 
         return Pdf::view('pdf.certificate', [
             'attempt' => $attempt,
-            'qrCodeUrl' => $qrCodeUrl,
+            'qrCodeUrl' => 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode($verifyUrl),
             'verifyUrl' => $verifyUrl,
             'certNumber' => 'MT-' . str_pad($attempt->id, 6, '0', STR_PAD_LEFT),
         ])
@@ -39,19 +39,23 @@ class CertificateController extends Controller
             ->download();
     }
 
-    public function verify(Attempt $attempt)
+    public function verify(string $code)
     {
-        $attempt->load(['user', 'mock', 'mockStudent', 'test']);
+        $attempt = Attempt::query()
+            ->select('attempts.*')
+            ->withAiScoreAvg()
+            ->with(['user:id,name', 'mock:id,name', 'mockStudent:id,name', 'test:id,name'])
+            ->where('verify_code', $code)
+            ->firstOrFail();
 
-        $candidateName = $attempt->mockStudent?->name ?? $attempt->user?->name ?? 'Nomzod';
-        $testName = $attempt->mock?->name ?? $attempt->test?->name ?? 'Imtihon';
-        $score = $attempt->score ?? $attempt->ai_score_avg ?? 0;
+        $score = $attempt->final_score;
 
         return view('certificate.verify', [
             'attempt' => $attempt,
-            'candidateName' => $candidateName,
-            'testName' => $testName,
-            'score' => $score,
+            'candidateName' => $attempt->mockStudent?->name ?? $attempt->user?->name ?? 'Nomzod',
+            'testName' => $attempt->mock?->name ?? $attempt->test?->name ?? 'Imtihon',
+            'score' => $score ?? 'Hali baholanmagan',
+            'level' => $attempt->cefr_level,
             'certNumber' => 'MT-' . str_pad($attempt->id, 6, '0', STR_PAD_LEFT),
             'issueDate' => $attempt->evaluated_at ?? $attempt->finished_at ?? $attempt->created_at,
         ]);

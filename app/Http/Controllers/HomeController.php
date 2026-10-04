@@ -17,9 +17,8 @@ class HomeController extends Controller
 
         if ($request->slug) {
             $mock = \App\Models\Mock::query()
-                ->with([
-
-                ])
+                ->select('id', 'user_id', 'test_id', 'name', 'comment', 'slug', 'active', 'open', 'started_at', 'starts_at', 'finished_at')
+                ->with(['test:id,name,language_id', 'user:id,name'])
                 ->where('slug', $request->slug)->where('open', true)
                 ->first();
             if ($mock) {

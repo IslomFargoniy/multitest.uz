@@ -83,6 +83,15 @@ class LoginController extends Controller
             'id_token.required' => 'Google token kiritilmagan',
         ]);
 
+        $allowedClientIds = config('services.google.allowed_client_ids', []);
+        if (empty($allowedClientIds)) {
+            return response()->json([
+                'success' => false,
+                'data' => new \stdClass(),
+                'message' => 'Google orqali kirish hozircha sozlanmagan.',
+            ], 503);
+        }
+
         try {
             // Verify ID token with Google tokeninfo endpoint
             $response = Http::timeout(10)->get('https://oauth2.googleapis.com/tokeninfo', [
@@ -99,27 +108,30 @@ class LoginController extends Controller
 
             $googleData = $response->json();
             $googleId = $googleData['sub'] ?? null;
-            $email = $googleData['email'] ?? null;
+            $email = isset($googleData['email']) ? strtolower($googleData['email']) : null;
             $name = $googleData['name'] ?? ($googleData['given_name'] ?? 'Google User');
             $avatar = $googleData['picture'] ?? null;
 
-            if (!$googleId || !$email) {
+            $validIssuer = in_array($googleData['iss'] ?? null, ['accounts.google.com', 'https://accounts.google.com'], true);
+            $validAudience = in_array($googleData['aud'] ?? null, $allowedClientIds, true);
+            $emailVerified = filter_var($googleData['email_verified'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+            if (!$googleId || !$email || !$validIssuer || !$validAudience || !$emailVerified) {
                 return response()->json([
                     'success' => false,
                     'data' => new \stdClass(),
-                    'message' => 'Google profil ma’lumotlarini olib bo‘lmadi.',
+                    'message' => 'Google profil ma’lumotlarini tasdiqlab bo‘lmadi.',
                 ], 400);
             }
 
-            // Find existing user by google_id or email
-            $user = User::where('google_id', $googleId)
-                ->orWhere('email', $email)
-                ->first();
+            // Find existing user by google_id first, then by (verified) email
+            $user = User::where('google_id', $googleId)->first()
+                ?? User::where('email', $email)->first();
 
             if ($user) {
                 $user->update([
                     'google_id' => $googleId,
-                    'avatar' => $avatar ?: $user->avatar,
+                    'avatar' => $user->avatar ?: $avatar,
                     'name' => $user->name ?: $name,
                 ]);
             } else {
@@ -162,10 +174,12 @@ class LoginController extends Controller
                 'message' => 'Google orqali muvaffaqiyatli kirildi.',
             ]);
         } catch (\Exception $e) {
+            report($e);
+
             return response()->json([
                 'success' => false,
                 'data' => new \stdClass(),
-                'message' => $e->getMessage(),
+                'message' => 'Google orqali kirishda xatolik yuz berdi.',
             ], 500);
         }
     }

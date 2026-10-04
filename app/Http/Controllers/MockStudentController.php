@@ -71,7 +71,7 @@ class MockStudentController extends Controller
     }
 
     /**
-     * Public endpoint for candidates entering mock exam via Candidate Code (MSXXXXXX)
+     * Public endpoint for candidates entering mock exam via Candidate Code (MSXXXXXXXX)
      */
     public function enter(Request $request)
     {

@@ -9,45 +9,49 @@ use Illuminate\Support\Facades\Log;
 
 class MultitestUzBotController extends Controller
 {
-    protected MultitestUzBotService $telegramService;
-
-    public function __construct(MultitestUzBotService $telegramService)
+    public function __construct(protected MultitestUzBotService $telegramService)
     {
-        $this->telegramService = $telegramService;
     }
 
     public function handle(Request $request)
     {
-        Log::info('Webhook received:', $request->all());
-
         $update = $request->all();
 
-        // 1. Handle Callback Query (Inline Button clicks)
+        Log::info('Telegram update received', [
+            'update_id' => $update['update_id'] ?? null,
+            'type' => isset($update['callback_query']) ? 'callback_query' : (isset($update['message']) ? 'message' : 'other'),
+        ]);
+
+        // 1. Inline button clicks
         if (isset($update['callback_query'])) {
             $callbackQuery = $update['callback_query'];
-            $chatId = $callbackQuery['message']['chat']['id'] ?? ($callbackQuery['from']['id'] ?? null);
-            $data = $callbackQuery['data'] ?? '';
-            $callbackQueryId = $callbackQuery['id'] ?? null;
+            $message = $callbackQuery['message'] ?? [];
+            $fromId = $callbackQuery['from']['id'] ?? null;
 
-            if ($chatId) {
-                $this->telegramService->handleCallbackQuery($update, $data, $chatId, $callbackQueryId);
+            if ($fromId && ($message['chat']['type'] ?? 'private') === 'private') {
+                $this->telegramService->handleCallbackQuery(
+                    $update,
+                    (string) ($callbackQuery['data'] ?? ''),
+                    $fromId,
+                    $callbackQuery['id'] ?? null
+                );
             }
+
             return response('OK', 200);
         }
 
-        // 2. Handle Text Message / Commands / Deep links
-        if (isset($update['message']['text'])) {
-            $chatId = $update['message']['chat']['id'];
-            $text = trim($update['message']['text']);
+        $message = $update['message'] ?? null;
+        $fromId = $message['from']['id'] ?? null;
 
-            $this->telegramService->handleCommand($update, $text, $chatId);
+        // Only private chats with a real sender are handled; the sender id is the account key.
+        if (!$message || !$fromId || ($message['chat']['type'] ?? null) !== 'private') {
             return response('OK', 200);
         }
 
-        // 3. Handle Other messages (e.g. photos, contacts, start without text)
-        if (isset($update['message']['chat']['id'])) {
-            $chatId = $update['message']['chat']['id'];
-            $this->telegramService->sendWelcomeMessage($update, $chatId);
+        if (isset($message['text'])) {
+            $this->telegramService->handleCommand($update, trim($message['text']), $fromId);
+        } else {
+            $this->telegramService->sendWelcomeMessage($update, $fromId);
         }
 
         return response('OK', 200);

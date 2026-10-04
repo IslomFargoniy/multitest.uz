@@ -200,7 +200,7 @@ export default function MockStudentManager({ mockId, mockName, students = [] }: 
 
                         <div className="flex items-center justify-between pt-1">
                             <span className="text-[11px] text-gray-500 dark:text-gray-400">
-                                {t('mock_students.code_generation_note') || "* Tizim har biriga avtomatik MSXXXXXX formatida kod generatsiya qiladi."}
+                                {t('mock_students.code_generation_note') || "* Tizim har biriga avtomatik MSXXXXXXXX formatida kod generatsiya qiladi."}
                             </span>
                             <Button
                                 type="submit"
@@ -253,7 +253,7 @@ export default function MockStudentManager({ mockId, mockName, students = [] }: 
                                 <thead className="bg-gray-100 dark:bg-gray-800/80 text-gray-500 dark:text-gray-400 font-bold uppercase text-[10px]">
                                     <tr>
                                         <th className="px-3.5 py-2.5">{t('mock_exam.student_name') || "O'quvchi Ismi"}</th>
-                                        <th className="px-3.5 py-2.5">{t('mock_exam.candidate_code') || "Nomzod Kodi (MSXXXXXX)"}</th>
+                                        <th className="px-3.5 py-2.5">{t('mock_exam.candidate_code') || "Nomzod Kodi (MSXXXXXXXX)"}</th>
                                         <th className="px-3.5 py-2.5 text-center">{t('mock_exam.attendance') || "Davomat"}</th>
                                         <th className="px-3.5 py-2.5 text-right">{t('common.actions') || "Amal"}</th>
                                     </tr>

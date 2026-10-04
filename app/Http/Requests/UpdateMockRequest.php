@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Test;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateMockRequest extends FormRequest
@@ -37,6 +39,21 @@ class UpdateMockRequest extends FormRequest
             'started_at' => 'required|date',
             'finished_at' => 'required|date|after:started_at',
             'active' => 'nullable|boolean',
+        ];
+    }
+
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                if ($validator->errors()->has('test_id') || !$this->filled('test_id')) {
+                    return;
+                }
+
+                if (!Test::query()->visibleTo($this->user())->whereKey($this->input('test_id'))->exists()) {
+                    $validator->errors()->add('test_id', 'The selected test is not available.');
+                }
+            },
         ];
     }
 }

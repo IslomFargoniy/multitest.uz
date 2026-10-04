@@ -15,15 +15,15 @@ use Illuminate\Support\Facades\Route;
 
 // 🔑 Public Auth Routes
 Route::prefix('v1/auth')->group(function () {
-    Route::post('login', [LoginController::class, 'login']);
-    Route::post('login-otp', [LoginController::class, 'loginWithOtp']);
-    Route::post('google', [LoginController::class, 'loginWithGoogle']);
+    Route::post('login', [LoginController::class, 'login'])->middleware('throttle:api-login');
+    Route::post('login-otp', [LoginController::class, 'loginWithOtp'])->middleware('throttle:otp');
+    Route::post('google', [LoginController::class, 'loginWithGoogle'])->middleware('throttle:otp');
 });
 
 // Backward compatibility with prava24 style endpoints
 Route::prefix('auth')->group(function () {
-    Route::post('login-otp', [LoginController::class, 'loginWithOtp']);
-    Route::post('google', [LoginController::class, 'loginWithGoogle']);
+    Route::post('login-otp', [LoginController::class, 'loginWithOtp'])->middleware('throttle:otp');
+    Route::post('google', [LoginController::class, 'loginWithGoogle'])->middleware('throttle:otp');
 });
 
 // 📚 Public Tests Catalog

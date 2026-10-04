@@ -36,12 +36,12 @@ class MockStudent extends Model
     }
 
     /**
-     * Generates a unique candidate code in MSXXXXXX format (e.g., MS849201)
+     * Generates a unique candidate code in MSXXXXXXXX format (e.g., MS84920133)
      */
     public static function generateUniqueCode(): string
     {
         do {
-            $code = 'MS' . rand(100000, 999999);
+            $code = 'MS' . random_int(10000000, 99999999);
         } while (static::where('code', $code)->exists());
 
         return $code;

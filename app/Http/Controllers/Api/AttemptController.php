@@ -30,48 +30,56 @@ class AttemptController extends Controller
         $request->validate([
             'test_id' => 'required|exists:tests,id',
             'part_ids' => 'nullable|array',
-            'part_ids.*' => 'exists:parts,id',
+            'part_ids.*' => [\Illuminate\Validation\Rule::exists('parts', 'id')->where('test_id', $request->input('test_id'))],
         ]);
 
+        $test = Test::visibleTo(Auth::user())->with('parts.questions')->find($request->test_id);
+
+        if (!$test) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Test topilmadi.',
+            ], 404);
+        }
+
+        if ($test->parts->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ushbu testda bo\'limlar mavjud emas.',
+            ], 400);
+        }
+
         try {
-            DB::beginTransaction();
-
-            $test = Test::with('parts.questions')->findOrFail($request->test_id);
-
-            if ($test->parts->isEmpty()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Ushbu testda bo\'limlar mavjud emas.',
-                ], 400);
-            }
-
-            $attempt = Attempt::create([
-                'user_id' => Auth::id(),
-                'test_id' => $test->id,
-                'name' => $test->name,
-                'started_at' => now(),
-            ]);
-
             $partIds = $request->input('part_ids');
             $partsToAttempt = $test->parts;
             if (is_array($partIds) && count($partIds) > 0) {
                 $partsToAttempt = $partsToAttempt->whereIn('id', $partIds);
             }
 
-            foreach ($partsToAttempt as $part) {
-                AttemptPart::create([
-                    'attempt_id' => $attempt->id,
-                    'part_id' => $part->id,
+            $attempt = DB::transaction(function () use ($test, $partsToAttempt) {
+                $attempt = Attempt::create([
+                    'user_id' => Auth::id(),
+                    'test_id' => $test->id,
+                    'name' => $test->name,
+                    'started_at' => now(),
                 ]);
-            }
 
-            DB::commit();
+                foreach ($partsToAttempt as $part) {
+                    AttemptPart::create([
+                        'attempt_id' => $attempt->id,
+                        'part_id' => $part->id,
+                        'started_at' => now(),
+                    ]);
+                }
+
+                return $attempt;
+            });
 
             $attempt->load([
                 'test.language',
                 'attempt_parts.part.questions' => function ($query) {
                     $query->select('id', 'part_id', 'textarea', 'audio_path', 'ready_second', 'answer_second');
-                },
+                }
             ]);
 
             return response()->json([
@@ -80,12 +88,10 @@ class AttemptController extends Controller
                 'message' => 'Imtihon muvaffaqiyatli boshlandi.',
             ]);
         } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('API Attempt start error: '.$e->getMessage());
-
+            report($e);
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Imtihonni boshlashda xatolik yuz berdi.',
             ], 500);
         }
     }
@@ -118,11 +124,10 @@ class AttemptController extends Controller
                 'message' => 'Imtihon ma\'lumoti topilmadi.',
             ], 404);
         } catch (\Exception $e) {
-            Log::error('API Attempt show error: '.$e->getMessage());
-
+            report($e);
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Xatolik yuz berdi.',
             ], 500);
         }
     }
@@ -252,11 +257,10 @@ class AttemptController extends Controller
                 'message' => 'Imtihon topilmadi.',
             ], 404);
         } catch (\Exception $e) {
-            Log::error('API Attempt finish error: '.$e->getMessage());
-
+            report($e);
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Xatolik yuz berdi.',
             ], 500);
         }
     }
@@ -276,7 +280,7 @@ class AttemptController extends Controller
             ])
             ->where('user_id', Auth::id())
             ->latest()
-            ->paginate($request->input('per_page', 15));
+            ->paginate(\App\Support\Pagination::perPage($request, 15));
 
         return response()->json([
             'success' => true,

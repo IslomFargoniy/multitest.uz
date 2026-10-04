@@ -215,11 +215,11 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-label">Overall Score</div>
-                    <div class="stat-value">{{ $attempt->score ?? ($attempt->ai_score_avg ? number_format($attempt->ai_score_avg, 1) : '-') }}</div>
+                    <div class="stat-value">{{ $attempt->final_score !== null ? number_format($attempt->final_score, 1) : '-' }}</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">CEFR / Band</div>
-                    <div class="stat-value">{{ $attempt->level ?? ($attempt->score >= 7 ? 'C1' : ($attempt->score >= 5.5 ? 'B2' : 'B1')) }}</div>
+                    <div class="stat-value">{{ $attempt->cefr_level ?? '-' }}</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Issue Date</div>
@@ -239,7 +239,7 @@
                     @if(isset($qrCodeUrl))
                         <img src="{{ $qrCodeUrl }}" alt="Verify QR Code" class="qr-img">
                     @else
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ urlencode(route('certificate.verify', $attempt->id)) }}" alt="Verify QR Code" class="qr-img">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ urlencode($verifyUrl) }}" alt="Verify QR Code" class="qr-img">
                     @endif
                     <div class="qr-label">Scan to verify</div>
                 </div>

@@ -97,11 +97,7 @@ class LanguageController extends Controller
     public function show(Request $request, Language $language)
     {
         try {
-            if ($request->per_page) {
-                $per_page = $request->per_page;
-            } else {
-                $per_page = 25;
-            }
+            $per_page = \App\Support\Pagination::perPage($request, 25);
 
             $testQuery = Test::query()
                 ->with([
@@ -119,12 +115,7 @@ class LanguageController extends Controller
                 });
             }
 
-            if (Auth::user()->hasRole('Student') || Auth::user()->hasRole('Teacher')) {
-                $testQuery->where(function ($query) {
-                    $query->where('is_public', true)
-                        ->orWhere('user_id', '=', Auth::id());
-                });
-            }
+            $testQuery->visibleTo(Auth::user());
 
             $test = $testQuery->paginate($per_page);
 
