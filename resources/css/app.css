@@ -160,6 +160,17 @@
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
+
+    --color-cefr-a1: var(--cefr-a1);
+    --color-cefr-a1-text: var(--cefr-a1-text);
+    --color-cefr-a2: var(--cefr-a2);
+    --color-cefr-a2-text: var(--cefr-a2-text);
+    --color-cefr-b1: var(--cefr-b1);
+    --color-cefr-b1-text: var(--cefr-b1-text);
+    --color-cefr-b2: var(--cefr-b2);
+    --color-cefr-b2-text: var(--cefr-b2-text);
+    --color-cefr-c1: var(--cefr-c1);
+    --color-cefr-c1-text: var(--cefr-c1-text);
 }
 
 /*
@@ -245,6 +256,18 @@
     --sidebar-accent-foreground: #0F1424;
     --sidebar-border: #DDE3EF;
     --sidebar-ring: #4F57D9;
+
+    /* CEFR levels Light */
+    --cefr-a1: #D5D9E3;
+    --cefr-a1-text: #0F1424;
+    --cefr-a2: #EBD9A8;
+    --cefr-a2-text: #3D2F08;
+    --cefr-b1: #E2B95A;
+    --cefr-b1-text: #3A2A00;
+    --cefr-b2: #9EB0EC;
+    --cefr-b2-text: #14205A;
+    --cefr-c1: #9ED8BE;
+    --cefr-c1-text: #0B3D27;
 }
 
 .dark {
@@ -313,6 +336,18 @@
     --sidebar-accent-foreground: #E8ECF5;
     --sidebar-border: #1E2744;
     --sidebar-ring: #7B86FF;
+
+    /* CEFR levels Dark */
+    --cefr-a1: #3A3F52;
+    --cefr-a1-text: #F1F3F8;
+    --cefr-a2: #6B5A2E;
+    --cefr-a2-text: #F8EED3;
+    --cefr-b1: #8A6F1E;
+    --cefr-b1-text: #FFF5DA;
+    --cefr-b2: #3D4FA8;
+    --cefr-b2-text: #EEF1FF;
+    --cefr-c1: #2F7A5A;
+    --cefr-c1-text: #E6FFF3;
 }
 
 
