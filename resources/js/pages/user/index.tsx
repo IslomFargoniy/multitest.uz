@@ -18,7 +18,7 @@ export default function User() {
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: t('sidebar.user') || 'Foydalanuvchilar',
+            title: t('sidebar.user', 'Foydalanuvchilar'),
             href: '/user',
         },
     ];
@@ -65,13 +65,13 @@ export default function User() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={t('nav.users') || 'Foydalanuvchilar'} />
+            <Head title={t('nav.users', 'Foydalanuvchilar')} />
 
             <div className="flex h-full flex-1 flex-col gap-5 rounded-xl p-4 max-w-7xl mx-auto w-full">
                 {/* Header Section */}
                 <div>
                     <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
-                        {t('user_management.title') || 'Foydalanuvchilar Boshqaruvi'}
+                        {t('user_management.title', 'Foydalanuvchilar Boshqaruvi')}
                     </h1>
                     <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                         {t('user_management.description', { count: user.total }) || `Tizimdagi barcha foydalanuvchilar va rollar (${user.total} ta)`}

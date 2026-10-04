@@ -118,11 +118,11 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
                                         </span>
                                         {item.is_public ? (
                                             <span className="rounded-md bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                                                {t('common.public') || 'Public'}
+                                                {t('common.public', 'Public')}
                                             </span>
                                         ) : (
                                             <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-bold text-slate-500 dark:text-slate-400">
-                                                {t('common.private') || 'Private'}
+                                                {t('common.private', 'Private')}
                                             </span>
                                         )}
                                     </div>
@@ -148,7 +148,7 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
 
                                 <div className="mt-4">
                                     <div className="transform transition-transform active:scale-95">
-                                        <CreateAttemptModal test={item} label={t('start') || 'Boshlash'} />
+                                        <CreateAttemptModal test={item} label={t('start', 'Boshlash')} />
                                     </div>
                                 </div>
                             </div>
@@ -178,11 +178,11 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
 
                                     {item.is_public ? (
                                         <span className="inline-flex items-center rounded-lg bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-800/40">
-                                            {t('common.public') || 'Public'}
+                                            {t('common.public', 'Public')}
                                         </span>
                                     ) : (
                                         <span className="inline-flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
-                                            {t('common.private') || 'Private'}
+                                            {t('common.private', 'Private')}
                                         </span>
                                     )}
                                 </div>
@@ -195,7 +195,7 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
                                 </Link>
 
                                 <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-                                    {item.description || t('common.no_description') || 'Tavsif mavjud emas'}
+                                    {item.description || t('common.no_description', 'Tavsif mavjud emas')}
                                 </p>
 
                                 {(isAdmin || isTeacher) && item.audio_path && (
@@ -214,7 +214,7 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
 
                             <div className="mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex flex-col gap-2.5">
                                 <div className="transform transition-transform active:scale-95">
-                                    <CreateAttemptModal test={item} label={t('start') || 'Boshlash'} />
+                                    <CreateAttemptModal test={item} label={t('start', 'Boshlash')} />
                                 </div>
 
                                 {(isAdmin || auth?.user.id == item.user_id) && (
@@ -246,7 +246,7 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
                 )}
                 {!hasMore && items.length > 0 && (
                     <div className="text-xs font-bold text-slate-400 dark:text-slate-600 uppercase tracking-wider py-2">
-                        {t('common.no_more_items') || 'Barcha testlar yuklandi'}
+                        {t('common.no_more_items', 'Barcha testlar yuklandi')}
                     </div>
                 )}
             </div>

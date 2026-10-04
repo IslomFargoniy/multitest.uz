@@ -51,7 +51,7 @@ export default function CreateAttemptModal({ mock, test, label }: Props) {
                 className="group flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-4 py-3 font-bold text-white shadow-xs transition-all active:scale-95 cursor-pointer"
             >
                 <CirclePlay className="h-4.5 w-4.5 transition-transform group-hover:scale-110" />
-                <span className="text-xs tracking-wider uppercase">{label || t('attempt_modal.start_practice') || 'Boshlash'}</span>
+                <span className="text-xs tracking-wider uppercase">{label || t('attempt_modal.start_practice', 'Boshlash')}</span>
             </button>
 
             <Dialog open={open} onOpenChange={setOpen}>
@@ -62,9 +62,9 @@ export default function CreateAttemptModal({ mock, test, label }: Props) {
                             <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-600/30 text-indigo-400">
                                 <Headphones className="h-4 w-4" />
                             </div>
-                            <DialogTitle className="text-lg font-bold tracking-tight">{t('attempt_modal.ready_title') || "Imtihonga tayyormisiz?"}</DialogTitle>
+                            <DialogTitle className="text-lg font-bold tracking-tight">{t('attempt_modal.ready_title', "Imtihonga tayyormisiz?")}</DialogTitle>
                             <DialogDescription className="mt-0.5 text-xs text-slate-400">
-                                {t('attempt_modal.mic_requirement') || "Iltimos, mikrofoningiz to'g'ri ishlayotganiga ishonch hosil qiling"}
+                                {t('attempt_modal.mic_requirement', "Iltimos, mikrofoningiz to'g'ri ishlayotganiga ishonch hosil qiling")}
                             </DialogDescription>
                         </DialogHeader>
                     </div>
@@ -75,7 +75,7 @@ export default function CreateAttemptModal({ mock, test, label }: Props) {
                             {test?.parts && test.parts.length > 0 && (
                                 <div className="space-y-2 mb-3">
                                     <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                                        {t('attempt_modal.select_parts') || 'Bo\'limlarni tanlang'}
+                                        {t('attempt_modal.select_parts', 'Bo\'limlarni tanlang')}
                                     </span>
                                     <div className="grid gap-2 grid-cols-2">
                                         {test.parts.map((part) => (
@@ -124,11 +124,11 @@ export default function CreateAttemptModal({ mock, test, label }: Props) {
                                 {processing ? (
                                     <span className="flex items-center gap-1.5">
                                         <div className="h-3 w-3 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                                        {t('common.preparing') || 'Tayyorlanmoqda'}...
+                                        {t('common.preparing', 'Tayyorlanmoqda')}...
                                     </span>
                                 ) : (
                                     <span className="flex items-center justify-center gap-1.5 tracking-wider uppercase">
-                                        {t('attempt_modal.start_now') || 'Imtihonni boshlash'}
+                                        {t('attempt_modal.start_now', 'Imtihonni boshlash')}
                                         <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                                     </span>
                                 )}

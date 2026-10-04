@@ -148,7 +148,7 @@ export default function Welcome() {
                                     <div className="mb-6">
                                         <h3 className="text-xl font-bold text-foreground mb-2">{mock.name}</h3>
                                         <p className="text-sm text-muted-foreground leading-relaxed">
-                                            {mock.description || t('common.no_description')}
+                                            {mock.comment || t('common.no_description')}
                                         </p>
                                     </div>
 

@@ -103,11 +103,11 @@ export default function EvaluateAttemptModal({ attempt }: UpdateAttemptModalProp
                                         ref={scoreInput}
                                         min="0"
                                         max="75"
-                                        step="0.5"
+                                        step="1"
                                         placeholder="0.0"
                                         className="h-14 flex-1 border-none bg-transparent px-6 text-xl font-black focus-visible:ring-0 dark:text-white"
-                                        value={data.score || ''}
-                                        onChange={(e) => setData('score', e.target.value === '' ? 0 : Number(e.target.value))}
+                                        value={data.score}
+                                        onChange={(e) => setData('score', e.target.value === '' ? 0 : Math.min(75, Math.max(0, Math.round(Number(e.target.value)))))}
                                     />
                                     <div className="flex h-14 items-center border-l border-slate-100 bg-slate-100/50 px-6 font-black whitespace-nowrap text-slate-400 dark:border-slate-800 dark:bg-slate-800/50">
                                         / 75

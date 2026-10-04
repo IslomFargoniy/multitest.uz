@@ -77,7 +77,7 @@ export default function TablePagination({
                                 key={idx}
                                 href={buildUrl(link.url)}
                                 className="inline-flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all shadow-xs cursor-pointer active:scale-95 text-sm font-bold"
-                                title={t('previous') || 'Oldingi'}
+                                title={t('previous', 'Oldingi')}
                             >
                                 <ChevronLeft className="w-4 h-4" />
                             </Link>
@@ -90,7 +90,7 @@ export default function TablePagination({
                                 key={idx}
                                 href={buildUrl(link.url)}
                                 className="inline-flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all shadow-xs cursor-pointer active:scale-95 text-sm font-bold"
-                                title={t('next') || 'Keyingi'}
+                                title={t('next', 'Keyingi')}
                             >
                                 <ChevronRight className="w-4 h-4" />
                             </Link>

@@ -23,7 +23,7 @@ export default function Mock() {
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: t('mock') || 'Mock Testlar',
+            title: t('mock', 'Mock Testlar'),
             href: '/dashboard',
         },
     ];
@@ -47,17 +47,17 @@ export default function Mock() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={t('mock') || 'Mock Testlar'} />
+            <Head title={t('mock', 'Mock Testlar')} />
 
             <div className="flex h-full flex-1 flex-col gap-5 rounded-xl p-4 max-w-7xl mx-auto w-full">
                 {/* Header with Title and Find Mock Modal */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                         <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
-                            {t('mock') || 'Mock Testlar'}
+                            {t('mock', 'Mock Testlar')}
                         </h1>
                         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                            {t('mock_exam.subtitle') || "Mock imtihonlarni tashkil qilish, o'quvchilarga kod berish va natijalarni nazorat qilish"}
+                            {t('mock_exam.subtitle', "Mock imtihonlarni tashkil qilish, o'quvchilarga kod berish va natijalarni nazorat qilish")}
                         </p>
                     </div>
 

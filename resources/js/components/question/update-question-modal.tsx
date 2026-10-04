@@ -10,9 +10,12 @@ import { toast } from 'sonner';
 
 import { baseButton } from '@/components/ui/baseButton';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
-import TextEditor from '@/components/ui/text-editor';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Question } from '@/types';
 import { FileText, Headphones, Pencil, Timer, UploadCloud } from 'lucide-react';
+import { lazy, Suspense } from 'react';
+
+const TextEditor = lazy(() => import('@/components/ui/text-editor'));
 
 interface UpdateQuestionModalProps {
     question: Question;
@@ -104,7 +107,13 @@ export default function UpdateQuestionModal({ question }: UpdateQuestionModalPro
                                     {t('test_show.question_text_prompt')}
                                 </Label>
                                 <div className="rounded-3xl border border-slate-200 bg-white p-1 focus-within:ring-4 focus-within:ring-indigo-500/5 dark:border-slate-800 dark:bg-slate-950">
-                                    <TextEditor value={data.textarea} onChange={(content) => setData('textarea', content)} error={errors.textarea} />
+                                    <Suspense fallback={<Skeleton className="h-[600px] w-full rounded-3xl" />}>
+                                        <TextEditor
+                                            value={data.textarea}
+                                            onChange={(content) => setData('textarea', content)}
+                                            error={errors.textarea}
+                                        />
+                                    </Suspense>
                                 </div>
                             </div>
 

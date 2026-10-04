@@ -176,9 +176,9 @@ export interface Question {
     part_id: number;
     textarea: string;
     audio_path: string;
-    audio_second: string;
-    ready_second: string;
-    answer_second: string;
+    audio_second?: number | null;
+    ready_second: number;
+    answer_second: number;
     created_at: string;
     updated_at: string;
     part?: Part;

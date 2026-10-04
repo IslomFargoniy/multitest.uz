@@ -12,7 +12,7 @@ const Testimonial: React.FC = () => {
             bg: 'from-blue-600 to-indigo-600',
             name: 'Azizbek Rahimov',
             scoreBadge: 'CEFR C1 (71 ball)',
-            comment: t('testimonials.comment_1') || "Multitest.uz simulyatori orqali 2 hafta ichida Speaking darajamni B2 dan C1 ga ko'tardim. AI baholash va tavsiyalar imtihonda 100% o'zini oqladi!",
+            comment: t('testimonials.comment_1', "Multitest.uz simulyatori orqali 2 hafta ichida Speaking darajamni B2 dan C1 ga ko'tardim. AI baholash va tavsiyalar imtihonda 100% o'zini oqladi!"),
             rating: 5,
         },
         {
@@ -20,7 +20,7 @@ const Testimonial: React.FC = () => {
             bg: 'from-purple-600 to-pink-600',
             name: 'Malika Yoqubova',
             scoreBadge: 'CEFR B2 (58 ball)',
-            comment: t('testimonials.comment_2') || "Part 2 dagi rasmli topshiriqlar va vaqt me'yori xuddi haqiqiy UzBMB testidek. Natijani 1 daqiqada olish juda qulay.",
+            comment: t('testimonials.comment_2', "Part 2 dagi rasmli topshiriqlar va vaqt me'yori xuddi haqiqiy UzBMB testidek. Natijani 1 daqiqada olish juda qulay."),
             rating: 5,
         },
         {
@@ -28,7 +28,7 @@ const Testimonial: React.FC = () => {
             bg: 'from-emerald-600 to-teal-600',
             name: 'Dilshod Umarov',
             scoreBadge: 'IELTS Speaking 7.5',
-            comment: t('testimonials.comment_3') || "Grammatik va leksik xatolar tahlili aynan qayerda xato qilayotganimni ko'rsatib berdi. O'qituvchisiz tayyorlanish uchun zo'r vosita.",
+            comment: t('testimonials.comment_3', "Grammatik va leksik xatolar tahlili aynan qayerda xato qilayotganimni ko'rsatib berdi. O'qituvchisiz tayyorlanish uchun zo'r vosita."),
             rating: 5,
         },
     ];
@@ -65,7 +65,7 @@ const Testimonial: React.FC = () => {
                         <span>Fikrlar va Natijalar</span>
                     </div>
                     <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                        {t('testimonials.title') || 'O\'quvchilarimiz Nima Deydi?'}
+                        {t('testimonials.title', 'O\'quvchilarimiz Nima Deydi?')}
                     </h2>
                     <p className="mt-4 text-base md:text-lg text-slate-600 dark:text-slate-300">
                         Multitest.uz yordamida orzusidagi CEFR B2/C1 yoki IELTS balliga erishgan nomzodlar

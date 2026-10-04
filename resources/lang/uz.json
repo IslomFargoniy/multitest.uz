@@ -822,7 +822,10 @@
         "unique_attempt_users": "Noyob urinish qilganlar",
         "repeat_attempts": "Takroriy urinishlar",
         "daily_activity": "Kunlik faollik",
-        "weekly": "Haftalik"
+        "weekly": "Haftalik",
+        "users_and_attempts": "Foydalanuvchilar va urinishlar",
+        "today_hourly": "Bugun (soatlik)",
+        "alltime_hourly": "Barcha vaqt (soatlik)"
     },
     "statistics": "Statistika",
     "deleted_successfully": "Muvaffaqiyatli o‘chirildi",

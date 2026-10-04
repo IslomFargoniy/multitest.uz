@@ -21,7 +21,7 @@ export default function Test() {
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: t('sidebar.test') || 'Testlar',
+            title: t('sidebar.test', 'Testlar'),
             href: '/test',
         },
     ];
@@ -53,10 +53,10 @@ export default function Test() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={data.search ? `${data.search} - ${t('nav.tests') || 'Testlar'}` : (t('nav.tests') || 'Testlar')}>
-                <meta name="description" content={t('nav.tests') || 'Testlar'} />
-                <meta property="og:title" content={data.search ? `${data.search} - ${t('nav.tests') || 'Testlar'}` : (t('nav.tests') || 'Testlar')} />
-                <meta property="og:description" content={t('nav.tests') || 'Testlar'} />
+            <Head title={data.search ? `${data.search} - ${t('nav.tests', 'Testlar')}` : (t('nav.tests', 'Testlar'))}>
+                <meta name="description" content={t('nav.tests', 'Testlar')} />
+                <meta property="og:title" content={data.search ? `${data.search} - ${t('nav.tests', 'Testlar')}` : (t('nav.tests', 'Testlar'))} />
+                <meta property="og:description" content={t('nav.tests', 'Testlar')} />
                 <meta property="og:image" content={seoData?.og_image} />
             </Head>
 
@@ -65,10 +65,10 @@ export default function Test() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                         <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
-                            {t('nav.tests') || 'Testlar'}
+                            {t('nav.tests', 'Testlar')}
                         </h1>
                         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                            {t('tests_description') || "Mavjud barcha CEFR va IELTS Speaking testlari ro'yxati"}
+                            {t('tests_description', "Mavjud barcha CEFR va IELTS Speaking testlari ro'yxati")}
                         </p>
                     </div>
 

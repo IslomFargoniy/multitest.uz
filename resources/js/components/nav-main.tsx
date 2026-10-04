@@ -11,7 +11,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
     return (
         <SidebarGroup className="px-3 py-2">
             <SidebarGroupLabel className="mb-2 px-2 text-xs font-bold tracking-widest text-slate-400/80 uppercase dark:text-slate-500">
-                {t('sidebar.platform') || 'Platform'}
+                {t('sidebar.platform', 'Platform')}
             </SidebarGroupLabel>
             <SidebarMenu className="gap-1.5">
                 {items.map((item) => {

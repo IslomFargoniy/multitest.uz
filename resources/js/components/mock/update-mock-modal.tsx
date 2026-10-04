@@ -74,10 +74,10 @@ export default function UpdateMockModal({ tests = [], mock, open, setOpen }: Upd
                 reset();
                 clearErrors();
                 setOpen(false);
-                toast.success(t('mock_updated') || 'Mock test yangilandi');
+                toast.success(t('mock_updated', 'Mock test yangilandi'));
             },
             onError: (err: any) => {
-                const errorMessage = err?.error || err?.name || t('update_failed') || 'Xatolik yuz berdi';
+                const errorMessage = err?.error || err?.name || t('update_failed', 'Xatolik yuz berdi');
                 toast.error(errorMessage);
                 nameInput.current?.focus();
             },
@@ -89,16 +89,16 @@ export default function UpdateMockModal({ tests = [], mock, open, setOpen }: Upd
             <DialogContent className="sm:max-w-lg w-full rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900 border border-gray-100 dark:border-gray-800 max-h-[90vh] overflow-y-auto">
                 <DialogHeader className="space-y-1 pb-2 border-b border-gray-100 dark:border-gray-800">
                     <DialogTitle className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                        {t('modal.update_mock_title') || 'Mock Testni Tahrirlash'}
+                        {t('modal.update_mock_title', 'Mock Testni Tahrirlash')}
                     </DialogTitle>
                     <DialogDescription className="text-xs text-gray-500 dark:text-gray-400">
-                        {t('modal.update_mock_desc') || 'Mock test ma\'lumotlarini o\'zgartiring'}
+                        {t('modal.update_mock_desc', 'Mock test ma\'lumotlarini o\'zgartiring')}
                     </DialogDescription>
                 </DialogHeader>
 
                 <form onSubmit={submit} className="space-y-4 pt-2">
                     <div>
-                        <Label htmlFor="name">{t('name') || 'Nomi'}</Label>
+                        <Label htmlFor="name">{t('name', 'Nomi')}</Label>
                         <Input
                             id="name"
                             ref={nameInput}
@@ -110,7 +110,7 @@ export default function UpdateMockModal({ tests = [], mock, open, setOpen }: Upd
                     </div>
 
                     <div>
-                        <Label htmlFor="comment">{t('comment') || 'Izoh / Tavsif'}</Label>
+                        <Label htmlFor="comment">{t('comment', 'Izoh / Tavsif')}</Label>
                         <Input
                             id="comment"
                             value={data.comment}
@@ -121,7 +121,7 @@ export default function UpdateMockModal({ tests = [], mock, open, setOpen }: Upd
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <Label htmlFor="started_at">{t('started_at') || 'Boshlanish vaqti'}</Label>
+                            <Label htmlFor="started_at">{t('started_at', 'Boshlanish vaqti')}</Label>
                             <DatePicker
                                 selected={data.started_at ? new Date(data.started_at) : null}
                                 onChange={(date: Date | null) => {
@@ -141,7 +141,7 @@ export default function UpdateMockModal({ tests = [], mock, open, setOpen }: Upd
                         </div>
 
                         <div>
-                            <Label htmlFor="finished_at">{t('finished_at') || 'Tugash vaqti'}</Label>
+                            <Label htmlFor="finished_at">{t('finished_at', 'Tugash vaqti')}</Label>
                             <DatePicker
                                 selected={data.finished_at ? new Date(data.finished_at) : null}
                                 onChange={(date: Date | null) => {
@@ -162,7 +162,7 @@ export default function UpdateMockModal({ tests = [], mock, open, setOpen }: Upd
                     </div>
 
                     <div>
-                        <Label htmlFor="test_id">{t('select_test') || 'Testni tanlang'}</Label>
+                        <Label htmlFor="test_id">{t('select_test', 'Testni tanlang')}</Label>
                         <Select
                             value={String(data.test_id || '')}
                             onValueChange={(value) => setData('test_id', Number(value))}
@@ -172,9 +172,9 @@ export default function UpdateMockModal({ tests = [], mock, open, setOpen }: Upd
                                     {data.test_id
                                         ? (() => {
                                               const selTest = tests.find((t) => t.id === data.test_id);
-                                              return selTest ? selTest.name : t('select_test') || 'Testni tanlang';
+                                              return selTest ? selTest.name : t('select_test', 'Testni tanlang');
                                           })()
-                                        : t('select_test') || 'Testni tanlang'}
+                                        : t('select_test', 'Testni tanlang')}
                                 </span>
                             </SelectTrigger>
 
@@ -191,7 +191,7 @@ export default function UpdateMockModal({ tests = [], mock, open, setOpen }: Upd
 
                     <div>
                         <Label htmlFor="status" className="mb-2 block">
-                            {t('status') || 'Holati (Faol)'}
+                            {t('status', 'Holati (Faol)')}
                         </Label>
                         <label className="inline-flex items-center cursor-pointer">
                             <input
@@ -218,7 +218,7 @@ export default function UpdateMockModal({ tests = [], mock, open, setOpen }: Upd
                                     setOpen(false);
                                 }}
                             >
-                                {t('cancel') || 'Bekor qilish'}
+                                {t('cancel', 'Bekor qilish')}
                             </Button>
                         </DialogClose>
 
@@ -227,7 +227,7 @@ export default function UpdateMockModal({ tests = [], mock, open, setOpen }: Upd
                             disabled={processing}
                             className="rounded-xl text-xs bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-50 cursor-pointer font-bold"
                         >
-                            {t('save') || 'Saqlash'}
+                            {t('save', 'Saqlash')}
                         </Button>
                     </DialogFooter>
                 </form>

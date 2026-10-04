@@ -28,7 +28,7 @@ export default function LanguageShow() {
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: t('sidebar.test') || 'Testlar',
+            title: t('sidebar.test', 'Testlar'),
             href: '/test',
         },
         {
@@ -64,7 +64,7 @@ export default function LanguageShow() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`${langName || 'Language'} - ${t('nav.tests') || 'Testlar'}`} />
+            <Head title={`${langName || 'Language'} - ${t('nav.tests', 'Testlar')}`} />
 
             <div className="flex h-full flex-1 flex-col gap-5 rounded-xl p-4 max-w-7xl mx-auto w-full">
                 {/* Header Actions */}
@@ -73,11 +73,11 @@ export default function LanguageShow() {
                         <div className="flex items-center gap-2">
                             {language?.flag && <span className="text-2xl sm:text-3xl">{language.flag}</span>}
                             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
-                                {langName} {t('nav.tests') || 'Testlari'}
+                                {langName} {t('nav.tests', 'Testlari')}
                             </h1>
                         </div>
                         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                            {t('tests_description') || "Mavjud barcha CEFR va IELTS Speaking testlari ro'yxati"}
+                            {t('tests_description', "Mavjud barcha CEFR va IELTS Speaking testlari ro'yxati")}
                         </p>
                     </div>
 

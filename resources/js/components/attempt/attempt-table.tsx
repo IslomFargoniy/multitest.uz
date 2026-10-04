@@ -212,11 +212,11 @@ const AttemptTable = ({ searchData, ...attempt }: AttemptTableProps) => {
                             <thead className="bg-slate-50 dark:bg-slate-800/80 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800">
                                 <tr>
                                     <th className="px-5 py-3.5">#</th>
-                                    <th className="px-5 py-3.5">{t('exam_attempts.student') || 'Talaba'}</th>
-                                    <th className="px-5 py-3.5">{t('exam_attempts.details') || "Ma'lumotlar"}</th>
-                                    <th className="px-5 py-3.5">{t('exam_attempts.timeline') || 'Vaqt'}</th>
-                                    <th className="px-5 py-3.5 text-center">{t('exam_attempts.performance') || 'Natija'}</th>
-                                    <th className="px-5 py-3.5 text-right">{t('common.actions') || 'Amallar'}</th>
+                                    <th className="px-5 py-3.5">{t('exam_attempts.student', 'Talaba')}</th>
+                                    <th className="px-5 py-3.5">{t('exam_attempts.details', "Ma'lumotlar")}</th>
+                                    <th className="px-5 py-3.5">{t('exam_attempts.timeline', 'Vaqt')}</th>
+                                    <th className="px-5 py-3.5 text-center">{t('exam_attempts.performance', 'Natija')}</th>
+                                    <th className="px-5 py-3.5 text-right">{t('common.actions', 'Amallar')}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900">
@@ -296,7 +296,7 @@ const AttemptTable = ({ searchData, ...attempt }: AttemptTableProps) => {
                                                                 ? Number(item.score).toFixed(2)
                                                                 : item?.ai_score_avg != null
                                                                   ? Number(item.ai_score_avg).toFixed(2)
-                                                                  : (t('exam_attempts.pending') || 'Kutilmoqda')}
+                                                                  : (t('exam_attempts.pending', 'Kutilmoqda'))}
                                                         </div>
 
                                                         {(item.tab_switch_count ?? 0) > 0 && (
@@ -308,7 +308,7 @@ const AttemptTable = ({ searchData, ...attempt }: AttemptTableProps) => {
 
                                                         {item.review && (
                                                             <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase">
-                                                                {t('exam_attempts.reviewed') || 'Baholangan'}
+                                                                {t('exam_attempts.reviewed', 'Baholangan')}
                                                             </span>
                                                         )}
                                                     </div>
@@ -336,7 +336,7 @@ const AttemptTable = ({ searchData, ...attempt }: AttemptTableProps) => {
                                         <td colSpan={6} className="px-6 py-16 text-center text-sm text-slate-400">
                                             <div className="flex flex-col items-center justify-center">
                                                 <Info className="mb-2 h-8 w-8 opacity-20" />
-                                                <p className="font-semibold">{t('exam_attempts.no_attempts_found') || 'Urinishlar topilmadi'}</p>
+                                                <p className="font-semibold">{t('exam_attempts.no_attempts_found', 'Urinishlar topilmadi')}</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -351,12 +351,12 @@ const AttemptTable = ({ searchData, ...attempt }: AttemptTableProps) => {
                 {isLoading && (
                     <div className="flex items-center gap-2 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                         <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                        <span>{t('common.loading') || 'Loading...'}</span>
+                        <span>{t('common.loading', 'Loading...')}</span>
                     </div>
                 )}
                 {!hasMore && items.length > 0 && (
                     <div className="text-[10px] font-black text-slate-300 dark:text-slate-700 uppercase tracking-widest py-2">
-                        {t('common.no_more_items') || 'No more items'}
+                        {t('common.no_more_items', 'No more items')}
                     </div>
                 )}
             </div>

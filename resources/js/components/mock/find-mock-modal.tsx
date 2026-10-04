@@ -41,11 +41,11 @@ export default function FindMockModal() {
             preserveScroll: true,
             onSuccess: () => {
                 setOpen(false);
-                toast.success(t('mock_exam.exam_starting') || 'Imtihon muvaffaqiyatli boshlanmoqda!');
+                toast.success(t('mock_exam.exam_starting', 'Imtihon muvaffaqiyatli boshlanmoqda!'));
             },
             onError: (err: any) => {
                 codeInput.current?.focus();
-                const errorMessage = err?.code || err?.error || t('mock_exam.invalid_code') || 'Kiritilgan kod xato!';
+                const errorMessage = err?.code || err?.error || t('mock_exam.invalid_code', 'Kiritilgan kod xato!');
                 toast.error(errorMessage);
             },
         });
@@ -59,7 +59,7 @@ export default function FindMockModal() {
                     className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 px-4 py-2 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
                 >
                     <IoCreate className="h-4 w-4" />
-                    <span className="tracking-widest uppercase">{t('common.exam') || 'IMTIHON KODI'}</span>
+                    <span className="tracking-widest uppercase">{t('common.exam', 'IMTIHON KODI')}</span>
                 </button>
             </DialogTrigger>
 
@@ -72,10 +72,10 @@ export default function FindMockModal() {
                         </div>
                         <div>
                             <DialogTitle className="text-lg font-extrabold text-gray-900 dark:text-white">
-                                {t('mock_exam.enter_exam_title') || 'Imtihonga Kirish (Mock Exam)'}
+                                {t('mock_exam.enter_exam_title', 'Imtihonga Kirish (Mock Exam)')}
                             </DialogTitle>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                                {t('mock_exam.enter_code_description') || 'Sizga berilgan MSXXXXXXXX nomzod kodingizni kiriting'}
+                                {t('mock_exam.enter_code_description', 'Sizga berilgan MSXXXXXXXX nomzod kodingizni kiriting')}
                             </p>
                         </div>
                     </div>
@@ -84,7 +84,7 @@ export default function FindMockModal() {
                 <form onSubmit={submit} className="p-6 space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="code-input" className="text-xs font-bold text-gray-700 dark:text-gray-200">
-                            {t('mock_exam.candidate_code_label') || 'Nomzod Kodingiz (MSXXXXXXXX)'} *
+                            {t('mock_exam.candidate_code_label', 'Nomzod Kodingiz (MSXXXXXXXX)')} *
                         </Label>
                         <Input
                             id="code-input"
@@ -106,7 +106,7 @@ export default function FindMockModal() {
                                 variant="outline"
                                 className="rounded-xl text-xs font-semibold cursor-pointer"
                             >
-                                {t('cancel') || 'Bekor qilish'}
+                                {t('cancel', 'Bekor qilish')}
                             </Button>
                         </DialogClose>
 
@@ -115,7 +115,7 @@ export default function FindMockModal() {
                             disabled={processing}
                             className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs active:scale-95 cursor-pointer"
                         >
-                            {t('mock_exam.start_exam_button') || 'Imtihonni Boshlash →'}
+                            {t('mock_exam.start_exam_button', 'Imtihonni Boshlash →')}
                         </Button>
                     </DialogFooter>
                 </form>

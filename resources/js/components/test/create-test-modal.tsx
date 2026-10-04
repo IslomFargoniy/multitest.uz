@@ -95,7 +95,7 @@ export default function CreateTestModal({ defaultLanguageId }: { defaultLanguage
                     className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2.5 shadow-xs transition-all active:scale-95 cursor-pointer"
                 >
                     <IoCreate className="h-4 w-4" />
-                    <span>{t('create_test') || t('common.create') || 'Test yaratish'}</span>
+                    <span>{t('create_test') || t('common.create', 'Test yaratish')}</span>
                 </button>
             </DialogTrigger>
 

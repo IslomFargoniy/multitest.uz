@@ -27,17 +27,17 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
 
     const navItems = [
         {
-            title: t('settings_layout.profile') || 'Profil',
+            title: t('settings_layout.profile', 'Profil'),
             href: '/settings/profile',
             icon: UserIcon,
         },
         {
-            title: t('settings_layout.password') || 'Xavfsizlik',
+            title: t('settings_layout.password', 'Xavfsizlik'),
             href: '/settings/password',
             icon: Lock,
         },
         {
-            title: t('settings_layout.appearance') || 'Ko\'rinish',
+            title: t('settings_layout.appearance', 'Ko\'rinish'),
             href: '/settings/appearance',
             icon: Palette,
         },
@@ -153,8 +153,8 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
             {/* ========================================================= */}
             <div className="hidden md:block space-y-6">
                 <Heading
-                    title={t('settings_layout.title') || 'Sozlamalar'}
-                    description={t('settings_layout.description') || 'Profilingiz ma\'lumotlari va xavfsizlik sozlamalarini boshqaring'}
+                    title={t('settings_layout.title', 'Sozlamalar')}
+                    description={t('settings_layout.description', 'Profilingiz ma\'lumotlari va xavfsizlik sozlamalarini boshqaring')}
                 />
 
                 <div className="flex flex-col space-y-8 lg:flex-row lg:space-y-0 lg:space-x-12">

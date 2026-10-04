@@ -23,13 +23,13 @@ export default function WeeklyAttemptsChart({ data, title }: Props) {
     const { t } = useTranslation();
 
     const weekdays = [
-        t('weekdays.monday') || 'Dushanba',
-        t('weekdays.tuesday') || 'Seshanba',
-        t('weekdays.wednesday') || 'Chorshanba',
-        t('weekdays.thursday') || 'Payshanba',
-        t('weekdays.friday') || 'Juma',
-        t('weekdays.saturday') || 'Shanba',
-        t('weekdays.sunday') || 'Yakshanba',
+        t('weekdays.monday', 'Dushanba'),
+        t('weekdays.tuesday', 'Seshanba'),
+        t('weekdays.wednesday', 'Chorshanba'),
+        t('weekdays.thursday', 'Payshanba'),
+        t('weekdays.friday', 'Juma'),
+        t('weekdays.saturday', 'Shanba'),
+        t('weekdays.sunday', 'Yakshanba'),
     ];
 
     // Fill Mon–Sun (1–7) with 0 by default

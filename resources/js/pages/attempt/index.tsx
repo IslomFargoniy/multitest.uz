@@ -20,7 +20,7 @@ export default function Attempt() {
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: t('sidebar.attempt') || 'Urinishlar',
+            title: t('sidebar.attempt', 'Urinishlar'),
             href: route('attempt.index'),
         },
     ];
@@ -67,16 +67,16 @@ export default function Attempt() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={t('exam_attempts.title') || 'Imtihon Urinishlari'} />
+            <Head title={t('exam_attempts.title', 'Imtihon Urinishlari')} />
 
             <div className="flex h-full flex-1 flex-col gap-5 rounded-xl p-4 max-w-7xl mx-auto w-full">
                 {/* Header Section */}
                 <div>
                     <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
-                        {t('exam_attempts.title') || 'Imtihon Urinishlari'}
+                        {t('exam_attempts.title', 'Imtihon Urinishlari')}
                     </h1>
                     <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                        {t('exam_attempts.subtitle') || "Barcha topshirilgan imtihonlar, baholar va natijalar tahlili"}
+                        {t('exam_attempts.subtitle', "Barcha topshirilgan imtihonlar, baholar va natijalar tahlili")}
                     </p>
                 </div>
 

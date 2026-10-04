@@ -22,7 +22,7 @@ export default function MockShow() {
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: t('mock') || 'Mock Testlar',
+            title: t('mock', 'Mock Testlar'),
             href: route('mock.index'),
         },
         {
@@ -53,24 +53,24 @@ export default function MockShow() {
                 const att = st.attempt || attempts.find((a: any) => a.mock_student_id === st.id);
                 return {
                     '№': index + 1,
-                    [t('mock_exam.student_name') || "O'quvchi Ismi"]: st.name,
-                    [t('mock_exam.candidate_code') || 'Nomzod Kodi']: st.code,
-                    [t('common.phone') || 'Telefon']: st.phone || '-',
-                    [t('mock_exam.attendance') || 'Davomat']: st.attended ? (t('attended') || 'Qatnashdi') : (t('pending') || 'Kutilmoqda'),
-                    [t('overall_score') || 'Umumiy Ball']: att?.score != null ? att.score : (att?.ai_score_avg != null ? Number(att.ai_score_avg).toFixed(2) : '-'),
-                    [t('tab_switches') || 'Tab Almashtirish (Buzilish)']: att?.tab_switch_count ?? 0,
-                    [t('status') || 'Imtihon Holati']: att?.finished_at ? (t('finished') || 'Yakunlangan') : (att?.started_at ? (t('in_progress') || 'Jarayonda') : (t('not_started') || 'Boshlanmagan')),
-                    [t('started_at') || 'Boshlangan Vaqt']: att?.started_at ? formatSafeDate(att.started_at) : '-',
-                    [t('finished_at') || 'Tugagan Vaqt']: att?.finished_at ? formatSafeDate(att.finished_at) : '-',
+                    [t('mock_exam.student_name', "O'quvchi Ismi")]: st.name,
+                    [t('mock_exam.candidate_code', 'Nomzod Kodi')]: st.code,
+                    [t('common.phone', 'Telefon')]: st.phone || '-',
+                    [t('mock_exam.attendance', 'Davomat')]: st.attended ? (t('attended', 'Qatnashdi')) : (t('pending', 'Kutilmoqda')),
+                    [t('overall_score', 'Umumiy Ball')]: att?.score != null ? att.score : (att?.ai_score_avg != null ? Number(att.ai_score_avg).toFixed(2) : '-'),
+                    [t('tab_switches', 'Tab Almashtirish (Buzilish)')]: att?.tab_switch_count ?? 0,
+                    [t('status', 'Imtihon Holati')]: att?.finished_at ? (t('finished', 'Yakunlangan')) : (att?.started_at ? (t('in_progress', 'Jarayonda')) : (t('not_started', 'Boshlanmagan'))),
+                    [t('started_at', 'Boshlangan Vaqt')]: att?.started_at ? formatSafeDate(att.started_at) : '-',
+                    [t('finished_at', 'Tugagan Vaqt')]: att?.finished_at ? formatSafeDate(att.finished_at) : '-',
                 };
             });
 
             const worksheet = XLSX.utils.json_to_sheet(dataToExport);
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, t('mock_exam.results') || 'Natijalar');
+            XLSX.utils.book_append_sheet(workbook, worksheet, t('mock_exam.results', 'Natijalar'));
 
-            XLSX.writeFile(workbook, `Mock_${mock.name.replace(/\s+/g, '_')}_${t('mock_exam.results') || 'Natijalari'}.xlsx`);
-            toast.success(t('excel_export_success') || "Excel fayl muvaffaqiyatli yuklab olindi!");
+            XLSX.writeFile(workbook, `Mock_${mock.name.replace(/\s+/g, '_')}_${t('mock_exam.results', 'Natijalari')}.xlsx`);
+            toast.success(t('excel_export_success', "Excel fayl muvaffaqiyatli yuklab olindi!"));
         });
     };
 
@@ -100,15 +100,15 @@ export default function MockShow() {
                                             : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
                                     }`}
                                 >
-                                    {isActive ? `● ${t('active') || 'Faol'}` : `○ ${t('inactive') || 'Nofaol'}`}
+                                    {isActive ? `● ${t('active', 'Faol')}` : `○ ${t('inactive', 'Nofaol')}`}
                                 </span>
                             </div>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 flex items-center gap-1.5">
-                                <span>{mock.test?.name || t('mock_exam.no_test_selected') || 'Test tanlanmagan'}</span>
+                                <span>{mock.test?.name || t('mock_exam.no_test_selected', 'Test tanlanmagan')}</span>
                                 {mock.user && (
                                     <>
                                         <span>•</span>
-                                        <span>{t('teacher') || "O'qituvchi"}: {mock.user.name}</span>
+                                        <span>{t('teacher', "O'qituvchi")}: {mock.user.name}</span>
                                     </>
                                 )}
                             </p>
@@ -123,7 +123,7 @@ export default function MockShow() {
                             className="flex items-center gap-1.5 rounded-xl border-emerald-200 dark:border-emerald-800/60 bg-emerald-50/50 hover:bg-emerald-100/60 text-emerald-700 dark:text-emerald-300 font-bold text-xs shadow-xs cursor-pointer"
                         >
                             <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
-                            {t('mock_exam.export_excel') || 'Excelga Yuklash'}
+                            {t('mock_exam.export_excel', 'Excelga Yuklash')}
                         </Button>
 
                         <MockStudentManager
@@ -142,10 +142,10 @@ export default function MockShow() {
                         </div>
                         <div>
                             <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                {t('mock_exam.total_students') || "Jami O'quvchilar"}
+                                {t('mock_exam.total_students', "Jami O'quvchilar")}
                             </p>
                             <h3 className="text-xl font-black text-gray-900 dark:text-white mt-0.5">
-                                {totalStudents} {t('common.count_suffix') || 'ta'}
+                                {totalStudents} {t('common.count_suffix', 'ta')}
                             </h3>
                         </div>
                     </div>
@@ -156,10 +156,10 @@ export default function MockShow() {
                         </div>
                         <div>
                             <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                {t('mock_exam.attended_students') || 'Qatnashganlar'}
+                                {t('mock_exam.attended_students', 'Qatnashganlar')}
                             </p>
                             <h3 className="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5">
-                                {attendedStudents} {t('common.count_suffix') || 'ta'}
+                                {attendedStudents} {t('common.count_suffix', 'ta')}
                             </h3>
                         </div>
                     </div>
@@ -170,10 +170,10 @@ export default function MockShow() {
                         </div>
                         <div>
                             <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                {t('mock_exam.pending_students') || 'Kutilayotganlar'}
+                                {t('mock_exam.pending_students', 'Kutilayotganlar')}
                             </p>
                             <h3 className="text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5">
-                                {pendingStudents} {t('common.count_suffix') || 'ta'}
+                                {pendingStudents} {t('common.count_suffix', 'ta')}
                             </h3>
                         </div>
                     </div>
@@ -184,7 +184,7 @@ export default function MockShow() {
                         </div>
                         <div>
                             <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                {t('mock_exam.time_range') || 'Vaqt Oralig\'i'}
+                                {t('mock_exam.time_range', 'Vaqt Oralig\'i')}
                             </p>
                             <p className="text-[11px] font-bold text-gray-800 dark:text-gray-200 mt-0.5">
                                 {formatSafeDate(mock.started_at)} - {formatSafeDate(mock.finished_at)}
@@ -204,7 +204,7 @@ export default function MockShow() {
                         }`}
                     >
                         <Users className="w-4 h-4" />
-                        <span>{t('mock_exam.students_and_codes') || "Mock O'quvchilari va Kodlar"} ({totalStudents})</span>
+                        <span>{t('mock_exam.students_and_codes', "Mock O'quvchilari va Kodlar")} ({totalStudents})</span>
                     </button>
 
                     <button
@@ -216,7 +216,7 @@ export default function MockShow() {
                         }`}
                     >
                         <FileText className="w-4 h-4" />
-                        <span>{t('mock_exam.attempts_results') || "Imtihon Urinishlari Natijalari"} ({attempts.length})</span>
+                        <span>{t('mock_exam.attempts_results', "Imtihon Urinishlari Natijalari")} ({attempts.length})</span>
                     </button>
                 </div>
 
@@ -225,7 +225,7 @@ export default function MockShow() {
                     <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-xs">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-sm font-bold text-gray-900 dark:text-white">
-                                {t('mock_exam.students_list') || "O'quvchilar Ro'yxati va Kodlar (MSXXXXXXXX)"}
+                                {t('mock_exam.students_list', "O'quvchilar Ro'yxati va Kodlar (MSXXXXXXXX)")}
                             </h3>
                             <MockStudentManager
                                 mockId={mock.id}
@@ -237,8 +237,8 @@ export default function MockShow() {
                         {students.length === 0 ? (
                             <div className="text-center py-12 border border-dashed border-gray-200 dark:border-gray-800 rounded-xl text-xs text-gray-400 space-y-3">
                                 <Users className="w-8 h-8 mx-auto text-gray-300 dark:text-gray-600" />
-                                <p>{t('mock_exam.no_students_yet') || "Hali o'quvchilar biriktirilmagan."}</p>
-                                <p className="text-[11px]">{t('mock_exam.add_students_hint') || "\"O'quvchilar\" tugmasini bosib, yangi nomzodlarni qo'shing."}</p>
+                                <p>{t('mock_exam.no_students_yet', "Hali o'quvchilar biriktirilmagan.")}</p>
+                                <p className="text-[11px]">{t('mock_exam.add_students_hint', "\"O'quvchilar\" tugmasini bosib, yangi nomzodlarni qo'shing.")}</p>
                             </div>
                         ) : (
                             <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
@@ -246,10 +246,10 @@ export default function MockShow() {
                                     <thead className="bg-gray-50 dark:bg-gray-800/80 text-gray-500 dark:text-gray-400 font-bold uppercase text-[10px]">
                                         <tr>
                                             <th className="px-4 py-3">#</th>
-                                            <th className="px-4 py-3">{t('mock_exam.student_name') || "O'quvchi Ismi"}</th>
-                                            <th className="px-4 py-3">{t('mock_exam.candidate_code') || "Nomzod Kodi (MSXXXXXXXX)"}</th>
-                                            <th className="px-4 py-3 text-center">{t('mock_exam.attendance') || "Davomat"}</th>
-                                            <th className="px-4 py-3 text-right">{t('mock_exam.attempt') || "Urinish"}</th>
+                                            <th className="px-4 py-3">{t('mock_exam.student_name', "O'quvchi Ismi")}</th>
+                                            <th className="px-4 py-3">{t('mock_exam.candidate_code', "Nomzod Kodi (MSXXXXXXXX)")}</th>
+                                            <th className="px-4 py-3 text-center">{t('mock_exam.attendance', "Davomat")}</th>
+                                            <th className="px-4 py-3 text-right">{t('mock_exam.attempt', "Urinish")}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900">
@@ -271,7 +271,7 @@ export default function MockShow() {
                                                         }`}
                                                     >
                                                         {st.attended ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                                                        {st.attended ? (t('attended') || 'Qatnashdi') : (t('pending') || 'Kutilmoqda')}
+                                                        {st.attended ? (t('attended', 'Qatnashdi')) : (t('pending', 'Kutilmoqda'))}
                                                     </span>
                                                 </td>
                                                 <td className="px-4 py-3 text-right font-medium">
@@ -280,10 +280,10 @@ export default function MockShow() {
                                                             href={route('attempt.show', st.attempt.id)}
                                                             className="text-indigo-600 dark:text-indigo-400 hover:underline font-bold"
                                                         >
-                                                            {t('mock_exam.view_result') || "Natijani Ko'rish →"}
+                                                            {t('mock_exam.view_result', "Natijani Ko'rish →")}
                                                         </Link>
                                                     ) : (
-                                                        <span className="text-gray-400 italic">{t('not_started') || 'Boshlanmagan'}</span>
+                                                        <span className="text-gray-400 italic">{t('not_started', 'Boshlanmagan')}</span>
                                                     )}
                                                 </td>
                                             </tr>

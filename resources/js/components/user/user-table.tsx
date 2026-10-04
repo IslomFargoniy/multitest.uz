@@ -155,7 +155,7 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
                         })
                     ) : (
                         <div className="p-8 text-center text-sm text-slate-400">
-                            {t('user_management.no_users_found') || 'Foydalanuvchilar topilmadi'}
+                            {t('user_management.no_users_found', 'Foydalanuvchilar topilmadi')}
                         </div>
                     )}
                 </div>
@@ -165,12 +165,12 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
                         <thead className="bg-slate-50 dark:bg-slate-800/80 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800">
                             <tr>
                                 <th className="px-4 py-3.5">#</th>
-                                <th className="px-4 py-3.5">{t('user') || 'Foydalanuvchi'}</th>
-                                <th className="px-4 py-3.5">{t('role') || 'Rollar'}</th>
-                                <th className="px-4 py-3.5">{t('created_at') || "Qo'shilgan"}</th>
-                                <th className="px-4 py-3.5">{t('user_management.activity') || 'Faollik'}</th>
-                                <th className="px-4 py-3.5">{t('contact') || 'Aloqa'}</th>
-                                <th className="px-4 py-3.5 text-right">{t('actions') || 'Amallar'}</th>
+                                <th className="px-4 py-3.5">{t('user', 'Foydalanuvchi')}</th>
+                                <th className="px-4 py-3.5">{t('role', 'Rollar')}</th>
+                                <th className="px-4 py-3.5">{t('created_at', "Qo'shilgan")}</th>
+                                <th className="px-4 py-3.5">{t('user_management.activity', 'Faollik')}</th>
+                                <th className="px-4 py-3.5">{t('contact', 'Aloqa')}</th>
+                                <th className="px-4 py-3.5 text-right">{t('actions', 'Amallar')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900">
@@ -213,7 +213,7 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
                                         <td className="px-4 py-4">
                                             <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
                                                 <Zap className="h-4 w-4 text-amber-500" />
-                                                <span>{item.attempts_count || 0} {t('attempts') || 'urinish'}</span>
+                                                <span>{item.attempts_count || 0} {t('attempts', 'urinish')}</span>
                                             </div>
                                         </td>
                                         <td className="px-4 py-4 text-slate-600 dark:text-slate-400">
@@ -249,7 +249,7 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
                             ) : (
                                 <tr>
                                     <td colSpan={7} className="py-12 text-center text-sm text-slate-400">
-                                        {t('user_management.no_users_found') || 'Foydalanuvchilar topilmadi'}
+                                        {t('user_management.no_users_found', 'Foydalanuvchilar topilmadi')}
                                     </td>
                                 </tr>
                             )}

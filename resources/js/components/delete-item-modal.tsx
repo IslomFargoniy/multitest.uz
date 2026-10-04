@@ -37,11 +37,11 @@ export default function DeleteItemModal({ item, open, setOpen, onDelete }: Delet
                     <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
                         <AlertTriangle className="w-5 h-5 shrink-0" />
                         <DialogTitle className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                            {t('modal.delete_title') || "O'chirishni tasdiqlang"}
+                            {t('modal.delete_title', "O'chirishni tasdiqlang")}
                         </DialogTitle>
                     </div>
                     <DialogDescription className="text-xs text-gray-500 dark:text-gray-400">
-                        {t('modal.delete_confirmation') || "Ushbu ma'lumotni o'chirishga ishonchingiz komilmi? Ushbu amalni ortga qaytarib bo'lmaydi."}
+                        {t('modal.delete_confirmation', "Ushbu ma'lumotni o'chirishga ishonchingiz komilmi? Ushbu amalni ortga qaytarib bo'lmaydi.")}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -59,7 +59,7 @@ export default function DeleteItemModal({ item, open, setOpen, onDelete }: Delet
                             className="border-gray-300 dark:border-gray-700 cursor-pointer"
                             onClick={() => setOpen && setOpen(false)}
                         >
-                            {t('cancel') || 'Bekor qilish'}
+                            {t('cancel', 'Bekor qilish')}
                         </Button>
                     </DialogClose>
 
@@ -69,7 +69,7 @@ export default function DeleteItemModal({ item, open, setOpen, onDelete }: Delet
                         onClick={handleDelete}
                         className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow-xs cursor-pointer"
                     >
-                        {t('delete') || "O'chirish"}
+                        {t('delete', "O'chirish")}
                     </Button>
                 </DialogFooter>
             </DialogContent>

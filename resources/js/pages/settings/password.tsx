@@ -55,17 +55,17 @@ export default function Password() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={t('password_settings.title') || 'Parol sozlamalari'} />
+            <Head title={t('password_settings.title', 'Parol sozlamalari')} />
 
             <SettingsLayout>
                 <div className="space-y-6">
                     {/* Header */}
                     <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
                         <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
-                            {t('password_settings.heading') || 'Xavfsizlik va Parol'}
+                            {t('password_settings.heading', 'Xavfsizlik va Parol')}
                         </h3>
                         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                            {t('password_settings.description') || 'Hisobingiz xavfsizligini ta\'minlash uchun kuchli paroldan foydalaning'}
+                            {t('password_settings.description', 'Hisobingiz xavfsizligini ta\'minlash uchun kuchli paroldan foydalaning')}
                         </p>
                     </div>
 
@@ -73,7 +73,7 @@ export default function Password() {
                         {/* Current Password */}
                         <div className="space-y-1.5">
                             <Label htmlFor="current_password" className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                                {t('password_settings.current_password') || 'Joriy parol'}
+                                {t('password_settings.current_password', 'Joriy parol')}
                             </Label>
                             <div className="relative">
                                 <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -94,7 +94,7 @@ export default function Password() {
                         {/* New Password */}
                         <div className="space-y-1.5">
                             <Label htmlFor="password" className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                                {t('password_settings.new_password') || 'Yangi parol'}
+                                {t('password_settings.new_password', 'Yangi parol')}
                             </Label>
                             <div className="relative">
                                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -115,7 +115,7 @@ export default function Password() {
                         {/* Confirm Password */}
                         <div className="space-y-1.5">
                             <Label htmlFor="password_confirmation" className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                                {t('password_settings.confirm_password') || 'Yangi parolni tasdiqlash'}
+                                {t('password_settings.confirm_password', 'Yangi parolni tasdiqlash')}
                             </Label>
                             <div className="relative">
                                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -140,7 +140,7 @@ export default function Password() {
                                 className="w-full sm:w-auto h-11 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md active:scale-98 cursor-pointer transition-all flex items-center justify-center gap-2"
                             >
                                 <Save className="h-4 w-4" />
-                                <span>{processing ? t('saving') || 'Saqlanmoqda...' : t('password_settings.save_password') || 'Parolni yangilash'}</span>
+                                <span>{processing ? t('saving', 'Saqlanmoqda...') : t('password_settings.save_password', 'Parolni yangilash')}</span>
                             </Button>
 
                             <Transition
@@ -152,7 +152,7 @@ export default function Password() {
                             >
                                 <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1">
                                     <Check className="h-3.5 w-3.5" />
-                                    {t('password_settings.saved') || 'Parol muvaffaqiyatli o\'zgartirildi'}
+                                    {t('password_settings.saved', 'Parol muvaffaqiyatli o\'zgartirildi')}
                                 </p>
                             </Transition>
                         </div>
