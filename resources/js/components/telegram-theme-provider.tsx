@@ -5,33 +5,45 @@ export function TelegramThemeProvider({ children }: { children: React.ReactNode 
         const tg = window.Telegram?.WebApp;
         if (!tg || tg.platform === 'unknown') return;
 
-        const updateTheme = () => {
-            const theme = tg.themeParams;
-            const root = document.documentElement;
+        const syncHeaderBottomBar = () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            const bg = isDark ? '#0B1020' : '#F5F7FB';
 
-            // Apply Telegram colors to CSS variables
-            if (theme.bg_color) root.style.setProperty('--tg-theme-bg-color', theme.bg_color);
-            if (theme.text_color) root.style.setProperty('--tg-theme-text-color', theme.text_color);
-            if (theme.hint_color) root.style.setProperty('--tg-theme-hint-color', theme.hint_color);
-            if (theme.link_color) root.style.setProperty('--tg-theme-link-color', theme.link_color);
-            if (theme.button_color) root.style.setProperty('--tg-theme-button-color', theme.button_color);
-            if (theme.button_text_color) root.style.setProperty('--tg-theme-button-text-color', theme.button_text_color);
-            if (theme.secondary_bg_color) root.style.setProperty('--tg-theme-secondary-bg-color', theme.secondary_bg_color);
-            if (theme.accent_text_color) root.style.setProperty('--tg-theme-accent-text-color', theme.accent_text_color);
-            if (theme.header_bg_color) root.style.setProperty('--tg-theme-header-bg-color', theme.header_bg_color);
-            if (theme.section_bg_color) root.style.setProperty('--tg-theme-section-bg-color', theme.section_bg_color);
-            if (theme.section_header_text_color) root.style.setProperty('--tg-theme-section-header-text-color', theme.section_header_text_color);
-
-            // Toggle .dark class based on colorScheme
-            if (tg.colorScheme === 'dark') {
-                root.classList.add('dark');
-            } else {
-                root.classList.remove('dark');
+            if (typeof tg.setHeaderColor === 'function') {
+                try {
+                    tg.setHeaderColor(bg);
+                } catch {
+                    // Ignore if not supported
+                }
+            }
+            if (typeof tg.setBackgroundColor === 'function') {
+                try {
+                    tg.setBackgroundColor(bg);
+                } catch {
+                    // Ignore
+                }
+            }
+            if (typeof (tg as any).setBottomBarColor === 'function') {
+                try {
+                    (tg as any).setBottomBarColor(bg);
+                } catch {
+                    // Ignore
+                }
             }
         };
 
+        const updateTheme = () => {
+            syncHeaderBottomBar();
+        };
+
         tg.onEvent('themeChanged', updateTheme);
-        updateTheme(); // Initial call
+        syncHeaderBottomBar(); // Initial call
+
+        // Observe dark class changes on documentElement to keep Telegram bars in sync
+        const observer = new MutationObserver(() => {
+            syncHeaderBottomBar();
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
         // Ready and expand for better TMA experience
         tg.ready();
@@ -39,6 +51,7 @@ export function TelegramThemeProvider({ children }: { children: React.ReactNode 
 
         return () => {
             tg.offEvent('themeChanged', updateTheme);
+            observer.disconnect();
         };
     }, []);
 
