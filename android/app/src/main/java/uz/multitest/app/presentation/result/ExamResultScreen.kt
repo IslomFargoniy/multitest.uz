@@ -1,5 +1,10 @@
 package uz.multitest.app.presentation.result
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,26 +13,26 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uz.multitest.app.core.theme.*
+import uz.multitest.app.data.models.AttemptAnswerDto
 import uz.multitest.app.data.models.AttemptPartDto
-import uz.multitest.app.presentation.components.ErrorStateView
-import uz.multitest.app.presentation.components.GradientButton
-import uz.multitest.app.presentation.components.LoadingStateView
-import uz.multitest.app.presentation.components.MultiTestCard
+import uz.multitest.app.presentation.components.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,14 +45,41 @@ fun ExamResultScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val attempt = uiState.attempt
 
+    val testName = attempt?.name ?: attempt?.test?.name ?: "Speaking Test"
+    val examDate = formatExamDateTime(attempt?.startedAt)
+
     Scaffold(
         topBar = {
             TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = onNavigateToMain) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                            contentDescription = "Orqaga",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                },
                 title = {
-                    Text(
-                        text = "Imtihon Natijasi",
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-                    )
+                    Column {
+                        Text(
+                            text = "Natija",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        )
+                        if (attempt != null) {
+                            Text(
+                                text = "$testName • $examDate",
+                                style = MaterialTheme.typography.bodySmall.copy(
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                ),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
@@ -66,129 +98,61 @@ fun ExamResultScreen(
                 )
             }
             attempt != null -> {
+                val finalScore = attempt.score?.toInt() ?: attempt.aiScoreAvg?.toInt()
+                val isTeacherGraded = attempt.score != null
+
+                // Answers & no_speech calculation per §4.1
+                val allAnswers = remember(attempt) { attempt.attemptParts.flatMap { it.allAnswers } }
+                val noSpeechCount = remember(allAnswers) {
+                    allAnswers.count { answer ->
+                        val eval = parseAiReview(answer.review ?: answer.reviewAi)
+                        eval?.overrideReason == "no_speech" ||
+                                (answer.audioPath.isNullOrBlank() && (answer.score ?: answer.scoreAi) == null)
+                    }
+                }
+
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
                         .padding(horizontal = 20.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(bottom = 40.dp)
+                    contentPadding = PaddingValues(top = 8.dp, bottom = 40.dp)
                 ) {
-                    // Hero Score Card
+                    // Score Summary Card (§4 & §6.2)
                     item {
-                        Card(
-                            shape = RoundedCornerShape(24.dp),
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = Color.Transparent)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(
-                                        Brush.linearGradient(
-                                            listOf(IndigoPrimary, IndigoAccent, RosePink)
-                                        )
-                                    )
-                                    .padding(24.dp),
-                                contentAlignment = Alignment.Center
+                        ScoreSummaryCard(
+                            score = finalScore,
+                            max = 75,
+                            isTeacherGraded = isTeacherGraded
+                        )
+                    }
+
+                    // Notice if AI evaluated and teacher hasn't graded yet
+                    if (!isTeacherGraded && attempt.aiScoreAvg != null) {
+                        item {
+                            Surface(
+                                shape = RoundedCornerShape(12.dp),
+                                color = MaterialTheme.colorScheme.surfaceVariant,
+                                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                                modifier = Modifier.fillMaxWidth()
                             ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally
+                                Row(
+                                    modifier = Modifier.padding(14.dp),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(68.dp)
-                                            .clip(CircleShape)
-                                            .background(Color.White.copy(alpha = 0.2f)),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Rounded.EmojiEvents,
-                                            contentDescription = null,
-                                            tint = Color.White,
-                                            modifier = Modifier.size(38.dp)
-                                        )
-                                    }
-
-                                    Spacer(modifier = Modifier.height(14.dp))
-
-                                    Text(
-                                        text = if (attempt.score != null || attempt.aiScoreAvg != null) "Imtihon Natijasi" else "Muvaffaqiyatli Yakunlandi!",
-                                        style = MaterialTheme.typography.titleLarge.copy(
-                                            fontWeight = FontWeight.ExtraBold,
-                                            color = Color.White
-                                        )
+                                    Icon(
+                                        imageVector = Icons.Rounded.Info,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(20.dp)
                                     )
-
-                                    Spacer(modifier = Modifier.height(6.dp))
-
+                                    Spacer(modifier = Modifier.width(10.dp))
                                     Text(
-                                        text = attempt.name ?: attempt.test?.name ?: "Speaking Test",
-                                        style = MaterialTheme.typography.bodyMedium.copy(
-                                            color = Color.White.copy(alpha = 0.9f)
-                                        ),
-                                        textAlign = TextAlign.Center
-                                    )
-
-                                    Spacer(modifier = Modifier.height(14.dp))
-
-                                    val finalScore = attempt.score ?: attempt.aiScoreAvg
-                                    if (finalScore != null) {
-                                        Surface(
-                                            shape = RoundedCornerShape(16.dp),
-                                            color = Color.White.copy(alpha = 0.25f)
-                                        ) {
-                                            Row(
-                                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                Text(
-                                                    text = if (attempt.score != null) "${attempt.score} Ball" else "${String.format("%.1f", finalScore)} Ball",
-                                                    style = MaterialTheme.typography.headlineMedium.copy(
-                                                        fontWeight = FontWeight.Black,
-                                                        color = Color.White
-                                                    )
-                                                )
-                                                if (attempt.score == null && attempt.aiScoreAvg != null) {
-                                                    Spacer(modifier = Modifier.width(6.dp))
-                                                    Surface(
-                                                        shape = RoundedCornerShape(6.dp),
-                                                        color = Color.White.copy(alpha = 0.3f)
-                                                    ) {
-                                                        Text(
-                                                            text = "AI",
-                                                            style = MaterialTheme.typography.labelSmall.copy(
-                                                                color = Color.White,
-                                                                fontWeight = FontWeight.Bold
-                                                            ),
-                                                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        Surface(
-                                            shape = RoundedCornerShape(14.dp),
-                                            color = Color.White.copy(alpha = 0.2f)
-                                        ) {
-                                            Text(
-                                                text = "⏳ Natija kutilmoqda (Tekshirilmoqda)",
-                                                style = MaterialTheme.typography.labelLarge.copy(
-                                                    fontWeight = FontWeight.Bold,
-                                                    color = Color.White
-                                                ),
-                                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                                            )
-                                        }
-                                    }
-
-                                    Spacer(modifier = Modifier.height(12.dp))
-
-                                    Text(
-                                        text = "Topshirildi: ${uz.multitest.app.presentation.components.formatExamDateTime(attempt.startedAt)}",
+                                        text = "AI bahosi · o'qituvchi hali baholamagan",
                                         style = MaterialTheme.typography.bodySmall.copy(
-                                            color = Color.White.copy(alpha = 0.8f)
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            fontWeight = FontWeight.Medium
                                         )
                                     )
                                 }
@@ -196,12 +160,13 @@ fun ExamResultScreen(
                         }
                     }
 
-                    // Anti-Cheat or Teacher Review Notice
-                    if (attempt.tabSwitchCount > 0) {
+                    // Warning banner if any no_speech per §4.1
+                    if (noSpeechCount > 0) {
                         item {
                             Surface(
-                                shape = RoundedCornerShape(14.dp),
-                                color = RosePink.copy(alpha = 0.12f),
+                                shape = RoundedCornerShape(12.dp),
+                                color = NightWarningBg,
+                                border = androidx.compose.foundation.BorderStroke(1.dp, NightWarning.copy(alpha = 0.3f)),
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 Row(
@@ -211,15 +176,56 @@ fun ExamResultScreen(
                                     Icon(
                                         imageVector = Icons.Rounded.Warning,
                                         contentDescription = null,
-                                        tint = RosePink,
+                                        tint = NightWarning,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Column {
+                                        Text(
+                                            text = "Ovoz eshitilmadi ($noSpeechCount ta javob)",
+                                            style = MaterialTheme.typography.labelMedium.copy(
+                                                fontWeight = FontWeight.Bold,
+                                                color = NightWarning
+                                            )
+                                        )
+                                        Spacer(modifier = Modifier.height(2.dp))
+                                        Text(
+                                            text = "Ba'zi savollarga javob yozilmadi yoki mikrofondan signal kelmadi.",
+                                            style = MaterialTheme.typography.bodySmall.copy(
+                                                color = MaterialTheme.colorScheme.onSurface
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Anti-Cheat notice
+                    if (attempt.tabSwitchCount > 0) {
+                        item {
+                            Surface(
+                                shape = RoundedCornerShape(12.dp),
+                                color = NightDestructiveBg,
+                                border = androidx.compose.foundation.BorderStroke(1.dp, NightDestructive.copy(alpha = 0.3f)),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(14.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Security,
+                                        contentDescription = null,
+                                        tint = NightDestructive,
                                         modifier = Modifier.size(20.dp)
                                     )
                                     Spacer(modifier = Modifier.width(10.dp))
                                     Text(
-                                        text = "Imtihon paytida ${attempt.tabSwitchCount} marta oynadan chiqish holati qayd etildi.",
+                                        text = "Imtihon paytida ${attempt.tabSwitchCount} marta boshqa ilovaga o'tish holati qayd etildi.",
                                         style = MaterialTheme.typography.bodySmall.copy(
-                                            color = RosePink,
-                                            fontWeight = FontWeight.SemiBold
+                                            color = NightDestructive,
+                                            fontWeight = FontWeight.Medium
                                         )
                                     )
                                 }
@@ -227,86 +233,101 @@ fun ExamResultScreen(
                         }
                     }
 
+                    // Teacher General Review if available
                     if (!attempt.review.isNullOrBlank()) {
                         item {
                             val attemptEvaluation = remember(attempt.review) { parseAiReview(attempt.review) }
-                            if (attemptEvaluation != null && attemptEvaluation.rawText == null) {
-                                AiReviewEvaluationCard(evaluation = attemptEvaluation)
-                            } else {
-                                MultiTestCard(shape = RoundedCornerShape(18.dp)) {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            imageVector = Icons.Rounded.RateReview,
-                                            contentDescription = null,
-                                            tint = IndigoPrimary,
-                                            modifier = Modifier.size(20.dp)
-                                        )
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        Text(
-                                            text = "O'qituvchi Xulosasi:",
-                                            style = MaterialTheme.typography.labelLarge.copy(
-                                                fontWeight = FontWeight.Bold,
-                                                color = MaterialTheme.colorScheme.primary
-                                            )
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.height(8.dp))
+                            MultiTestCard(shape = RoundedCornerShape(12.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.RateReview,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
                                     Text(
-                                        text = attemptEvaluation?.rawText ?: attempt.review,
-                                        style = MaterialTheme.typography.bodyMedium.copy(
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            lineHeight = 22.sp
+                                        text = "O'qituvchi xulosasi",
+                                        style = MaterialTheme.typography.titleSmall.copy(
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.onSurface
                                         )
                                     )
                                 }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = attemptEvaluation?.rawText ?: attempt.review,
+                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        lineHeight = 22.sp
+                                    )
+                                )
                             }
                         }
                     }
 
-                    // Answers Review Title
+                    // Section Title: "Savollar"
                     item {
                         Text(
-                            text = "Savollar va Yozilgan Javoblar:",
+                            text = "Savollar",
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onBackground
-                            )
+                            ),
+                            modifier = Modifier.padding(top = 8.dp)
                         )
                     }
 
-                    // Parts and Questions
-                    items(attempt.attemptParts) { attemptPart ->
-                        AttemptPartReviewCard(
-                            attemptPart = attemptPart,
-                            isPlaying = uiState.isPlaying,
-                            currentAudioUrl = uiState.currentlyPlayingAudioUrl,
-                            onPlayAudio = { audioPath -> viewModel.togglePlayAudio(audioPath) }
-                        )
+                    // Question Rows
+                    var questionIndexCounter = 0
+                    attempt.attemptParts.forEach { attemptPart ->
+                        val answers = attemptPart.allAnswers
+                        answers.forEach { answer ->
+                            questionIndexCounter++
+                            val currentIndex = questionIndexCounter
+                            item(key = "answer_${answer.id ?: currentIndex}") {
+                                QuestionResultRowItem(
+                                    index = currentIndex,
+                                    partName = attemptPart.part?.name,
+                                    answer = answer,
+                                    isPlaying = uiState.isPlaying,
+                                    currentAudioUrl = uiState.currentlyPlayingAudioUrl,
+                                    onPlayAudio = { audioPath -> viewModel.togglePlayAudio(audioPath) }
+                                )
+                            }
+                        }
                     }
 
                     // Bottom Action Buttons
                     item {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        GradientButton(
-                            text = "Bosh Sahifaga Qaytish",
-                            onClick = onNavigateToMain,
-                            icon = Icons.Rounded.Home
-                        )
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                         if (attempt.testId != null) {
-                            OutlinedButton(
+                            GradientButton(
+                                text = "Qayta topshirish",
                                 onClick = { onRetryTest(attempt.testId) },
-                                modifier = Modifier.fillMaxWidth().height(52.dp),
-                                shape = RoundedCornerShape(16.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Refresh,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("Qayta Topshirish")
-                            }
+                                icon = Icons.Rounded.Refresh
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                        }
+
+                        OutlinedButton(
+                            onClick = onNavigateToMain,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            shape = RoundedCornerShape(14.dp),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Home,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Bosh sahifaga qaytish", style = MaterialTheme.typography.labelLarge)
                         }
                     }
                 }
@@ -316,172 +337,312 @@ fun ExamResultScreen(
 }
 
 @Composable
-private fun AttemptPartReviewCard(
-    attemptPart: AttemptPartDto,
+private fun QuestionResultRowItem(
+    index: Int,
+    partName: String?,
+    answer: AttemptAnswerDto,
     isPlaying: Boolean,
     currentAudioUrl: String?,
     onPlayAudio: (String) -> Unit
 ) {
-    val answers = attemptPart.allAnswers
+    var expanded by rememberSaveable { mutableStateOf(false) }
 
-    MultiTestCard(shape = RoundedCornerShape(18.dp)) {
-        Text(
-            text = attemptPart.part?.name ?: "Bo'lim",
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-        )
+    val evaluation = remember(answer.review, answer.reviewAi) {
+        parseAiReview(answer.review ?: answer.reviewAi)
+    }
 
-        Spacer(modifier = Modifier.height(12.dp))
+    val answerStatus = remember(answer, evaluation) {
+        when {
+            evaluation?.overrideReason == "no_speech" -> "no_speech"
+            evaluation?.overrideReason == "wrong_language" -> "wrong_language"
+            evaluation?.overrideReason in listOf("not_relevant", "off_topic") -> "off_topic"
+            evaluation?.rawText?.startsWith("AI Error") == true -> "ai_error"
+            answer.score != null || answer.scoreAi != null -> "graded"
+            answer.audioPath.isNullOrBlank() -> "no_speech"
+            else -> "pending"
+        }
+    }
 
-        if (answers.isEmpty()) {
-            Text(
-                text = "Bu bo'limda yozib olingan javoblar topilmadi.",
-                style = MaterialTheme.typography.bodySmall.copy(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+    val score = answer.score?.toInt() ?: answer.scoreAi?.toInt()
+    val isCurrentAudioPlaying = isPlaying && !answer.audioPath.isNullOrBlank() && currentAudioUrl?.contains(answer.audioPath) == true
+
+    MultiTestCard(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        // Row Header (min 56dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = 44.dp)
+                .clickable { expanded = !expanded },
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f)
+            ) {
+                // Number chip
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.secondaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "$index",
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Column {
+                    Text(
+                        text = if (!partName.isNullOrBlank()) "$partName · Savol $index" else "Savol $index",
+                        style = MaterialTheme.typography.titleSmall.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                StatusPill(status = answerStatus)
+
+                if (score != null) {
+                    Text(
+                        text = "$score/15",
+                        style = MaterialTheme.typography.labelLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    )
+                }
+
+                Icon(
+                    imageVector = if (expanded) Icons.Rounded.ExpandLess else Icons.Rounded.ExpandMore,
+                    contentDescription = if (expanded) "Yopish" else "Ochish",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp)
                 )
-            )
-        } else {
-            Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                answers.forEachIndexed { index, answer ->
-                    val question = answer.question ?: attemptPart.part?.questions?.getOrNull(index)
-                    val isCurrentAnswerPlaying = isPlaying && !answer.audioPath.isNullOrBlank() && currentAudioUrl?.contains(answer.audioPath) == true
+            }
+        }
 
+        // Expandable Content
+        AnimatedVisibility(
+            visible = expanded,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 14.dp)
+            ) {
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    thickness = 1.dp
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Question Text
+                val questionText = answer.question?.textarea
+                if (!questionText.isNullOrBlank()) {
+                    Text(
+                        text = parseHtmlToPlainText(questionText),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.colorScheme.onSurface,
+                            lineHeight = 22.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+
+                // Audio Player
+                if (!answer.audioPath.isNullOrBlank()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .clickable { onPlayAudio(answer.audioPath) }
+                            .padding(horizontal = 14.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = if (isCurrentAudioPlaying) Icons.Rounded.PauseCircle else Icons.Rounded.PlayCircle,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(28.dp)
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text(
+                                text = if (isCurrentAudioPlaying) "Ijro etilmoqda..." else "Javobingizni tinglash",
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            )
+                        }
+
+                        if (answer.audioSecond != null && answer.audioSecond > 0) {
+                            Text(
+                                text = "${answer.audioSecond.toInt()}s",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+
+                // Transcript
+                if (!answer.transcript.isNullOrBlank()) {
                     Surface(
-                        shape = RoundedCornerShape(14.dp),
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Column(modifier = Modifier.padding(14.dp)) {
-                            // Question header & score badge
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Surface(
-                                    shape = RoundedCornerShape(8.dp),
-                                    color = IndigoPrimary.copy(alpha = 0.12f)
-                                ) {
-                                    Text(
-                                        text = "Savol ${index + 1}",
-                                        style = MaterialTheme.typography.labelSmall.copy(
-                                            fontWeight = FontWeight.Bold,
-                                            color = IndigoPrimary
-                                        ),
-                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                                    )
-                                }
-
-                                val answerScore = answer.score ?: answer.scoreAi
-                                if (answerScore != null) {
-                                    Surface(
-                                        shape = RoundedCornerShape(8.dp),
-                                        color = EmeraldGreen.copy(alpha = 0.15f)
-                                    ) {
-                                        Text(
-                                            text = "${answerScore} Ball",
-                                            style = MaterialTheme.typography.labelSmall.copy(
-                                                fontWeight = FontWeight.ExtraBold,
-                                                color = EmeraldGreen
-                                            ),
-                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                                        )
-                                    }
-                                }
-                            }
-
-                            // Question Text
-                            if (!question?.textarea.isNullOrBlank()) {
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(
-                                    text = uz.multitest.app.presentation.components.parseHtmlToPlainText(question?.textarea),
-                                    style = MaterialTheme.typography.bodyMedium.copy(
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        lineHeight = 22.sp
-                                    )
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text(
+                                text = "Transkript:",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "\"${answer.transcript}\"",
+                                style = MaterialTheme.typography.bodySmall.copy(
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    lineHeight = 18.sp
+                                )
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+
+                // AI feedback & criteria list
+                if (evaluation != null) {
+                    val hasCriteria = evaluation.fluency != null || evaluation.vocabulary != null ||
+                            evaluation.grammar != null || evaluation.pronunciation != null || evaluation.interaction != null
+
+                    if (hasCriteria) {
+                        Text(
+                            text = "AI izohi",
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            ),
+                            modifier = Modifier.padding(bottom = 6.dp)
+                        )
+
+                        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            evaluation.fluency?.let {
+                                CriterionFeedbackRow(label = "Ravonlik (Fluency)", text = cleanCriterionText(it))
                             }
-
-                            Spacer(modifier = Modifier.height(10.dp))
-
-                            // Candidate Audio Player
-                            if (!answer.audioPath.isNullOrBlank()) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clip(RoundedCornerShape(10.dp))
-                                        .background(IndigoPrimary.copy(alpha = 0.08f))
-                                        .clickable { onPlayAudio(answer.audioPath) }
-                                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            imageVector = if (isCurrentAnswerPlaying) Icons.Rounded.PauseCircle else Icons.Rounded.PlayCircle,
-                                            contentDescription = null,
-                                            tint = IndigoPrimary,
-                                            modifier = Modifier.size(28.dp)
-                                        )
-                                        Spacer(modifier = Modifier.width(10.dp))
-                                        Text(
-                                            text = if (isCurrentAnswerPlaying) "Ijro etilmoqda..." else "Ovozingizni tinglash",
-                                            style = MaterialTheme.typography.bodyMedium.copy(
-                                                color = MaterialTheme.colorScheme.onSurface,
-                                                fontWeight = FontWeight.Medium
-                                            )
-                                        )
-                                    }
-                                    if (answer.audioSecond != null && answer.audioSecond > 0) {
-                                        Text(
-                                            text = "${answer.audioSecond.toInt()}s",
-                                            style = MaterialTheme.typography.bodySmall.copy(
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                                            )
-                                        )
-                                    }
-                                }
+                            evaluation.vocabulary?.let {
+                                CriterionFeedbackRow(label = "Lug'at boyligi (Vocabulary)", text = cleanCriterionText(it))
                             }
-
-                            // AI Speech Transcript
-                            if (!answer.transcript.isNullOrBlank()) {
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Column {
-                                    Text(
-                                        text = "Nutq matni (Transkript):",
-                                        style = MaterialTheme.typography.labelSmall.copy(
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    )
-                                    Spacer(modifier = Modifier.height(2.dp))
-                                    Text(
-                                        text = "\"${answer.transcript}\"",
-                                        style = MaterialTheme.typography.bodySmall.copy(
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
-                                            lineHeight = 18.sp
-                                        )
-                                    )
-                                }
+                            evaluation.grammar?.let {
+                                CriterionFeedbackRow(label = "Grammatika (Grammar)", text = cleanCriterionText(it))
                             }
-
-                            // AI / Teacher Feedback & Evaluation
-                            val reviewText = answer.review ?: answer.reviewAi
-                            val evaluation = remember(reviewText) { parseAiReview(reviewText) }
-                            if (evaluation != null) {
-                                Spacer(modifier = Modifier.height(10.dp))
-                                AiReviewEvaluationCard(evaluation = evaluation)
+                            evaluation.pronunciation?.let {
+                                CriterionFeedbackRow(label = "Talaffuz (Pronunciation)", text = cleanCriterionText(it))
+                            }
+                            evaluation.interaction?.let {
+                                CriterionFeedbackRow(label = "Interaktivlik (Interaction)", text = cleanCriterionText(it))
                             }
                         }
+                    }
+
+                    if (!evaluation.feedback.isNullOrBlank()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = evaluation.feedback,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                lineHeight = 18.sp
+                            )
+                        )
+                    }
+
+                    if (!evaluation.rawText.isNullOrBlank()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = evaluation.rawText,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                lineHeight = 18.sp
+                            )
+                        )
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun CriterionFeedbackRow(
+    label: String,
+    text: String
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top
+    ) {
+        Text(
+            text = "• ",
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+        )
+        Column {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            )
+            if (text.isNotBlank()) {
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        lineHeight = 17.sp
+                    )
+                )
+            }
+        }
+    }
+}
+
+fun cleanCriterionText(text: String?): String {
+    if (text.isNullOrBlank()) return ""
+    return text.replace(Regex("""(?i)score\s*:\s*\d+(\.\d+)?\s*/\s*15\.?\s*"""), "").trim()
 }
 
 data class AiEvaluationData(
@@ -493,6 +654,7 @@ data class AiEvaluationData(
     val pronunciation: String? = null,
     val interaction: String? = null,
     val detectedLanguage: String? = null,
+    val overrideReason: String? = null,
     val feedback: String? = null,
     val rawText: String? = null
 )
@@ -513,6 +675,7 @@ fun parseAiReview(review: String?): AiEvaluationData? {
         val pronunciation = json.optString("pronunciation").takeIf { it.isNotBlank() }
         val interaction = json.optString("interaction").takeIf { it.isNotBlank() }
         val detectedLanguage = json.optString("detected_language").takeIf { it.isNotBlank() }
+        val overrideReason = json.optString("override_reason").takeIf { it.isNotBlank() }
         val feedback = json.optString("feedback").takeIf { it.isNotBlank() }
 
         AiEvaluationData(
@@ -524,223 +687,10 @@ fun parseAiReview(review: String?): AiEvaluationData? {
             pronunciation = pronunciation,
             interaction = interaction,
             detectedLanguage = detectedLanguage,
+            overrideReason = overrideReason,
             feedback = feedback
         )
     } catch (e: Exception) {
         AiEvaluationData(rawText = trimmed)
     }
 }
-
-@Composable
-fun AiReviewEvaluationCard(
-    evaluation: AiEvaluationData,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        shape = RoundedCornerShape(14.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
-        border = androidx.compose.foundation.BorderStroke(
-            1.dp,
-            IndigoPrimary.copy(alpha = 0.2f)
-        ),
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            // Header: Title + Level + Score
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.weight(1f, fill = false)
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.AutoAwesome,
-                        contentDescription = null,
-                        tint = IndigoPrimary,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = "AI Tahlili & Baholash",
-                        style = MaterialTheme.typography.labelMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = IndigoPrimary
-                        )
-                    )
-                }
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (!evaluation.level.isNullOrBlank()) {
-                        Surface(
-                            shape = RoundedCornerShape(6.dp),
-                            color = IndigoPrimary
-                        ) {
-                            Text(
-                                text = evaluation.level,
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontWeight = FontWeight.ExtraBold,
-                                    color = Color.White
-                                ),
-                                modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp)
-                            )
-                        }
-                    }
-
-                    if (!evaluation.score.isNullOrBlank() && evaluation.score != "null") {
-                        Surface(
-                            shape = RoundedCornerShape(6.dp),
-                            color = EmeraldGreen.copy(alpha = 0.15f)
-                        ) {
-                            Text(
-                                text = "${evaluation.score} Ball",
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    color = EmeraldGreen
-                                ),
-                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                            )
-                        }
-                    }
-                }
-            }
-
-            // Detected Language warning / tag
-            if (!evaluation.detectedLanguage.isNullOrBlank() && evaluation.detectedLanguage != "English") {
-                Spacer(modifier = Modifier.height(8.dp))
-                Surface(
-                    shape = RoundedCornerShape(6.dp),
-                    color = RosePink.copy(alpha = 0.12f)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Info,
-                            contentDescription = null,
-                            tint = RosePink,
-                            modifier = Modifier.size(14.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "Aniqlangan signal: ${evaluation.detectedLanguage}",
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.SemiBold,
-                                color = RosePink
-                            )
-                        )
-                    }
-                }
-            }
-
-            // Criteria list
-            val hasCriteria = evaluation.fluency != null || evaluation.vocabulary != null ||
-                    evaluation.grammar != null || evaluation.pronunciation != null || evaluation.interaction != null
-
-            if (hasCriteria) {
-                Spacer(modifier = Modifier.height(10.dp))
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    evaluation.fluency?.let {
-                        EvaluationCriterionItem(icon = "✨", title = "Ravonlik (Fluency)", desc = it)
-                    }
-                    evaluation.vocabulary?.let {
-                        EvaluationCriterionItem(icon = "📚", title = "Lug'at boyligi (Vocabulary)", desc = it)
-                    }
-                    evaluation.grammar?.let {
-                        EvaluationCriterionItem(icon = "🛠️", title = "Grammatika (Grammar)", desc = it)
-                    }
-                    evaluation.pronunciation?.let {
-                        EvaluationCriterionItem(icon = "🗣️", title = "Talaffuz (Pronunciation)", desc = it)
-                    }
-                    evaluation.interaction?.let {
-                        EvaluationCriterionItem(icon = "🎯", title = "Interaktivlik (Interaction)", desc = it)
-                    }
-                }
-            }
-
-            // General feedback if available
-            if (!evaluation.feedback.isNullOrBlank()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(modifier = Modifier.padding(8.dp)) {
-                        Text(
-                            text = "Umumiy tavsiya:",
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = evaluation.feedback,
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                color = MaterialTheme.colorScheme.onSurface,
-                                lineHeight = 18.sp
-                            )
-                        )
-                    }
-                }
-            }
-
-            // Non-JSON raw text
-            if (!evaluation.rawText.isNullOrBlank()) {
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = evaluation.rawText,
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        color = MaterialTheme.colorScheme.onSurface,
-                        lineHeight = 20.sp
-                    )
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun EvaluationCriterionItem(
-    icon: String,
-    title: String,
-    desc: String
-) {
-    Surface(
-        shape = RoundedCornerShape(8.dp),
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = icon, fontSize = 13.sp)
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                )
-            }
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = desc,
-                style = MaterialTheme.typography.bodySmall.copy(
-                    color = MaterialTheme.colorScheme.onSurface,
-                    lineHeight = 17.sp
-                )
-            )
-        }
-    }
-}
-

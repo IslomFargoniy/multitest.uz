@@ -244,11 +244,11 @@ fun AudioWaveformVisualizer(
                     .background(
                         if (isRecording) {
                             Brush.verticalGradient(
-                                listOf(IndigoAccent, RosePink)
+                                listOf(NightPrimary, NightChart)
                             )
                         } else {
                             Brush.verticalGradient(
-                                listOf(Color.Gray.copy(alpha = 0.3f), Color.Gray.copy(alpha = 0.3f))
+                                listOf(NightBorder, NightBorder)
                             )
                         }
                     )

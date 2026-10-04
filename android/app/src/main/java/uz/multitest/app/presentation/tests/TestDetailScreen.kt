@@ -122,18 +122,20 @@ fun TestDetailScreen(
                     item {
                         Spacer(modifier = Modifier.height(4.dp))
                         // Test Header Card
-                        MultiTestCard(shape = RoundedCornerShape(20.dp)) {
+                        MultiTestCard(shape = RoundedCornerShape(12.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Box(
                                     modifier = Modifier
-                                        .size(56.dp)
-                                        .clip(RoundedCornerShape(14.dp))
-                                        .background(IndigoPrimary.copy(alpha = 0.15f)),
+                                        .size(52.dp)
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(MaterialTheme.colorScheme.secondaryContainer),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text(
-                                        text = test.language?.flag ?: "🌐",
-                                        fontSize = 28.sp
+                                    Icon(
+                                        imageVector = Icons.Rounded.Quiz,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(26.dp)
                                     )
                                 }
                                 Spacer(modifier = Modifier.width(16.dp))
@@ -202,7 +204,7 @@ private fun PartSelectionItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onToggle() },
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (isSelected) {
                 MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)

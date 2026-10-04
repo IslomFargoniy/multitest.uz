@@ -324,4 +324,4 @@ Skrinshot kerak bo'lgan ekranlar: ...
 - [x] **Phase 4 — Exam screen** (§5.2) — markup only.
 - [x] **Phase 5 — Remaining web pages** (§5.3) + grep acceptance checks (§3) all at 0.
 - [x] **Phase 6 — Android theme & components** (§6.1).
-- [ ] **Phase 7 — Android screens** (§6.2) + debug APK per `AGENTS.md`.
+- [x] **Phase 7 — Android screens** (§6.2) + debug APK per `AGENTS.md`.

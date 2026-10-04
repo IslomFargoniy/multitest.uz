@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import uz.multitest.app.core.theme.RosePink
+import uz.multitest.app.core.theme.NightDestructive
 import uz.multitest.app.presentation.components.GradientButton
 
 @Composable
@@ -39,8 +39,9 @@ fun MockJoinDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Card(
-            shape = RoundedCornerShape(24.dp),
+            shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
@@ -98,7 +99,7 @@ fun MockJoinDialog(
                         imeAction = ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions(onDone = { if (pinCode.length >= 8) onJoin(pinCode) }),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(12.dp)
                 )
 
                 if (errorMessage != null) {
@@ -106,7 +107,7 @@ fun MockJoinDialog(
                     Text(
                         text = errorMessage,
                         style = MaterialTheme.typography.bodySmall.copy(
-                            color = RosePink,
+                            color = NightDestructive,
                             fontWeight = FontWeight.Medium
                         ),
                         textAlign = TextAlign.Center

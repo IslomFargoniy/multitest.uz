@@ -57,7 +57,7 @@ fun ProfileScreen(
                         showLogoutDialog = false
                         viewModel.logout()
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = RosePink)
+                    colors = ButtonDefaults.buttonColors(containerColor = NightDestructive)
                 ) {
                     Text("Chiqish")
                 }
@@ -97,7 +97,7 @@ fun ProfileScreen(
             modifier = Modifier
                 .size(90.dp)
                 .clip(CircleShape)
-                .background(IndigoPrimary.copy(alpha = 0.15f)),
+                .background(MaterialTheme.colorScheme.secondaryContainer),
             contentAlignment = Alignment.Center
         ) {
             if (!user?.avatar.isNullOrBlank()) {
@@ -112,7 +112,7 @@ fun ProfileScreen(
                     text = user?.name?.take(1)?.uppercase() ?: "U",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        color = IndigoPrimary
+                        color = MaterialTheme.colorScheme.primary
                     )
                 )
             }
@@ -189,14 +189,14 @@ fun ProfileScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = RosePink),
-            border = ButtonDefaults.outlinedButtonBorder.copy(brush = androidx.compose.ui.graphics.SolidColor(RosePink.copy(alpha = 0.5f)))
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = NightDestructive),
+            border = androidx.compose.foundation.BorderStroke(1.dp, NightDestructive.copy(alpha = 0.5f))
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Rounded.Logout,
                 contentDescription = null,
-                tint = RosePink,
+                tint = NightDestructive,
                 modifier = Modifier.size(20.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -204,7 +204,7 @@ fun ProfileScreen(
                 text = "Tizimdan Chiqish",
                 style = MaterialTheme.typography.labelLarge.copy(
                     fontWeight = FontWeight.Bold,
-                    color = RosePink
+                    color = NightDestructive
                 )
             )
         }

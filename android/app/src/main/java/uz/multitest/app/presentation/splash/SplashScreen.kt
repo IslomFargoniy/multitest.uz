@@ -24,7 +24,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uz.multitest.app.core.theme.IndigoAccent
 import uz.multitest.app.core.theme.IndigoPrimary
-import uz.multitest.app.core.theme.RosePink
 
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource

@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -17,9 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -27,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uz.multitest.app.core.theme.*
 import uz.multitest.app.presentation.components.*
@@ -103,7 +103,8 @@ fun SpeakingExamScreen(
                     if (uiState.violationCount > 0) {
                         Surface(
                             shape = RoundedCornerShape(8.dp),
-                            color = RosePink.copy(alpha = 0.15f),
+                            color = NightWarningBg,
+                            border = androidx.compose.foundation.BorderStroke(1.dp, NightWarning.copy(alpha = 0.4f)),
                             modifier = Modifier.padding(end = 12.dp)
                         ) {
                             Row(
@@ -113,14 +114,14 @@ fun SpeakingExamScreen(
                                 Icon(
                                     imageVector = Icons.Rounded.Warning,
                                     contentDescription = null,
-                                    tint = RosePink,
+                                    tint = NightWarning,
                                     modifier = Modifier.size(16.dp)
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = "Ogohlantirish: ${uiState.violationCount}",
                                     style = MaterialTheme.typography.labelSmall.copy(
-                                        color = RosePink,
+                                        color = NightWarning,
                                         fontWeight = FontWeight.Bold
                                     )
                                 )
@@ -243,16 +244,16 @@ private fun PartIntroView(
     ) {
         Box(
             modifier = Modifier
-                .size(80.dp)
+                .size(72.dp)
                 .clip(CircleShape)
-                .background(IndigoPrimary.copy(alpha = 0.15f)),
+                .background(MaterialTheme.colorScheme.secondaryContainer),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.Rounded.Headset,
                 contentDescription = null,
-                tint = IndigoPrimary,
-                modifier = Modifier.size(44.dp)
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(36.dp)
             )
         }
 
@@ -272,14 +273,14 @@ private fun PartIntroView(
         Text(
             text = "$questionCount ta savol mavjud",
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = IndigoAccent,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.SemiBold
             )
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        MultiTestCard(shape = RoundedCornerShape(20.dp)) {
+        MultiTestCard(shape = RoundedCornerShape(12.dp)) {
             Text(
                 text = "Yo'riqnoma:",
                 style = MaterialTheme.typography.labelLarge.copy(
@@ -304,18 +305,18 @@ private fun PartIntroView(
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(16.dp),
-                    color = IndigoPrimary,
+                    color = MaterialTheme.colorScheme.primary,
                     strokeWidth = 2.dp
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Audio ko'rsatma eshitilmoqda...",
-                    style = MaterialTheme.typography.bodySmall.copy(color = IndigoPrimary)
+                    style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.primary)
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(36.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         GradientButton(
             text = "Savollarga O'tish",
@@ -342,7 +343,7 @@ private fun QuestionActiveView(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
+            .padding(20.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
@@ -351,121 +352,88 @@ private fun QuestionActiveView(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Question Badge & Phase Indicator
+            // Question Counter & Phase Chips Row (§6.2)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = MaterialTheme.colorScheme.surfaceVariant
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.secondaryContainer
                 ) {
                     Text(
                         text = "Savol $questionIndex / $totalQuestions",
-                        style = MaterialTheme.typography.labelMedium.copy(
+                        style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         ),
-                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
                     )
                 }
 
-                if (isAudioPhase) {
-                    Surface(
-                        shape = RoundedCornerShape(12.dp),
-                        color = IndigoPrimary.copy(alpha = 0.15f)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(12.dp),
-                                color = IndigoPrimary,
-                                strokeWidth = 2.dp
-                            )
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(
-                                text = "Savol o'qilmoqda...",
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    color = IndigoPrimary,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            )
-                        }
-                    }
-                } else if (isPreparation) {
-                    Surface(
-                        shape = RoundedCornerShape(12.dp),
-                        color = CoralOrange.copy(alpha = 0.15f)
-                    ) {
-                        Text(
-                            text = "Tayyorgarlik",
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                color = CoralOrange,
-                                fontWeight = FontWeight.Bold
-                            ),
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
-                        )
-                    }
-                } else {
-                    Surface(
-                        shape = RoundedCornerShape(12.dp),
-                        color = RosePink.copy(alpha = 0.15f)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(8.dp)
-                                    .clip(CircleShape)
-                                    .background(RosePink)
-                            )
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(
-                                text = "Yozilmoqda",
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    color = RosePink,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            )
-                        }
-                    }
+                // Phase Chips Row (§6.2)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ExamPhaseChip(
+                        title = "Tinglash",
+                        isActive = isAudioPhase,
+                        activeColor = NightPrimary
+                    )
+                    ExamPhaseChip(
+                        title = "Tayyorlanish",
+                        isActive = isPreparation,
+                        activeColor = NightWarning
+                    )
+                    ExamPhaseChip(
+                        title = "Gapiring",
+                        isActive = !isAudioPhase && !isPreparation,
+                        activeColor = NightDestructive
+                    )
                 }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Timer / Audio Center Element
+            // Big Ring Timer (220dp, Chart progress on Border track per §6.2)
             if (isAudioPhase) {
-                AudioListeningCircle()
+                AudioListeningCircle(
+                    size = 220.dp
+                )
             } else {
                 CountdownTimerCircle(
                     currentSeconds = secondsRemaining,
                     totalSeconds = totalSeconds,
-                    isPreparation = isPreparation
+                    isPreparation = isPreparation,
+                    size = 220.dp
                 )
             }
 
             Spacer(modifier = Modifier.height(28.dp))
 
-            // Question Box
-            MultiTestCard(shape = RoundedCornerShape(20.dp)) {
+            // Question Box (24sp/700 per §6.2)
+            MultiTestCard(shape = RoundedCornerShape(12.dp)) {
                 if (questionText.isNotBlank()) {
-                    HtmlContentView(
-                        html = questionText,
+                    Text(
+                        text = parseHtmlToPlainText(questionText),
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            lineHeight = 32.sp
+                        ),
                         modifier = Modifier.fillMaxWidth()
                     )
                 } else {
                     Text(
                         text = "Savolni tinglang va javob bering",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.SemiBold,
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
-                            lineHeight = 26.sp
+                            lineHeight = 32.sp
                         ),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
@@ -492,10 +460,11 @@ private fun QuestionActiveView(
                 OutlinedButton(
                     onClick = onFinishEarly,
                     shape = RoundedCornerShape(14.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, NightDestructive),
                     colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = RosePink
+                        contentColor = NightDestructive
                     ),
-                    modifier = Modifier.fillMaxWidth().height(50.dp)
+                    modifier = Modifier.fillMaxWidth().height(52.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Stop,
@@ -505,18 +474,18 @@ private fun QuestionActiveView(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Javob berishni yakunlash",
-                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
                     )
                 }
             } else {
-                FilledTonalButton(
+                Button(
                     onClick = onStartRecordingNow,
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = IndigoPrimary.copy(alpha = 0.15f),
-                        contentColor = IndigoPrimary
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = NightPrimary,
+                        contentColor = Color.White
                     ),
-                    modifier = Modifier.fillMaxWidth().height(50.dp)
+                    modifier = Modifier.fillMaxWidth().height(52.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Mic,
@@ -526,7 +495,7 @@ private fun QuestionActiveView(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Javob berishni boshlash",
-                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
                     )
                 }
 
@@ -540,6 +509,41 @@ private fun QuestionActiveView(
                     )
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun ExamPhaseChip(
+    title: String,
+    isActive: Boolean,
+    activeColor: Color
+) {
+    Surface(
+        shape = RoundedCornerShape(100.dp),
+        color = if (isActive) activeColor.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+        border = if (isActive) androidx.compose.foundation.BorderStroke(1.dp, activeColor) else null
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (isActive) {
+                Box(
+                    modifier = Modifier
+                        .size(6.dp)
+                        .clip(CircleShape)
+                        .background(activeColor)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+            }
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = if (isActive) FontWeight.Bold else FontWeight.Normal,
+                    color = if (isActive) activeColor else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            )
         }
     }
 }

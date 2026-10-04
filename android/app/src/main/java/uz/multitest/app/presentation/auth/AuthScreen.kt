@@ -241,7 +241,7 @@ fun AuthScreen(
                 Text(
                     text = uiState.errorMessage!!,
                     style = MaterialTheme.typography.bodySmall.copy(
-                        color = RosePink,
+                        color = NightDestructive,
                         fontWeight = FontWeight.Medium
                     ),
                     textAlign = TextAlign.Center
@@ -298,8 +298,8 @@ fun AuthScreen(
                         Text(
                             text = "G",
                             style = MaterialTheme.typography.titleLarge.copy(
-                                fontWeight = FontWeight.Black,
-                                color = CoralOrange
+                                fontWeight = FontWeight.Bold,
+                                color = NightPrimary
                             )
                         )
                         Spacer(modifier = Modifier.width(10.dp))

@@ -20,14 +20,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import uz.multitest.app.core.theme.CoralOrange
-import uz.multitest.app.core.theme.EmeraldGreen
-import uz.multitest.app.core.theme.IndigoPrimary
+import uz.multitest.app.core.theme.*
 import uz.multitest.app.data.models.AttemptDto
+import uz.multitest.app.presentation.components.CefrBadge
 import uz.multitest.app.presentation.components.EmptyStateView
 import uz.multitest.app.presentation.components.ErrorStateView
 import uz.multitest.app.presentation.components.LoadingStateView
 import uz.multitest.app.presentation.components.MultiTestCard
+import uz.multitest.app.presentation.components.StatusPill
 
 @Composable
 fun HistoryScreen(
@@ -92,7 +92,7 @@ private fun HistoryAttemptCard(
 ) {
     MultiTestCard(
         onClick = onClick,
-        shape = RoundedCornerShape(18.dp)
+        shape = RoundedCornerShape(12.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -106,7 +106,7 @@ private fun HistoryAttemptCard(
                     Text(
                         text = attempt.name ?: attempt.test?.name ?: "Speaking Test",
                         style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSurface
                         ),
                         maxLines = 1,
@@ -116,14 +116,14 @@ private fun HistoryAttemptCard(
                         Spacer(modifier = Modifier.width(8.dp))
                         Surface(
                             shape = RoundedCornerShape(6.dp),
-                            color = IndigoPrimary.copy(alpha = 0.15f)
+                            color = MaterialTheme.colorScheme.secondaryContainer
                         ) {
                             Text(
                                 text = "MOCK",
                                 style = MaterialTheme.typography.labelSmall.copy(
-                                    color = IndigoPrimary,
-                                    fontWeight = FontWeight.Black,
-                                    fontSize = 9.sp
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp
                                 ),
                                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                             )
@@ -145,48 +145,34 @@ private fun HistoryAttemptCard(
 
             val displayScore = attempt.score ?: attempt.aiScoreAvg
             if (displayScore != null) {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(EmeraldGreen.copy(alpha = 0.15f))
-                        .padding(horizontal = 14.dp, vertical = 8.dp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
+                    CefrBadge(score = displayScore.toInt())
                     Text(
-                        text = if (attempt.score != null) "${attempt.score} Ball" else "${String.format("%.1f", displayScore)} (AI)",
-                        style = MaterialTheme.typography.labelLarge.copy(
-                            fontWeight = FontWeight.ExtraBold,
-                            color = EmeraldGreen
+                        text = if (attempt.score != null) "${attempt.score}" else "${displayScore.toInt()} (AI)",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     )
                 }
             } else if (attempt.finishedAt != null) {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(CoralOrange.copy(alpha = 0.15f))
-                        .padding(horizontal = 12.dp, vertical = 8.dp)
-                ) {
-                    Text(
-                        text = "Tekshirilmoqda",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = CoralOrange
-                        )
-                    )
-                }
+                StatusPill(status = "pending")
             } else {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                Surface(
+                    shape = RoundedCornerShape(100.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier.padding(horizontal = 4.dp)
                 ) {
                     Text(
                         text = "Tugallanmagan",
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                        ),
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
                 }
             }

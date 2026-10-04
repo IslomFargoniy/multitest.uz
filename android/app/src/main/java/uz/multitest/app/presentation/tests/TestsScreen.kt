@@ -29,12 +29,36 @@ import uz.multitest.app.presentation.components.ErrorStateView
 import uz.multitest.app.presentation.components.LoadingStateView
 import uz.multitest.app.presentation.components.MultiTestCard
 
+import uz.multitest.app.presentation.dashboard.DashboardUiEvent
+import uz.multitest.app.presentation.dashboard.DashboardViewModel
+import uz.multitest.app.presentation.dashboard.MockJoinDialog
+
 @Composable
 fun TestsScreen(
     onNavigateToDetail: (Long) -> Unit,
-    viewModel: TestsViewModel = hiltViewModel()
+    onNavigateToExam: ((Long) -> Unit)? = null,
+    viewModel: TestsViewModel = hiltViewModel(),
+    dashboardViewModel: DashboardViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val dashUiState by dashboardViewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        dashboardViewModel.uiEvent.collect { event ->
+            when (event) {
+                is DashboardUiEvent.NavigateToExam -> onNavigateToExam?.invoke(event.attemptId)
+                is DashboardUiEvent.NavigateToTestDetail -> onNavigateToDetail(event.testId)
+            }
+        }
+    }
+
+    MockJoinDialog(
+        isOpen = dashUiState.isMockDialogOpen,
+        isLoading = dashUiState.isJoiningMock,
+        errorMessage = dashUiState.mockErrorMessage,
+        onDismiss = { dashboardViewModel.closeMockDialog() },
+        onJoin = { pin -> dashboardViewModel.joinMock(pin) }
+    )
 
     Column(
         modifier = Modifier
@@ -42,15 +66,44 @@ fun TestsScreen(
             .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
     ) {
-        // Title
-        Text(
-            text = "Speaking Testlar",
-            style = MaterialTheme.typography.headlineSmall.copy(
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            ),
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
-        )
+        // Header: Title and Mock Join PIN button
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Speaking Testlar",
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            )
+
+            OutlinedButton(
+                onClick = { dashboardViewModel.openMockDialog() },
+                shape = RoundedCornerShape(12.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Key,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "PIN orqali kirish",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                )
+            }
+        }
 
         // Search Bar
         OutlinedTextField(
@@ -80,11 +133,11 @@ fun TestsScreen(
                     }
                 }
             },
-            shape = RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surface,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                focusedBorderColor = IndigoPrimary,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
             ),
             singleLine = true
@@ -134,7 +187,7 @@ private fun TestListItem(
 ) {
     MultiTestCard(
         onClick = onClick,
-        shape = RoundedCornerShape(18.dp)
+        shape = RoundedCornerShape(12.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -142,33 +195,34 @@ private fun TestListItem(
         ) {
             Box(
                 modifier = Modifier
-                    .size(52.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(IndigoPrimary.copy(alpha = 0.12f)),
+                    .size(44.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(MaterialTheme.colorScheme.secondaryContainer),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = test.language?.flag ?: "🌐",
-                    fontSize = 24.sp
+                Icon(
+                    imageVector = Icons.Rounded.Quiz,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(22.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(14.dp))
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = test.name,
                     style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface
                     ),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
-
                 if (!test.description.isNullOrEmpty()) {
+                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = uz.multitest.app.presentation.components.parseHtmlToPlainText(test.description),
                         style = MaterialTheme.typography.bodySmall.copy(
@@ -177,8 +231,9 @@ private fun TestListItem(
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Spacer(modifier = Modifier.height(6.dp))
                 }
+
+                Spacer(modifier = Modifier.height(6.dp))
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -186,8 +241,8 @@ private fun TestListItem(
                     Icon(
                         imageVector = Icons.Rounded.Layers,
                         contentDescription = null,
-                        tint = IndigoAccent,
-                        modifier = Modifier.size(16.dp)
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(15.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
@@ -200,20 +255,20 @@ private fun TestListItem(
                 }
             }
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(10.dp))
 
             Box(
                 modifier = Modifier
-                    .size(36.dp)
+                    .size(32.dp)
                     .clip(CircleShape)
-                    .background(IndigoPrimary.copy(alpha = 0.1f)),
+                    .background(MaterialTheme.colorScheme.secondaryContainer),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Rounded.ChevronRight,
                     contentDescription = null,
-                    tint = IndigoPrimary,
-                    modifier = Modifier.size(20.dp)
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(18.dp)
                 )
             }
         }

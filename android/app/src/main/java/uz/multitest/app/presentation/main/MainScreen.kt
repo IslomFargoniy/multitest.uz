@@ -21,7 +21,7 @@ fun MainScreen(
     onNavigateToResult: (Long) -> Unit,
     onNavigateToAuth: () -> Unit
 ) {
-    var currentTab by rememberSaveable { mutableStateOf(Screen.Dashboard.route) }
+    var currentTab by rememberSaveable { mutableStateOf(Screen.Tests.route) }
 
     Scaffold(
         bottomBar = {
@@ -47,7 +47,8 @@ fun MainScreen(
 
                 Screen.Tests.route -> {
                     TestsScreen(
-                        onNavigateToDetail = onNavigateToTestDetail
+                        onNavigateToDetail = onNavigateToTestDetail,
+                        onNavigateToExam = onNavigateToExam
                     )
                 }
 
