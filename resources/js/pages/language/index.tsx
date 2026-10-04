@@ -72,11 +72,11 @@ export default function LanguageShow() {
                     <div>
                         <div className="flex items-center gap-2">
                             {language?.flag && <span className="text-2xl sm:text-3xl">{language.flag}</span>}
-                            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+                            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                                 {langName} {t('nav.tests', 'Testlari')}
                             </h1>
                         </div>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                        <p className="text-sm text-muted-foreground mt-1">
                             {t('tests_description', "Mavjud barcha CEFR va IELTS Speaking testlari ro'yxati")}
                         </p>
                     </div>

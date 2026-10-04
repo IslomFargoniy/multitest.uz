@@ -43,10 +43,10 @@ export default function RegisterCard() {
 
             <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t border-slate-200 dark:border-slate-800" />
+                    <span className="w-full border-t border-border" />
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white px-3 font-bold text-slate-400 dark:bg-slate-950">{t('register.or')}</span>
+                <div className="relative flex justify-center text-xs uppercase tracking-wider">
+                    <span className="bg-card px-3 font-semibold text-muted-foreground">{t('register.or')}</span>
                 </div>
             </div>
 
@@ -55,7 +55,7 @@ export default function RegisterCard() {
                 <div className="grid gap-3 sm:gap-4">
                     {/* Name */}
                     <div className="grid gap-1.5">
-                        <Label htmlFor="name" className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                        <Label htmlFor="name" className="text-sm font-semibold text-foreground">
                             {t('register.name')}
                         </Label>
                         <Input
@@ -65,7 +65,7 @@ export default function RegisterCard() {
                             autoFocus
                             tabIndex={1}
                             autoComplete="name"
-                            className="h-11 rounded-xl border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 sm:h-12 dark:border-slate-800"
+                            className="h-11 rounded-xl border-border bg-secondary focus:ring-2 focus:ring-primary/20 text-foreground"
                             value={data.name}
                             onChange={(e) => setData('name', e.target.value)}
                             disabled={processing}
@@ -76,7 +76,7 @@ export default function RegisterCard() {
 
                     {/* Phone */}
                     <div className="grid gap-1.5">
-                        <Label htmlFor="phone" className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                        <Label htmlFor="phone" className="text-sm font-semibold text-foreground">
                             {t('common.phone')}
                         </Label>
                         <Input
@@ -85,7 +85,7 @@ export default function RegisterCard() {
                             required
                             tabIndex={2}
                             autoComplete="tel"
-                            className="h-11 rounded-xl border-slate-200 sm:h-12 dark:border-slate-800"
+                            className="h-11 rounded-xl border-border bg-secondary focus:ring-2 focus:ring-primary/20 text-foreground"
                             value={data.phone}
                             onChange={(e) => setData('phone', e.target.value)}
                             disabled={processing}
@@ -96,7 +96,7 @@ export default function RegisterCard() {
 
                     {/* Email */}
                     <div className="grid gap-1.5">
-                        <Label htmlFor="email" className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                        <Label htmlFor="email" className="text-sm font-semibold text-foreground">
                             {t('register.email')}
                         </Label>
                         <Input
@@ -104,7 +104,7 @@ export default function RegisterCard() {
                             type="email"
                             tabIndex={3}
                             autoComplete="email"
-                            className="h-11 rounded-xl border-slate-200 sm:h-12 dark:border-slate-800"
+                            className="h-11 rounded-xl border-border bg-secondary focus:ring-2 focus:ring-primary/20 text-foreground"
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             disabled={processing}
@@ -115,7 +115,7 @@ export default function RegisterCard() {
 
                     {/* Password */}
                     <div className="grid gap-1.5">
-                        <Label htmlFor="password" self-id="password_label" className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                        <Label htmlFor="password" className="text-sm font-semibold text-foreground">
                             {t('register.password')}
                         </Label>
                         <Input
@@ -124,7 +124,7 @@ export default function RegisterCard() {
                             required
                             tabIndex={4}
                             autoComplete="new-password"
-                            className="h-11 rounded-xl border-slate-200 sm:h-12 dark:border-slate-800"
+                            className="h-11 rounded-xl border-border bg-secondary focus:ring-2 focus:ring-primary/20 text-foreground"
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
                             disabled={processing}
@@ -135,7 +135,7 @@ export default function RegisterCard() {
 
                     {/* Password Confirmation */}
                     <div className="grid gap-1.5">
-                        <Label htmlFor="password_confirmation" className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                        <Label htmlFor="password_confirmation" className="text-sm font-semibold text-foreground">
                             {t('register.password_confirmation')}
                         </Label>
                         <Input
@@ -144,7 +144,7 @@ export default function RegisterCard() {
                             required
                             tabIndex={5}
                             autoComplete="new-password"
-                            className="h-11 rounded-xl border-slate-200 sm:h-12 dark:border-slate-800"
+                            className="h-11 rounded-xl border-border bg-secondary focus:ring-2 focus:ring-primary/20 text-foreground"
                             value={data.password_confirmation}
                             onChange={(e) => setData('password_confirmation', e.target.value)}
                             disabled={processing}
@@ -156,7 +156,7 @@ export default function RegisterCard() {
                     {/* Submit Button */}
                     <Button
                         type="submit"
-                        className="mt-2 h-11 w-full rounded-xl bg-indigo-600 font-black text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-70 sm:mt-4 sm:h-12 dark:shadow-none"
+                        className="mt-2 h-11 w-full rounded-xl bg-primary font-bold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 active:scale-[0.98] disabled:opacity-50 sm:mt-4"
                         tabIndex={6}
                         disabled={processing}
                     >
@@ -166,9 +166,9 @@ export default function RegisterCard() {
                 </div>
 
                 {/* Footer Links */}
-                <div className="mt-2 text-center text-sm font-medium text-slate-500">
+                <div className="mt-2 text-center text-sm font-medium text-muted-foreground">
                     {t('register.no_account')}{' '}
-                    <TextLink href={route('login')} tabIndex={7} className="font-bold text-indigo-600 hover:text-indigo-500 hover:underline">
+                    <TextLink href={route('login')} tabIndex={7} className="font-bold text-primary hover:underline">
                         {t('register.login')}
                     </TextLink>
                 </div>

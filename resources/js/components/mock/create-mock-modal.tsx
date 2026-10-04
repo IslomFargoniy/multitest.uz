@@ -63,53 +63,52 @@ export default function CreateMockModal({ tests = [] }: { tests: Test[] }) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <button
-                    type="button"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2.5 shadow-xs transition-all active:scale-95 cursor-pointer"
-                >
+                <Button variant="default" size="default" className="gap-2 font-semibold">
                     <IoCreate className="h-4 w-4" />
                     <span>{t('create_mock', 'Mock yaratish')}</span>
-                </button>
+                </Button>
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-lg w-full rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900 border border-gray-100 dark:border-gray-800 max-h-[90vh] overflow-y-auto">
-                <DialogHeader className="space-y-1 pb-2 border-b border-gray-100 dark:border-gray-800">
-                    <DialogTitle className="text-lg font-bold text-gray-900 dark:text-gray-100">
+            <DialogContent className="sm:max-w-lg w-full rounded-xl bg-card p-6 shadow-lg border border-border max-h-[90vh] overflow-y-auto">
+                <DialogHeader className="space-y-1 pb-3 border-b border-border">
+                    <DialogTitle className="text-lg font-bold text-foreground">
                         {t('modal.create_mock_title', 'Yangi Mock Test Yaratish')}
                     </DialogTitle>
-                    <DialogDescription className="text-xs text-gray-500 dark:text-gray-400">
+                    <DialogDescription className="text-xs text-muted-foreground">
                         {t('modal.create_mock_desc', 'Mock test ma\'lumotlarini kiriting va testni tanlang')}
                     </DialogDescription>
                 </DialogHeader>
 
                 <form onSubmit={submit} className="space-y-4 pt-2">
                     <div>
-                        <Label htmlFor="name">{t('name', 'Nomi')}</Label>
+                        <Label htmlFor="name" className="text-xs font-semibold text-muted-foreground">{t('name', 'Nomi')}</Label>
                         <Input
                             id="name"
                             ref={nameInput}
                             value={data.name}
                             onChange={(e) => setData('name', e.target.value)}
                             placeholder="Mock test nomi"
+                            className="mt-1.5 h-11 rounded-lg border-border bg-surface-2"
                             required
                         />
                         <InputError message={errors.name} />
                     </div>
 
                     <div>
-                        <Label htmlFor="comment">{t('comment', 'Izoh / Tavsif')}</Label>
+                        <Label htmlFor="comment" className="text-xs font-semibold text-muted-foreground">{t('comment', 'Izoh / Tavsif')}</Label>
                         <Input
                             id="comment"
                             value={data.comment}
                             onChange={(e) => setData('comment', e.target.value)}
                             placeholder="Qo'shimcha izoh (ixtiyoriy)"
+                            className="mt-1.5 h-11 rounded-lg border-border bg-surface-2"
                         />
                         <InputError message={errors.comment} />
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <Label htmlFor="started_at">{t('started_at', 'Boshlanish vaqti')}</Label>
+                            <Label htmlFor="started_at" className="text-xs font-semibold text-muted-foreground">{t('started_at', 'Boshlanish vaqti')}</Label>
                             <DatePicker
                                 selected={data.started_at ? new Date(data.started_at) : null}
                                 onChange={(date: Date | null) => {
@@ -121,7 +120,7 @@ export default function CreateMockModal({ tests = [] }: { tests: Test[] }) {
                                 timeFormat="HH:mm"
                                 timeIntervals={15}
                                 dateFormat="yyyy-MM-dd HH:mm"
-                                className="border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white p-2 rounded-xl text-xs w-full mt-1.5"
+                                className="border border-border bg-surface-2 text-foreground p-2 rounded-lg text-xs w-full mt-1.5 h-11"
                                 wrapperClassName="w-full"
                                 required
                             />
@@ -129,7 +128,7 @@ export default function CreateMockModal({ tests = [] }: { tests: Test[] }) {
                         </div>
 
                         <div>
-                            <Label htmlFor="finished_at">{t('finished_at', 'Tugash vaqti')}</Label>
+                            <Label htmlFor="finished_at" className="text-xs font-semibold text-muted-foreground">{t('finished_at', 'Tugash vaqti')}</Label>
                             <DatePicker
                                 selected={data.finished_at ? new Date(data.finished_at) : null}
                                 onChange={(date: Date | null) => {
@@ -141,7 +140,7 @@ export default function CreateMockModal({ tests = [] }: { tests: Test[] }) {
                                 timeFormat="HH:mm"
                                 timeIntervals={15}
                                 dateFormat="yyyy-MM-dd HH:mm"
-                                className="border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white p-2 rounded-xl text-xs w-full mt-1.5"
+                                className="border border-border bg-surface-2 text-foreground p-2 rounded-lg text-xs w-full mt-1.5 h-11"
                                 wrapperClassName="w-full"
                                 required
                             />
@@ -150,12 +149,12 @@ export default function CreateMockModal({ tests = [] }: { tests: Test[] }) {
                     </div>
 
                     <div>
-                        <Label htmlFor="test_id">{t('select_test', 'Testni tanlang')}</Label>
+                        <Label htmlFor="test_id" className="text-xs font-semibold text-muted-foreground">{t('select_test', 'Testni tanlang')}</Label>
                         <Select
                             value={String(data.test_id || '')}
                             onValueChange={(value) => setData('test_id', Number(value))}
                         >
-                            <SelectTrigger className="w-full mt-1.5 rounded-xl border border-gray-300 dark:border-gray-700">
+                            <SelectTrigger className="w-full mt-1.5 rounded-lg border border-border bg-surface-2 h-11">
                                 <span>
                                     {data.test_id
                                         ? (() => {
@@ -166,7 +165,7 @@ export default function CreateMockModal({ tests = [] }: { tests: Test[] }) {
                                 </span>
                             </SelectTrigger>
 
-                            <SelectContent className="max-h-60 rounded-xl bg-white dark:bg-gray-900">
+                            <SelectContent className="max-h-60 rounded-lg bg-card border-border">
                                 {tests.map((test) => (
                                     <SelectItem key={test.id} value={String(test.id)}>
                                         {test.name}
@@ -178,28 +177,29 @@ export default function CreateMockModal({ tests = [] }: { tests: Test[] }) {
                     </div>
 
                     <div>
-                        <Label htmlFor="status" className="mb-2 block">
+                        <Label htmlFor="status" className="mb-2 block text-xs font-semibold text-muted-foreground">
                             {t('status', 'Holati (Faol)')}
                         </Label>
-                        <label className="inline-flex items-center cursor-pointer">
+                        <label className="flex h-11 w-full cursor-pointer items-center justify-between rounded-lg border border-border bg-surface-2 px-4 transition-colors">
+                            <span className="text-sm font-semibold text-foreground">
+                                {data.active === 1 ? t('common.yes') : t('common.no')}
+                            </span>
                             <input
                                 type="checkbox"
                                 id="status"
-                                className="sr-only peer"
+                                className="h-4 w-4 rounded border-border text-primary focus:ring-0"
                                 checked={data.active === 1}
                                 onChange={(e) => setData('active', e.target.checked ? 1 : 0)}
                             />
-                            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
                         </label>
                         <InputError message={errors.active} />
                     </div>
 
-                    <DialogFooter className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <DialogFooter className="flex justify-end gap-3 pt-4 border-t border-border">
                         <DialogClose asChild>
                             <Button
                                 type="button"
-                                variant="secondary"
-                                className="rounded-xl text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 cursor-pointer"
+                                variant="outline"
                                 onClick={() => {
                                     reset();
                                     clearErrors();
@@ -213,7 +213,6 @@ export default function CreateMockModal({ tests = [] }: { tests: Test[] }) {
                         <Button
                             type="submit"
                             disabled={processing}
-                            className="rounded-xl text-xs bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-50 cursor-pointer font-bold"
                         >
                             {t('save', 'Saqlash')}
                         </Button>

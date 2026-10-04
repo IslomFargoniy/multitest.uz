@@ -79,64 +79,64 @@ export default function UpdateUserModal({ user }: UpdateUserModalProps) {
                 onClick={() => setOpen(true)}
                 type="button"
                 title={t('common.edit')}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition-all hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 active:scale-90 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-indigo-900/40"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground shadow-xs transition-colors hover:border-border-strong hover:bg-accent hover:text-foreground active:scale-95"
             >
-                <Pencil className="h-4 w-4" strokeWidth={2.5} />
+                <Pencil className="h-4 w-4" />
             </button>
 
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="flex max-h-[95vh] !w-[600px] !max-w-[95vw] flex-col gap-0 overflow-hidden rounded-[2.5rem] border-none bg-white p-0 shadow-2xl dark:bg-slate-950">
+                <DialogContent className="flex max-h-[95vh] !w-[600px] !max-w-[95vw] flex-col gap-0 overflow-hidden rounded-2xl border border-border bg-card p-0 shadow-2xl">
                     {/* Header */}
-                    <div className="flex-none border-b border-slate-100 bg-slate-50/80 px-10 py-8 dark:border-slate-800 dark:bg-slate-900/50">
+                    <div className="flex-none border-b border-border bg-surface-2 px-8 py-6">
                         <div className="flex items-center gap-4">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-200 dark:shadow-none">
-                                <UserCog className="h-6 w-6" />
+                            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+                                <UserCog className="h-5 w-5" />
                             </div>
                             <div>
-                                <DialogTitle className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+                                <DialogTitle className="text-xl font-bold tracking-tight text-foreground">
                                     {t('user_management.edit_user_title')}
                                 </DialogTitle>
-                                <DialogDescription className="font-medium text-slate-500 dark:text-slate-400">
+                                <DialogDescription className="font-medium text-sm text-muted-foreground mt-0.5">
                                     {t('user_management.modifying_account_for')}{' '}
-                                    <span className="font-bold text-indigo-600 dark:text-indigo-400">{user.name}</span>
+                                    <span className="font-semibold text-primary">{user.name}</span>
                                 </DialogDescription>
                             </div>
                         </div>
                     </div>
 
                     <form onSubmit={submit} className="flex flex-1 flex-col overflow-hidden">
-                        <div className="flex-1 space-y-6 overflow-y-auto p-10">
+                        <div className="flex-1 space-y-5 overflow-y-auto p-8">
                             {/* Name Input */}
-                            <div className="space-y-2">
+                            <div className="space-y-1.5">
                                 <Label
                                     htmlFor="name"
-                                    className="flex items-center gap-2 pl-1 text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase"
+                                    className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                                 >
                                     {t('common.full_name')}
                                 </Label>
                                 <Input
                                     id="name"
                                     ref={nameInput}
-                                    className="h-12 rounded-xl border-slate-100 bg-slate-50 px-4 font-bold focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                                    className="h-11 rounded-xl border-border bg-secondary px-4 font-medium text-foreground focus:ring-2 focus:ring-primary/20"
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
                                 />
                                 <InputError message={errors.name} />
                             </div>
 
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                                 {/* Phone Input */}
-                                <div className="space-y-2">
+                                <div className="space-y-1.5">
                                     <Label
                                         htmlFor="phone"
-                                        className="flex items-center gap-2 pl-1 text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase"
+                                        className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                                     >
                                         <Phone className="h-3 w-3" /> {t('user_management.phone')}
                                     </Label>
                                     <Input
                                         id="phone"
                                         type="tel"
-                                        className="h-12 rounded-xl border-slate-100 bg-slate-50 px-4 font-bold dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                                        className="h-11 rounded-xl border-border bg-secondary px-4 font-medium text-foreground focus:ring-2 focus:ring-primary/20"
                                         value={data.phone}
                                         onChange={(e) => setData('phone', e.target.value)}
                                     />
@@ -144,10 +144,10 @@ export default function UpdateUserModal({ user }: UpdateUserModalProps) {
                                 </div>
 
                                 {/* Role Select */}
-                                <div className="space-y-2">
+                                <div className="space-y-1.5">
                                     <Label
                                         htmlFor="role"
-                                        className="flex items-center gap-2 pl-1 text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase"
+                                        className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                                     >
                                         <Shield className="h-3 w-3" /> {t('common.role')}
                                     </Label>
@@ -155,31 +155,31 @@ export default function UpdateUserModal({ user }: UpdateUserModalProps) {
                                         id="role"
                                         value={data.role}
                                         onChange={(e) => setData('role', e.target.value)}
-                                        className="h-12 w-full rounded-xl border-slate-100 bg-slate-50 px-4 text-sm font-bold focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                                        className="h-11 w-full rounded-xl border border-border bg-secondary px-4 text-sm font-medium text-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
                                     >
                                         <option value="">{t('user_management.select_role')}</option>
                                         {roles.map((role) => (
-                                            <option key={role.id} value={role.name}>
-                                                {role.name}
-                                            </option>
+                                             <option key={role.id} value={role.name}>
+                                                 {role.name}
+                                             </option>
                                         ))}
                                     </select>
                                     <InputError message={errors.role} />
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                                 {/* Email Input */}
-                                <div className="space-y-2">
+                                <div className="space-y-1.5">
                                     <Label
                                         htmlFor="email"
-                                        className="flex items-center gap-2 pl-1 text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase"
+                                        className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                                     >
                                         <Mail className="h-3 w-3" /> {t('common.email')}
                                     </Label>
                                     <Input
                                         id="email"
-                                        className="h-12 rounded-xl border-slate-100 bg-slate-50 px-4 font-bold dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                                        className="h-11 rounded-xl border-border bg-secondary px-4 font-medium text-foreground focus:ring-2 focus:ring-primary/20"
                                         value={data.email}
                                         onChange={(e) => setData('email', e.target.value)}
                                     />
@@ -187,10 +187,10 @@ export default function UpdateUserModal({ user }: UpdateUserModalProps) {
                                 </div>
 
                                 {/* Limit Input */}
-                                <div className="space-y-2">
+                                <div className="space-y-1.5">
                                     <Label
                                         htmlFor="create_test_limit"
-                                        className="flex items-center gap-2 pl-1 text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase"
+                                        className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                                     >
                                         {t('user_management.create_test_limit', 'Test Limit')}
                                     </Label>
@@ -198,7 +198,7 @@ export default function UpdateUserModal({ user }: UpdateUserModalProps) {
                                         id="create_test_limit"
                                         type="number"
                                         min="0"
-                                        className="h-12 rounded-xl border-slate-100 bg-slate-50 px-4 font-bold dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                                        className="h-11 rounded-xl border-border bg-secondary px-4 font-medium text-foreground focus:ring-2 focus:ring-primary/20"
                                         value={data.create_test_limit}
                                         onChange={(e) => setData('create_test_limit', Number(e.target.value))}
                                     />
@@ -207,10 +207,10 @@ export default function UpdateUserModal({ user }: UpdateUserModalProps) {
                             </div>
 
                             {/* Password Input (Optional) */}
-                            <div className="space-y-2">
+                            <div className="space-y-1.5">
                                 <Label
                                     htmlFor="password"
-                                    className="flex items-center gap-2 pl-1 text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase"
+                                    className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                                 >
                                     <Lock className="h-3 w-3" /> {t('user_management.reset_password')}
                                 </Label>
@@ -218,7 +218,7 @@ export default function UpdateUserModal({ user }: UpdateUserModalProps) {
                                     id="password"
                                     type="password"
                                     placeholder={t('user_management.leave_blank_to_keep')}
-                                    className="h-12 rounded-xl border-slate-100 bg-slate-50 px-4 font-medium dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                                    className="h-11 rounded-xl border-border bg-secondary px-4 font-medium text-foreground focus:ring-2 focus:ring-primary/20"
                                     onChange={(e) => setData('password', e.target.value)}
                                 />
                                 <InputError message={errors.password} />
@@ -226,13 +226,13 @@ export default function UpdateUserModal({ user }: UpdateUserModalProps) {
                         </div>
 
                         {/* Footer Action */}
-                        <DialogFooter className="flex-none border-t border-slate-100 bg-slate-50/80 px-10 py-6 dark:border-slate-800 dark:bg-slate-900/50">
+                        <DialogFooter className="flex-none border-t border-border bg-surface-2 px-8 py-5">
                             <div className="flex w-full items-center justify-end gap-3">
                                 <DialogClose asChild>
                                     <Button
                                         type="button"
                                         variant="ghost"
-                                        className="h-12 rounded-2xl px-8 font-bold text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800"
+                                        className="h-11 rounded-xl px-6 font-semibold text-muted-foreground hover:bg-secondary"
                                         onClick={() => {
                                             reset();
                                             clearErrors();
@@ -246,7 +246,7 @@ export default function UpdateUserModal({ user }: UpdateUserModalProps) {
                                 <Button
                                     type="submit"
                                     disabled={processing}
-                                    className="h-12 min-w-[140px] rounded-2xl bg-indigo-600 px-8 font-black text-white shadow-xl shadow-indigo-500/20 active:scale-95 disabled:opacity-50 dark:bg-indigo-500"
+                                    className="h-11 min-w-[130px] rounded-xl bg-primary px-6 font-semibold text-primary-foreground shadow-sm active:scale-95 disabled:opacity-50"
                                 >
                                     {processing ? t('common.saving') : t('common.save_changes')}
                                 </Button>

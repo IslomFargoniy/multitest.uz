@@ -242,19 +242,19 @@ const ShareableCertificateModal: React.FC<ShareableCertificateModalProps> = ({ a
                                     {/* Sub-criteria grid */}
                                     <div className="grid grid-cols-2 gap-2 text-xs">
                                         <div className="rounded-md bg-secondary p-1.5">
-                                            <span className="text-muted-foreground block text-[11px]">Fluency:</span>
+                                            <span className="text-muted-foreground block text-xs">Fluency:</span>
                                             <span className="font-semibold text-foreground font-display">{criteria.fluency}</span>
                                         </div>
                                         <div className="rounded-md bg-secondary p-1.5">
-                                            <span className="text-muted-foreground block text-[11px]">Lexicon:</span>
+                                            <span className="text-muted-foreground block text-xs">Lexicon:</span>
                                             <span className="font-semibold text-foreground font-display">{criteria.lexical}</span>
                                         </div>
                                         <div className="rounded-md bg-secondary p-1.5">
-                                            <span className="text-muted-foreground block text-[11px]">Grammar:</span>
+                                            <span className="text-muted-foreground block text-xs">Grammar:</span>
                                             <span className="font-semibold text-foreground font-display">{criteria.grammar}</span>
                                         </div>
                                         <div className="rounded-md bg-secondary p-1.5">
-                                            <span className="text-muted-foreground block text-[11px]">Pronounce:</span>
+                                            <span className="text-muted-foreground block text-xs">Pronounce:</span>
                                             <span className="font-semibold text-foreground font-display">{criteria.pronunciation}</span>
                                         </div>
                                     </div>

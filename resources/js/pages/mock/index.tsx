@@ -53,10 +53,10 @@ export default function Mock() {
                 {/* Header with Title and Find Mock Modal */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+                        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                             {t('mock', 'Mock Testlar')}
                         </h1>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                        <p className="text-sm text-muted-foreground mt-1">
                             {t('mock_exam.subtitle', "Mock imtihonlarni tashkil qilish, o'quvchilarga kod berish va natijalarni nazorat qilish")}
                         </p>
                     </div>

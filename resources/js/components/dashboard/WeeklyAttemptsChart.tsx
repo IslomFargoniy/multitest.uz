@@ -45,8 +45,8 @@ export default function WeeklyAttemptsChart({ data, title }: Props) {
             {
                 label: title,
                 data: counts,
-                backgroundColor: 'rgba(36, 129, 204, 0.75)',
-                hoverBackgroundColor: 'rgba(36, 129, 204, 1)',
+                backgroundColor: 'hsla(220, 90%, 56%, 0.8)',
+                hoverBackgroundColor: 'hsl(220, 90%, 56%)',
                 borderRadius: 8,
                 borderSkipped: false,
             },
@@ -61,16 +61,18 @@ export default function WeeklyAttemptsChart({ data, title }: Props) {
             title: {
                 display: true,
                 text: title,
-                color: isDark ? '#f1f5f9' : '#1e293b',
+                color: isDark ? '#f1f5f9' : '#0b0e14',
                 font: { size: 14, weight: 700 as const },
                 padding: { bottom: 16 },
             },
             tooltip: {
-                backgroundColor: '#1e293b',
-                titleColor: '#fff',
-                bodyColor: '#cbd5e1',
+                backgroundColor: isDark ? '#141820' : '#ffffff',
+                titleColor: isDark ? '#f1f5f9' : '#0b0e14',
+                bodyColor: isDark ? '#94a3b8' : '#475569',
+                borderColor: isDark ? '#232936' : '#e2e8f0',
+                borderWidth: 1,
                 padding: 12,
-                cornerRadius: 12,
+                cornerRadius: 8,
             },
         },
         scales: {
@@ -82,14 +84,14 @@ export default function WeeklyAttemptsChart({ data, title }: Props) {
                 beginAtZero: true,
                 ticks: { color: isDark ? '#64748b' : '#94a3b8' },
                 grid: {
-                    color: isDark ? 'rgba(51,65,85,0.4)' : 'rgba(226,232,240,0.4)',
+                    color: isDark ? 'rgba(35, 41, 54, 0.6)' : 'rgba(226, 232, 240, 0.6)',
                 },
             },
         },
     };
 
     return (
-        <div className="w-full rounded-2xl border border-border bg-card p-6 shadow-sm">
+        <div className="w-full rounded-xl border border-border bg-card p-6 shadow-sm dark:shadow-none">
             <div className="h-[300px] w-full">
                 <Bar key={isDark ? 'dark' : 'light'} data={chartData} options={options} />
             </div>

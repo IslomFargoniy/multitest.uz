@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
-import { baseButton } from '@/components/ui/baseButton';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/components/ui/dialog';
 import { Part } from '@/types';
 import { AlignLeft, Music, Pencil, RefreshCcw } from 'lucide-react';
@@ -66,60 +65,58 @@ export default function UpdatePartModal({ part }: UpdatePartModalProps) {
     return (
         <>
             <button
+                type="button"
                 onClick={() => setOpen(true)}
-                className={`${baseButton} flex h-9 w-9 items-center justify-center border border-slate-200 bg-white p-0 text-slate-600 transition-all hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-indigo-900/40 dark:hover:text-indigo-400`}
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-surface-2 p-0 text-muted-foreground transition-colors hover:border-border-strong hover:text-foreground cursor-pointer"
             >
                 <Pencil className="h-4 w-4 shrink-0" />
             </button>
 
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="max-w-lg overflow-hidden rounded-[2.5rem] border-none bg-white p-0 shadow-2xl dark:bg-slate-900">
-                    <div className="bg-slate-50/80 px-8 py-7 dark:bg-slate-800/40">
-                        <div className="flex items-center gap-4">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-indigo-600 shadow-sm dark:bg-slate-800 dark:text-indigo-400">
-                                <RefreshCcw className="h-6 w-6" />
+                <DialogContent className="max-w-lg overflow-hidden rounded-xl border border-border bg-card p-0 shadow-lg">
+                    <div className="bg-surface-2 px-6 py-5 border-b border-border">
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
+                                <RefreshCcw className="h-5 w-5" />
                             </div>
                             <div>
-                                <DialogTitle className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
+                                <DialogTitle className="text-xl font-bold text-foreground">
                                     {t('test_table.update_section_title')}
                                 </DialogTitle>
-                                <DialogDescription className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                                <DialogDescription className="text-xs text-muted-foreground">
                                     {t('test_table.update_section_description')}
                                 </DialogDescription>
                             </div>
                         </div>
                     </div>
 
-                    <form onSubmit={submit} className="space-y-6 p-8">
+                    <form onSubmit={submit} className="space-y-4 p-6">
                         {/* Part Name */}
-                        <div className="space-y-2">
-                            <Label htmlFor="name" className="text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500">
+                        <div className="space-y-1.5">
+                            <Label htmlFor="name" className="text-xs font-semibold text-muted-foreground">
                                 {t('common.name')}
                             </Label>
                             <Input
                                 id="name"
                                 ref={nameInput}
                                 value={data.name}
-                                className="h-12 rounded-2xl border-slate-200 bg-slate-50/50 px-4 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                                className="h-11 rounded-lg border-border bg-surface-2"
                                 onChange={(e) => setData('name', e.target.value)}
                             />
                             <InputError message={errors.name} />
                         </div>
 
                         {/* Description */}
-                        <div className="space-y-2">
-                            <Label
-                                htmlFor="description"
-                                className="text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500"
-                            >
+                        <div className="space-y-1.5">
+                            <Label htmlFor="description" className="text-xs font-semibold text-muted-foreground">
                                 {t('test_show.part_instructions')}
                             </Label>
                             <div className="relative">
-                                <AlignLeft className="absolute top-3.5 left-4 h-4 w-4 text-slate-400" />
+                                <AlignLeft className="absolute top-3.5 left-3.5 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     id="description"
                                     value={data.description}
-                                    className="h-12 rounded-2xl border-slate-200 bg-slate-50/50 pl-11 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                                    className="h-11 rounded-lg border-border bg-surface-2 pl-10"
                                     onChange={(e) => setData('description', e.target.value)}
                                 />
                             </div>
@@ -127,14 +124,11 @@ export default function UpdatePartModal({ part }: UpdatePartModalProps) {
                         </div>
 
                         {/* Audio Upload */}
-                        <div className="space-y-2">
-                            <Label
-                                htmlFor="audio_path"
-                                className="text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase dark:text-slate-500"
-                            >
+                        <div className="space-y-1.5">
+                            <Label htmlFor="audio_path" className="text-xs font-semibold text-muted-foreground">
                                 {t('test_show.audio_prompt')}
                             </Label>
-                            <div className="group relative flex min-h-[90px] cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50/30 transition-all hover:border-indigo-400 hover:bg-indigo-50/50 dark:border-slate-800 dark:bg-slate-950/50">
+                            <div className="group relative flex min-h-[70px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-surface-2 transition-colors">
                                 <Input
                                     type="file"
                                     id="audio_path"
@@ -146,9 +140,9 @@ export default function UpdatePartModal({ part }: UpdatePartModalProps) {
                                         }
                                     }}
                                 />
-                                <div className="flex flex-col items-center gap-2">
-                                    <Music className="h-5 w-5 text-slate-400 group-hover:text-indigo-500" />
-                                    <span className="px-4 text-center text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                                <div className="flex flex-col items-center gap-1 text-center">
+                                    <Music className="h-4 w-4 text-muted-foreground" />
+                                    <span className="px-4 text-xs font-medium text-muted-foreground">
                                         {data.audio_path ? (data.audio_path as File).name : t('test_table.replace_audio_optional')}
                                     </span>
                                 </div>
@@ -156,11 +150,11 @@ export default function UpdatePartModal({ part }: UpdatePartModalProps) {
                             <InputError message={errors.audio_path} />
                         </div>
 
-                        <DialogFooter className="mt-4 flex flex-row items-center justify-end gap-3 border-t border-slate-100 pt-6 dark:border-slate-800/50">
+                        <DialogFooter className="mt-4 flex flex-row items-center justify-end gap-3 border-t border-border pt-4">
                             <DialogClose asChild>
                                 <Button
                                     variant="ghost"
-                                    className="h-11 rounded-xl px-6 font-bold text-slate-500 transition-colors hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                                    type="button"
                                     onClick={() => {
                                         reset();
                                         clearErrors();
@@ -174,7 +168,7 @@ export default function UpdatePartModal({ part }: UpdatePartModalProps) {
                             <Button
                                 type="submit"
                                 disabled={processing}
-                                className="h-11 min-w-[140px] rounded-xl bg-indigo-600 px-6 font-black text-white shadow-lg shadow-indigo-200 transition-all active:scale-95 disabled:opacity-50 dark:bg-indigo-500 dark:shadow-none"
+                                className="min-w-[120px]"
                             >
                                 {processing ? t('common.updating') : t('common.save_changes')}
                             </Button>

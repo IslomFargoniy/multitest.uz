@@ -20,12 +20,10 @@ interface Props {
     daily_attempts: StatItem[];
 }
 
-// Format numbers: >99 → "1.2k"
 function fmt(n: number): string {
     return n > 99 ? `${(n / 1000).toFixed(1)}k` : String(n);
 }
 
-// Inline datalabel plugin (no extra package needed)
 const datalabelPlugin = {
     id: 'datalabel',
     afterDatasetsDraw(chart: ChartJS) {
@@ -40,7 +38,7 @@ const datalabelPlugin = {
                 const { x, y } = tooltipPos;
                 ctx.save();
                 ctx.fillStyle = '#64748b';
-                ctx.font = '600 10px Inter, sans-serif';
+                ctx.font = '600 12px Manrope, sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'bottom';
                 ctx.fillText(fmt(value), x, y - 2);
@@ -54,7 +52,6 @@ export default function DailyStatsChart({ daily_users, daily_attempts }: Props) 
     const { t } = useTranslation();
     const isDark = useIsDarkMode();
 
-    // Merge all dates from both datasets
     const allDates = Array.from(
         new Set([
             ...daily_users.map((d) => d.day_date),
@@ -83,24 +80,24 @@ export default function DailyStatsChart({ daily_users, daily_attempts }: Props) 
             {
                 label: t('stats.new_users', 'New Users'),
                 data: newUsersData,
-                backgroundColor: 'rgba(36, 129, 204, 0.8)',
-                hoverBackgroundColor: 'rgba(36, 129, 204, 1)',
+                backgroundColor: 'hsla(220, 90%, 56%, 0.8)',
+                hoverBackgroundColor: 'hsl(220, 90%, 56%)',
                 borderRadius: 4,
                 stack: 'stack0',
             },
             {
                 label: t('stats.unique_attempt_users', 'Unique Attempt Users'),
                 data: uniqueAttemptUsers,
-                backgroundColor: 'rgba(16, 185, 129, 0.8)',
-                hoverBackgroundColor: 'rgba(16, 185, 129, 1)',
+                backgroundColor: 'hsla(158, 64%, 52%, 0.8)',
+                hoverBackgroundColor: 'hsl(158, 64%, 52%)',
                 borderRadius: 4,
                 stack: 'stack1',
             },
             {
                 label: t('stats.repeat_attempts', 'Repeat Attempts'),
                 data: repeatAttempts,
-                backgroundColor: 'rgba(245, 158, 11, 0.8)',
-                hoverBackgroundColor: 'rgba(245, 158, 11, 1)',
+                backgroundColor: 'hsla(45, 93%, 47%, 0.8)',
+                hoverBackgroundColor: 'hsl(45, 93%, 47%)',
                 borderRadius: 4,
                 stack: 'stack1',
             },
@@ -122,14 +119,15 @@ export default function DailyStatsChart({ daily_users, daily_attempts }: Props) 
                 },
             },
             tooltip: {
-                backgroundColor: '#1e293b',
-                titleColor: '#fff',
-                bodyColor: '#cbd5e1',
+                backgroundColor: isDark ? '#141820' : '#ffffff',
+                titleColor: isDark ? '#f1f5f9' : '#0b0e14',
+                bodyColor: isDark ? '#94a3b8' : '#475569',
+                borderColor: isDark ? '#232936' : '#e2e8f0',
+                borderWidth: 1,
                 padding: 12,
-                cornerRadius: 12,
+                cornerRadius: 8,
                 callbacks: {
                     footer: (items: TooltipItem<'bar'>[]) => {
-                        // Only show total attempts if hovering over the attempts column
                         const hasAttempts = items.some((item) => item.datasetIndex > 0);
                         if (!hasAttempts) return;
 
@@ -151,20 +149,19 @@ export default function DailyStatsChart({ daily_users, daily_attempts }: Props) 
                 beginAtZero: true,
                 ticks: { color: isDark ? '#64748b' : '#94a3b8' },
                 grid: {
-                    color: isDark ? 'rgba(51,65,85,0.4)' : 'rgba(226,232,240,0.4)',
+                    color: isDark ? 'rgba(35, 41, 54, 0.6)' : 'rgba(226, 232, 240, 0.6)',
                 },
             },
         },
     };
 
     return (
-        <div className="w-full rounded-2xl border border-border bg-card p-6 shadow-sm">
-
+        <div className="w-full rounded-xl border border-border bg-card p-6 shadow-sm dark:shadow-none">
             <div className="mb-6">
-                <h3 className="text-lg font-bold text-slate-800 dark:text-white">
+                <h3 className="text-base font-bold text-foreground">
                     {t('stats.daily_activity', 'Daily Activity (Last 30 Days)')}
                 </h3>
-                <p className="text-sm text-slate-500">{t('stats.users_and_attempts', 'Users registrations and attempt stats')}</p>
+                <p className="text-sm text-muted-foreground">{t('stats.users_and_attempts', 'Users registrations and attempt stats')}</p>
             </div>
             <div className="h-[350px] w-full">
                 <Bar

@@ -1,6 +1,6 @@
 import AudioRecorder from '@/components/ui/audio-recorder';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Mock, Test } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { ArrowRight, CirclePlay, Headphones, Mic2, ShieldCheck, Check } from 'lucide-react';
@@ -48,66 +48,68 @@ export default function CreateAttemptModal({ mock, test, label }: Props) {
             <button
                 type="button"
                 onClick={() => setOpen(true)}
-                className="group flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-4 py-3 font-bold text-white shadow-xs transition-all active:scale-95 cursor-pointer"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary hover:bg-primary/90 px-4 py-2.5 font-semibold text-primary-foreground shadow-sm transition-colors cursor-pointer"
             >
-                <CirclePlay className="h-4.5 w-4.5 transition-transform group-hover:scale-110" />
-                <span className="text-xs tracking-wider uppercase">{label || t('attempt_modal.start_practice', 'Boshlash')}</span>
+                <CirclePlay className="h-4 w-4" />
+                <span className="text-xs">{label || t('attempt_modal.start_practice', 'Boshlash')}</span>
             </button>
 
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white p-0 shadow-2xl sm:max-w-[440px] dark:bg-slate-950">
+                <DialogContent className="overflow-hidden rounded-xl border border-border bg-card p-0 shadow-lg sm:max-w-[440px]">
                     {/* Header */}
-                    <div className="bg-slate-900 p-5 text-white dark:bg-slate-900/80">
+                    <div className="bg-surface-2 p-5 border-b border-border">
                         <DialogHeader>
-                            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-600/30 text-indigo-400">
+                            <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
                                 <Headphones className="h-4 w-4" />
                             </div>
-                            <DialogTitle className="text-lg font-bold tracking-tight">{t('attempt_modal.ready_title', "Imtihonga tayyormisiz?")}</DialogTitle>
-                            <DialogDescription className="mt-0.5 text-xs text-slate-400">
+                            <DialogTitle className="text-lg font-bold text-foreground">{t('attempt_modal.ready_title', "Imtihonga tayyormisiz?")}</DialogTitle>
+                            <DialogDescription className="mt-0.5 text-xs text-muted-foreground">
                                 {t('attempt_modal.mic_requirement', "Iltimos, mikrofoningiz to'g'ri ishlayotganiga ishonch hosil qiling")}
                             </DialogDescription>
                         </DialogHeader>
                     </div>
 
                     <div className="space-y-4 p-5">
-                        {/* Primary Action */}
                         <form onSubmit={submit} className="w-full space-y-3">
                             {test?.parts && test.parts.length > 0 && (
                                 <div className="space-y-2 mb-3">
-                                    <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                                    <span className="text-xs font-semibold text-muted-foreground">
                                         {t('attempt_modal.select_parts', 'Bo\'limlarni tanlang')}
                                     </span>
                                     <div className="grid gap-2 grid-cols-2">
-                                        {test.parts.map((part) => (
-                                            <label
-                                                key={part.id}
-                                                className={`flex cursor-pointer items-center justify-between rounded-xl border p-2.5 transition-all ${
-                                                    data.part_ids.includes(part.id)
-                                                        ? 'border-indigo-500 bg-indigo-50/60 dark:border-indigo-500/50 dark:bg-indigo-500/10'
-                                                        : 'border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/50'
-                                                }`}
-                                            >
-                                                <span className={`text-xs font-bold ${data.part_ids.includes(part.id) ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400'}`}>
-                                                    {part.name}
-                                                </span>
-                                                <div className={`flex h-4 w-4 items-center justify-center rounded-md border ${data.part_ids.includes(part.id) ? 'border-indigo-600 bg-indigo-600' : 'border-slate-300 dark:border-slate-700'}`}>
-                                                    {data.part_ids.includes(part.id) && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
-                                                </div>
-                                                <input
-                                                    type="checkbox"
-                                                    className="hidden"
-                                                    checked={data.part_ids.includes(part.id)}
-                                                    onChange={(e) => {
-                                                        const current = data.part_ids;
-                                                        if (e.target.checked) {
-                                                            setData('part_ids', [...current, part.id]);
-                                                        } else {
-                                                            setData('part_ids', current.filter((id) => id !== part.id));
-                                                        }
-                                                    }}
-                                                />
-                                            </label>
-                                        ))}
+                                        {test.parts.map((part) => {
+                                            const isChecked = data.part_ids.includes(part.id);
+                                            return (
+                                                <label
+                                                    key={part.id}
+                                                    className={`flex cursor-pointer items-center justify-between rounded-lg border p-2.5 transition-colors ${
+                                                        isChecked
+                                                            ? 'border-primary bg-primary/10 text-foreground'
+                                                            : 'border-border bg-surface-2 text-muted-foreground'
+                                                    }`}
+                                                >
+                                                    <span className="text-xs font-semibold">
+                                                        {part.name}
+                                                    </span>
+                                                    <div className={`flex h-4 w-4 items-center justify-center rounded border ${isChecked ? 'border-primary bg-primary' : 'border-border'}`}>
+                                                        {isChecked && <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3} />}
+                                                    </div>
+                                                    <input
+                                                        type="checkbox"
+                                                        className="hidden"
+                                                        checked={isChecked}
+                                                        onChange={(e) => {
+                                                            const current = data.part_ids;
+                                                            if (e.target.checked) {
+                                                                setData('part_ids', [...current, part.id]);
+                                                            } else {
+                                                                setData('part_ids', current.filter((id) => id !== part.id));
+                                                            }
+                                                        }}
+                                                    />
+                                                </label>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             )}
@@ -115,11 +117,7 @@ export default function CreateAttemptModal({ mock, test, label }: Props) {
                             <Button
                                 type="submit"
                                 disabled={processing || !hasCheckedMic}
-                                className={`group h-11 w-full rounded-xl text-xs font-bold transition-all ${
-                                    hasCheckedMic
-                                        ? 'bg-indigo-600 text-white shadow-xs hover:bg-indigo-700 active:scale-[0.98] cursor-pointer'
-                                        : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 border border-transparent dark:border-slate-800 cursor-not-allowed'
-                                }`}
+                                className="h-11 w-full rounded-lg text-xs font-semibold"
                             >
                                 {processing ? (
                                     <span className="flex items-center gap-1.5">
@@ -127,32 +125,32 @@ export default function CreateAttemptModal({ mock, test, label }: Props) {
                                         {t('common.preparing', 'Tayyorlanmoqda')}...
                                     </span>
                                 ) : (
-                                    <span className="flex items-center justify-center gap-1.5 tracking-wider uppercase">
+                                    <span className="flex items-center justify-center gap-1.5">
                                         {t('attempt_modal.start_now', 'Imtihonni boshlash')}
-                                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                                        <ArrowRight className="h-3.5 w-3.5" />
                                     </span>
                                 )}
                             </Button>
 
                             {!hasCheckedMic && (
-                                <div className="flex items-center justify-center gap-1.5 rounded-lg bg-amber-50/50 dark:bg-amber-900/10 py-1.5 border border-amber-100/50 dark:border-amber-900/20">
-                                    <span className="text-[8px] font-black tracking-tight text-amber-600 uppercase">
+                                <div className="flex items-center justify-center gap-1.5 rounded-md bg-warning/10 py-1.5 border border-warning/20">
+                                    <span className="text-xs font-medium text-warning">
                                         {t('attempt_modal.record_to_unlock')}
                                     </span>
                                 </div>
                             )}
                         </form>
 
-                        {/* 🎙️ Mic Testing Area (Micro-Compact) */}
-                        <div className="space-y-3 pt-2 border-t border-slate-50 dark:border-slate-900">
+                        {/* Mic Testing Area */}
+                        <div className="space-y-3 pt-3 border-t border-border">
                             <div className="flex items-center justify-between px-1">
-                                <span className="flex items-center gap-1.5 text-[9px] font-black tracking-[0.1em] text-slate-400 dark:text-slate-500 uppercase">
-                                    <Mic2 className="h-3 w-3 text-blue-500" />
+                                <span className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+                                    <Mic2 className="h-3.5 w-3.5 text-primary" />
                                     {t('attempt_modal.mic_check')}
                                 </span>
                                 {hasCheckedMic && (
-                                    <span className="flex items-center gap-1 text-[9px] font-black tracking-widest text-emerald-500 uppercase">
-                                        <ShieldCheck className="h-3 w-3" />
+                                    <span className="flex items-center gap-1 text-xs font-semibold text-success">
+                                        <ShieldCheck className="h-3.5 w-3.5" />
                                         {t('common.ready')}
                                     </span>
                                 )}
@@ -166,11 +164,11 @@ export default function CreateAttemptModal({ mock, test, label }: Props) {
                             />
 
                             {audioUrl && (
-                                <div className="animate-in fade-in slide-in-from-top-1 duration-300">
-                                    <div className="rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 p-1.5 shadow-sm">
-                                        <audio controls src={audioUrl} className="h-7 w-full opacity-80" />
+                                <div className="animate-in fade-in duration-200">
+                                    <div className="rounded-lg border border-border bg-surface-2 p-1.5">
+                                        <audio controls src={audioUrl} className="h-7 w-full opacity-90" />
                                     </div>
-                                    <p className="mt-1 text-center text-[9px] font-bold text-slate-400 dark:text-slate-500">{t('attempt_modal.ensure_clear')}</p>
+                                    <p className="mt-1 text-center text-xs text-muted-foreground">{t('attempt_modal.ensure_clear')}</p>
                                 </div>
                             )}
                         </div>

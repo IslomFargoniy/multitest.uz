@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { type BreadcrumbItem } from '@/types';
 import { useTranslation } from 'react-i18next';
-import { Users, Calendar, CheckCircle2, Clock, Activity, FileText, ArrowLeft, FileSpreadsheet, Download } from 'lucide-react';
+import { Users, Calendar, CheckCircle2, Clock, FileText, ArrowLeft, FileSpreadsheet } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -78,32 +78,32 @@ export default function MockShow() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={mock.name} />
 
-            <div className="space-y-6 p-4 md:p-6 max-w-7xl mx-auto">
+            <div className="space-y-6 p-4 md:p-6 max-w-7xl mx-auto w-full">
                 {/* Top Navigation & Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                         <Link
                             href={route('mock.index')}
-                            className="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+                            className="p-2 rounded-lg bg-surface-2 border border-border text-foreground hover:bg-secondary transition-colors cursor-pointer"
                         >
                             <ArrowLeft className="w-5 h-5" />
                         </Link>
                         <div>
                             <div className="flex items-center gap-2">
-                                <h1 className="text-2xl font-black text-gray-900 dark:text-white">
+                                <h1 className="text-2xl font-bold text-foreground">
                                     {mock.name}
                                 </h1>
                                 <span
-                                    className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                                    className={`px-2.5 py-0.5 rounded-md text-xs font-semibold border ${
                                         isActive
-                                            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40'
-                                            : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
+                                            ? 'bg-success/10 text-success border-success/20'
+                                            : 'bg-secondary text-muted-foreground border-border'
                                     }`}
                                 >
                                     {isActive ? `● ${t('active', 'Faol')}` : `○ ${t('inactive', 'Nofaol')}`}
                                 </span>
                             </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 flex items-center gap-1.5">
+                            <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1.5">
                                 <span>{mock.test?.name || t('mock_exam.no_test_selected', 'Test tanlanmagan')}</span>
                                 {mock.user && (
                                     <>
@@ -120,9 +120,10 @@ export default function MockShow() {
                             type="button"
                             onClick={exportToExcel}
                             variant="outline"
-                            className="flex items-center gap-1.5 rounded-xl border-emerald-200 dark:border-emerald-800/60 bg-emerald-50/50 hover:bg-emerald-100/60 text-emerald-700 dark:text-emerald-300 font-bold text-xs shadow-xs cursor-pointer"
+                            size="sm"
+                            className="flex items-center gap-1.5 font-semibold text-xs"
                         >
-                            <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                            <FileSpreadsheet className="w-4 h-4 text-success" />
                             {t('mock_exam.export_excel', 'Excelga Yuklash')}
                         </Button>
 
@@ -136,57 +137,57 @@ export default function MockShow() {
 
                 {/* Quick Stats Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs flex items-center gap-3.5">
-                        <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400">
-                            <Users className="w-5 h-5" />
+                    <div className="rounded-xl border border-border bg-card p-4 shadow-sm dark:shadow-none flex items-center gap-3.5">
+                        <div className="p-2.5 rounded-lg bg-surface-2 text-foreground border border-border">
+                            <Users className="w-5 h-5 text-muted-foreground" />
                         </div>
                         <div>
-                            <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <p className="text-xs font-semibold text-muted-foreground">
                                 {t('mock_exam.total_students', "Jami O'quvchilar")}
                             </p>
-                            <h3 className="text-xl font-black text-gray-900 dark:text-white mt-0.5">
+                            <h3 className="font-display text-xl font-bold tabular-nums text-foreground mt-0.5">
                                 {totalStudents} {t('common.count_suffix', 'ta')}
                             </h3>
                         </div>
                     </div>
 
-                    <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs flex items-center gap-3.5">
-                        <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
-                            <CheckCircle2 className="w-5 h-5" />
+                    <div className="rounded-xl border border-border bg-card p-4 shadow-sm dark:shadow-none flex items-center gap-3.5">
+                        <div className="p-2.5 rounded-lg bg-surface-2 text-foreground border border-border">
+                            <CheckCircle2 className="w-5 h-5 text-success" />
                         </div>
                         <div>
-                            <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <p className="text-xs font-semibold text-muted-foreground">
                                 {t('mock_exam.attended_students', 'Qatnashganlar')}
                             </p>
-                            <h3 className="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5">
+                            <h3 className="font-display text-xl font-bold tabular-nums text-success mt-0.5">
                                 {attendedStudents} {t('common.count_suffix', 'ta')}
                             </h3>
                         </div>
                     </div>
 
-                    <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs flex items-center gap-3.5">
-                        <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
-                            <Clock className="w-5 h-5" />
+                    <div className="rounded-xl border border-border bg-card p-4 shadow-sm dark:shadow-none flex items-center gap-3.5">
+                        <div className="p-2.5 rounded-lg bg-surface-2 text-foreground border border-border">
+                            <Clock className="w-5 h-5 text-warning" />
                         </div>
                         <div>
-                            <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <p className="text-xs font-semibold text-muted-foreground">
                                 {t('mock_exam.pending_students', 'Kutilayotganlar')}
                             </p>
-                            <h3 className="text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5">
+                            <h3 className="font-display text-xl font-bold tabular-nums text-warning mt-0.5">
                                 {pendingStudents} {t('common.count_suffix', 'ta')}
                             </h3>
                         </div>
                     </div>
 
-                    <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs flex items-center gap-3.5">
-                        <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400">
-                            <Calendar className="w-5 h-5" />
+                    <div className="rounded-xl border border-border bg-card p-4 shadow-sm dark:shadow-none flex items-center gap-3.5">
+                        <div className="p-2.5 rounded-lg bg-surface-2 text-foreground border border-border">
+                            <Calendar className="w-5 h-5 text-muted-foreground" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <p className="text-xs font-semibold text-muted-foreground">
                                 {t('mock_exam.time_range', 'Vaqt Oralig\'i')}
                             </p>
-                            <p className="text-[11px] font-bold text-gray-800 dark:text-gray-200 mt-0.5">
+                            <p className="font-mono text-xs font-medium text-foreground mt-0.5 tabular-nums">
                                 {formatSafeDate(mock.started_at)} - {formatSafeDate(mock.finished_at)}
                             </p>
                         </div>
@@ -194,13 +195,14 @@ export default function MockShow() {
                 </div>
 
                 {/* Tabs Navigation */}
-                <div className="flex border-b border-gray-200 dark:border-gray-800">
+                <div className="flex border-b border-border">
                     <button
+                        type="button"
                         onClick={() => setActiveTab('students')}
-                        className={`px-5 py-3 font-bold text-xs flex items-center gap-2 border-b-2 transition-all cursor-pointer ${
+                        className={`px-5 py-3 font-semibold text-xs flex items-center gap-2 border-b-2 transition-colors cursor-pointer ${
                             activeTab === 'students'
-                                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                ? 'border-primary text-foreground'
+                                : 'border-transparent text-muted-foreground hover:text-foreground'
                         }`}
                     >
                         <Users className="w-4 h-4" />
@@ -208,11 +210,12 @@ export default function MockShow() {
                     </button>
 
                     <button
+                        type="button"
                         onClick={() => setActiveTab('attempts')}
-                        className={`px-5 py-3 font-bold text-xs flex items-center gap-2 border-b-2 transition-all cursor-pointer ${
+                        className={`px-5 py-3 font-semibold text-xs flex items-center gap-2 border-b-2 transition-colors cursor-pointer ${
                             activeTab === 'attempts'
-                                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                ? 'border-primary text-foreground'
+                                : 'border-transparent text-muted-foreground hover:text-foreground'
                         }`}
                     >
                         <FileText className="w-4 h-4" />
@@ -222,9 +225,9 @@ export default function MockShow() {
 
                 {/* Tab Content */}
                 {activeTab === 'students' && (
-                    <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-xs">
+                    <div className="rounded-xl border border-border bg-card p-5 shadow-sm dark:shadow-none">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                            <h3 className="text-sm font-bold text-foreground">
                                 {t('mock_exam.students_list', "O'quvchilar Ro'yxati va Kodlar (MSXXXXXXXX)")}
                             </h3>
                             <MockStudentManager
@@ -235,15 +238,15 @@ export default function MockShow() {
                         </div>
 
                         {students.length === 0 ? (
-                            <div className="text-center py-12 border border-dashed border-gray-200 dark:border-gray-800 rounded-xl text-xs text-gray-400 space-y-3">
-                                <Users className="w-8 h-8 mx-auto text-gray-300 dark:text-gray-600" />
+                            <div className="text-center py-12 border border-dashed border-border rounded-lg text-xs text-muted-foreground space-y-2">
+                                <Users className="w-8 h-8 mx-auto text-muted-foreground" />
                                 <p>{t('mock_exam.no_students_yet', "Hali o'quvchilar biriktirilmagan.")}</p>
-                                <p className="text-[11px]">{t('mock_exam.add_students_hint', "\"O'quvchilar\" tugmasini bosib, yangi nomzodlarni qo'shing.")}</p>
+                                <p className="text-xs text-muted-foreground">{t('mock_exam.add_students_hint', "\"O'quvchilar\" tugmasini bosib, yangi nomzodlarni qo'shing.")}</p>
                             </div>
                         ) : (
-                            <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
+                            <div className="overflow-x-auto rounded-lg border border-border">
                                 <table className="w-full text-xs text-left">
-                                    <thead className="bg-gray-50 dark:bg-gray-800/80 text-gray-500 dark:text-gray-400 font-bold uppercase text-[10px]">
+                                    <thead className="bg-surface-2 text-muted-foreground font-semibold text-xs">
                                         <tr>
                                             <th className="px-4 py-3">#</th>
                                             <th className="px-4 py-3">{t('mock_exam.student_name', "O'quvchi Ismi")}</th>
@@ -252,22 +255,22 @@ export default function MockShow() {
                                             <th className="px-4 py-3 text-right">{t('mock_exam.attempt', "Urinish")}</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900">
+                                    <tbody className="divide-y divide-border bg-card">
                                         {students.map((st: any, idx: number) => (
-                                            <tr key={st.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/40">
-                                                <td className="px-4 py-3 font-mono text-gray-400">{idx + 1}</td>
-                                                <td className="px-4 py-3 font-bold text-gray-900 dark:text-gray-100">{st.name}</td>
-                                                <td className="px-4 py-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">
-                                                    <span className="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/40">
+                                            <tr key={st.id} className="hover:bg-surface-2/60 transition-colors">
+                                                <td className="px-4 py-3 font-mono text-muted-foreground">{idx + 1}</td>
+                                                <td className="px-4 py-3 font-semibold text-foreground">{st.name}</td>
+                                                <td className="px-4 py-3 font-mono font-semibold text-primary">
+                                                    <span className="px-2 py-0.5 rounded border border-border bg-surface-2">
                                                         {st.code}
                                                     </span>
                                                 </td>
                                                 <td className="px-4 py-3 text-center">
                                                     <span
-                                                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                                                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold ${
                                                             st.attended
-                                                                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400'
-                                                                : 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400'
+                                                                ? 'bg-success/10 text-success border border-success/20'
+                                                                : 'bg-warning/10 text-warning border border-warning/20'
                                                         }`}
                                                     >
                                                         {st.attended ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
@@ -278,12 +281,12 @@ export default function MockShow() {
                                                     {st.attempt ? (
                                                         <Link
                                                             href={route('attempt.show', st.attempt.id)}
-                                                            className="text-indigo-600 dark:text-indigo-400 hover:underline font-bold"
+                                                            className="text-primary hover:underline font-semibold"
                                                         >
                                                             {t('mock_exam.view_result', "Natijani Ko'rish →")}
                                                         </Link>
                                                     ) : (
-                                                        <span className="text-gray-400 italic">{t('not_started', 'Boshlanmagan')}</span>
+                                                        <span className="text-muted-foreground italic">{t('not_started', 'Boshlanmagan')}</span>
                                                     )}
                                                 </td>
                                             </tr>
@@ -296,7 +299,7 @@ export default function MockShow() {
                 )}
 
                 {activeTab === 'attempts' && (
-                    <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-xs">
+                    <div className="rounded-xl border border-border bg-card p-5 shadow-sm dark:shadow-none">
                         <AttemptTable
                             data={attempts}
                             search=""

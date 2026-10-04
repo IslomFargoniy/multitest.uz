@@ -13,8 +13,8 @@ interface AudioWaveformProps {
 export default function AudioWaveform({
     audioUrl,
     height = 60,
-    waveColor = '#cbd5e1',
-    progressColor = '#2481cc'
+    waveColor = 'rgba(255, 255, 255, 0.2)',
+    progressColor = '#3b82f6'
 }: AudioWaveformProps) {
     const waveformRef = useRef<HTMLDivElement>(null);
     const wavesurfer = useRef<WaveSurfer | null>(null);
@@ -57,12 +57,12 @@ export default function AudioWaveform({
     };
 
     return (
-        <div className="flex w-full items-center gap-4 rounded-3xl border border-slate-100 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900/50">
+        <div className="flex w-full items-center gap-4 rounded-2xl border border-border bg-card p-4 shadow-xs">
             <Button
                 variant="outline"
                 size="icon"
                 onClick={handleTogglePlay}
-                className="h-10 w-10 shrink-0 rounded-full border-blue-100 bg-blue-50 text-blue-600 hover:bg-blue-100 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400"
+                className="h-10 w-10 shrink-0 rounded-full border border-primary/20 bg-primary/10 text-primary hover:bg-primary/20"
             >
                 {isPlaying ? <Pause className="h-5 w-5 fill-current" /> : <Play className="h-5 w-5 fill-current ml-0.5" />}
             </Button>
@@ -73,7 +73,7 @@ export default function AudioWaveform({
                 variant="ghost"
                 size="icon"
                 onClick={handleToggleMute}
-                className="h-8 w-8 shrink-0 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                className="h-8 w-8 shrink-0 text-muted-foreground hover:text-foreground"
             >
                 {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
             </Button>

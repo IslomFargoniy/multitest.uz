@@ -54,27 +54,23 @@ export default function FindMockModal() {
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
-                <button
-                    type="button"
-                    className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 px-4 py-2 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
-                >
+                <Button variant="outline" size="default" className="gap-2 font-semibold">
                     <IoCreate className="h-4 w-4" />
-                    <span className="tracking-widest uppercase">{t('common.exam', 'IMTIHON KODI')}</span>
-                </button>
+                    <span>{t('common.exam', 'Imtihon kodi')}</span>
+                </Button>
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-md w-full rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl bg-white dark:bg-gray-900 p-0 overflow-hidden">
-                {/* Header */}
-                <header className="border-b border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-800/40 p-6">
-                    <div className="flex items-center gap-3.5">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-xs">
+            <DialogContent className="sm:max-w-md w-full rounded-xl border border-border shadow-lg bg-card p-0 overflow-hidden">
+                <header className="border-b border-border bg-surface-2 p-6">
+                    <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
                             <LayoutGrid className="h-5 w-5" />
                         </div>
                         <div>
-                            <DialogTitle className="text-lg font-extrabold text-gray-900 dark:text-white">
+                            <DialogTitle className="text-lg font-bold text-foreground">
                                 {t('mock_exam.enter_exam_title', 'Imtihonga Kirish (Mock Exam)')}
                             </DialogTitle>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                            <p className="text-xs text-muted-foreground mt-0.5">
                                 {t('mock_exam.enter_code_description', 'Sizga berilgan MSXXXXXXXX nomzod kodingizni kiriting')}
                             </p>
                         </div>
@@ -83,14 +79,14 @@ export default function FindMockModal() {
 
                 <form onSubmit={submit} className="p-6 space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="code-input" className="text-xs font-bold text-gray-700 dark:text-gray-200">
+                        <Label htmlFor="code-input" className="text-xs font-semibold text-foreground">
                             {t('mock_exam.candidate_code_label', 'Nomzod Kodingiz (MSXXXXXXXX)')} *
                         </Label>
                         <Input
                             id="code-input"
                             ref={codeInput}
                             placeholder="Masalan: MS84920133"
-                            className="h-11 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 font-mono font-bold text-sm tracking-wider uppercase"
+                            className="h-11 rounded-lg border-border bg-surface-2 px-4 font-mono font-bold text-sm tracking-wider uppercase"
                             value={data.code}
                             onChange={(e) => setData('code', e.target.value.toUpperCase())}
                             disabled={processing}
@@ -99,12 +95,12 @@ export default function FindMockModal() {
                         <InputError message={errors.code} />
                     </div>
 
-                    <DialogFooter className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 dark:border-gray-800">
+                    <DialogFooter className="flex items-center justify-end gap-2 pt-3 border-t border-border">
                         <DialogClose asChild>
                             <Button
                                 type="button"
                                 variant="outline"
-                                className="rounded-xl text-xs font-semibold cursor-pointer"
+                                size="sm"
                             >
                                 {t('cancel', 'Bekor qilish')}
                             </Button>
@@ -112,8 +108,8 @@ export default function FindMockModal() {
 
                         <Button
                             type="submit"
+                            size="sm"
                             disabled={processing}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs active:scale-95 cursor-pointer"
                         >
                             {t('mock_exam.start_exam_button', 'Imtihonni Boshlash →')}
                         </Button>

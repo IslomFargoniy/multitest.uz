@@ -70,10 +70,10 @@ export default function User() {
             <div className="flex h-full flex-1 flex-col gap-5 rounded-xl p-4 max-w-7xl mx-auto w-full">
                 {/* Header Section */}
                 <div>
-                    <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                         {t('user_management.title', 'Foydalanuvchilar Boshqaruvi')}
                     </h1>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                         {t('user_management.description', { count: user.total }) || `Tizimdagi barcha foydalanuvchilar va rollar (${user.total} ta)`}
                     </p>
                 </div>
@@ -90,7 +90,7 @@ export default function User() {
                 </div>
 
                 {/* Table Container */}
-                <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900 shadow-xs">
+                <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-xs">
                     <UserTable {...user} searchData={data} />
                 </div>
             </div>
