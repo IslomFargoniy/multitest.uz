@@ -59,7 +59,31 @@ class CleanOldAttemptsCommand extends Command
                 }
             });
 
-        $message = "Audio cleanup finished: {$totalDeletedAttempts} attempts and {$totalDeletedAudios} audio files deleted.";
+        // 2. Also cleanup orphaned audio files older than threshold that have no DB reference
+        $activeFiles = \App\Models\AttemptAnswer::whereNotNull('audio_path')
+            ->pluck('audio_path')
+            ->map(fn($p) => basename($p))
+            ->flip()
+            ->toArray();
+
+        $dir = storage_path('app/public/attempt_answers_audio');
+        $totalDeletedOrphans = 0;
+
+        if (is_dir($dir)) {
+            $files = scandir($dir);
+            foreach ($files as $file) {
+                if ($file === '.' || $file === '..') continue;
+                if (isset($activeFiles[$file])) continue;
+                $fullPath = $dir . '/' . $file;
+                if (is_file($fullPath) && filemtime($fullPath) < $dateThreshold->timestamp) {
+                    if (@unlink($fullPath)) {
+                        $totalDeletedOrphans++;
+                    }
+                }
+            }
+        }
+
+        $message = "Audio cleanup finished: {$totalDeletedAttempts} attempts, {$totalDeletedAudios} audio files, and {$totalDeletedOrphans} orphaned files deleted.";
         $this->info($message);
         Log::info($message);
 
