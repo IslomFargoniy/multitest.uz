@@ -401,7 +401,7 @@
                         <table style="border-collapse: collapse;">
                             <tr>
                                 <td><span class="skill-label-text">Tinglab tushunish |<br>Listening</span></td>
-                                <td><span class="score-box">{{ $scores['listening'] ?? '-' }}</span></td>
+                                <td><span class="score-box"@if(is_null($scores['listening'] ?? null)) style="color: #9ca3af;"@endif>{{ $scores['listening'] ?? '—' }}</span></td>
                             </tr>
                         </table>
                     </td>
@@ -409,7 +409,7 @@
                         <table style="border-collapse: collapse;">
                             <tr>
                                 <td><span class="skill-label-text">O'qish |<br>Reading</span></td>
-                                <td><span class="score-box">{{ $scores['reading'] ?? '-' }}</span></td>
+                                <td><span class="score-box"@if(is_null($scores['reading'] ?? null)) style="color: #9ca3af;"@endif>{{ $scores['reading'] ?? '—' }}</span></td>
                             </tr>
                         </table>
                     </td>
@@ -427,7 +427,7 @@
                         <table style="border-collapse: collapse;">
                             <tr>
                                 <td><span class="skill-label-text" style="width: 105px;">Yozish |<br>Writing</span></td>
-                                <td><span class="score-box">{{ $scores['writing'] ?? '-' }}</span></td>
+                                <td><span class="score-box"@if(is_null($scores['writing'] ?? null)) style="color: #9ca3af;"@endif>{{ $scores['writing'] ?? '—' }}</span></td>
                             </tr>
                         </table>
                     </td>
