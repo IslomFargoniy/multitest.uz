@@ -89,4 +89,13 @@ class User extends Authenticatable
         return $this->hasOne(Attempt::class, 'user_id')->latestOfMany();
     }
 
+    /**
+     * Get the password for the user.
+     * Guaranteed to return string so SessionGuard remember-cookie verification
+     * does not crash on passwordless users (Telegram Mini App, OAuth).
+     */
+    public function getAuthPassword(): string
+    {
+        return (string) ($this->password ?? '');
+    }
 }
