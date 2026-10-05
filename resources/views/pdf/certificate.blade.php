@@ -20,7 +20,7 @@
         line-height: 1.25;
         background-color: #ffffff;
     }
-    /* MultiTest Official Frame */
+    /* MultiTest result frame */
     .cert-frame-outer {
         background-color: #fffdfa;
         border: 4px double #0284c7;
@@ -311,16 +311,16 @@
 
             <!-- Title -->
             <div class="title-section">
-                <div class="title-sub-top">TIL BILISH DARAJASI BO'YICHA</div>
-                <div class="title-main">SERTIFIKAT</div>
-                <div class="title-main">CERTIFICATE</div>
-                <div class="title-sub-bot">OF LANGUAGE PROFICIENCY</div>
+                <div class="title-sub-top">MOCK TEST NATIJASI</div>
+                <div class="title-main">NATIJA HISOBOTI</div>
+                <div class="title-main">RESULT REPORT</div>
+                <div class="title-sub-bot">MOCK TEST RESULT</div>
             </div>
 
             <!-- Ref Number -->
             <table class="ref-table">
                 <tr>
-                    <td class="ref-label">Sertifikat № | Reference Number</td>
+                    <td class="ref-label">Hisobot № | Report Number</td>
                     <td class="ref-box-wrap">
                         <span class="bordered-box">{{ $certNumber ?? ('MT-' . str_pad($attempt->id, 6, '0', STR_PAD_LEFT)) }}</span>
                     </td>
@@ -454,10 +454,6 @@
                         <span class="field-label" style="font-size: 8.5pt;">Berilgan sanasi | Date of issue:</span>
                         <strong style="font-size: 9pt; margin-left: 8px;">{{ $issueDate ?? now()->format('d.m.Y') }}</strong>
                     </td>
-                    <td style="width: 50%; text-align: right;">
-                        <span class="field-label" style="font-size: 8.5pt;">Amal qilish muddati | Valid until:</span>
-                        <strong style="font-size: 9pt; margin-left: 8px;">{{ $validUntil ?? now()->addYears(2)->subDay()->format('d.m.Y') }}</strong>
-                    </td>
                 </tr>
             </table>
 
@@ -466,14 +462,14 @@
                 <tr>
                     <td style="width: 30%; vertical-align: middle;">
                         <div class="director-label">
-                            MultiTest Baholash |<br>Official Assessment
+                            MultiTest Baholash |<br>MultiTest Assessment
                         </div>
                     </td>
                     <td style="width: 40%;" class="qr-center">
                         @if(isset($qrCodeUrl) && !empty($qrCodeUrl))
                             <img src="{{ $qrCodeUrl }}" class="qr-img" alt="QR Code">
                         @elseif(isset($verifyUrl) && !empty($verifyUrl))
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ urlencode($verifyUrl) }}" class="qr-img" alt="QR Code">
+                            <span style="font-size: 7pt; word-break: break-all;">{{ $verifyUrl }}</span>
                         @endif
                     </td>
                     <td style="width: 30%; vertical-align: middle;" class="director-name">
@@ -483,7 +479,11 @@
             </table>
 
             <div class="footer-note">
-                Sertifikatning haqiqiyligini multitest.uz sayti orqali tekshirish mumkin.
+                Hisobot haqiqiyligini multitest.uz sayti orqali tekshirish mumkin.
+            </div>
+
+            <div style="font-size: 7pt; color: #555555; text-align: center; margin-top: 4px;">
+                Ushbu hujjat MultiTest platformasidagi mock test natijasi bo'lib, davlat sertifikati emas va rasmiy hujjat sifatida qabul qilinmaydi. / This document is a MultiTest mock test result. It is not a state certificate and is not an official document.
             </div>
         </div>
     </div>

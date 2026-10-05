@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sertifikatni Tekshirish - MultiTest</title>
+    <title>Natijani tekshirish - MultiTest</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800,900&display=swap" rel="stylesheet" />
     <style>
@@ -124,13 +124,13 @@
     <div class="card">
         <div class="header">
             <div class="badge-icon">✓</div>
-            <h1 class="title">Haqiqiy Sertifikat</h1>
-            <div class="status-badge">Rasmiy Tasdiqlangan</div>
+            <h1 class="title">Natija tasdiqlandi</h1>
+            <div class="status-badge">MultiTest tizimida mavjud</div>
         </div>
 
         <div class="body-content">
             <div class="info-group">
-                <div class="label">Sertifikat Raqami</div>
+                <div class="label">Hisobot raqami</div>
                 <div class="value" style="font-family: monospace; color: #4f46e5;">{{ $certNumber }}</div>
             </div>
 
@@ -158,9 +158,13 @@
 
             @if(auth()->check() || session('mock_student_id'))
                 <a href="{{ route('attempt.certificate', $attempt->id) }}" class="btn-download">
-                    📥 PDF Sertifikatni Yuklab Olish
+                    PDF hisobotni yuklab olish
                 </a>
             @endif
+
+            <p style="margin: 16px 0 0; font-size: 12px; color: #6b7280; text-align: center;">
+                Ushbu hujjat MultiTest platformasidagi mock test natijasi bo'lib, davlat sertifikati emas va rasmiy hujjat sifatida qabul qilinmaydi.
+            </p>
         </div>
 
         <div class="footer">
