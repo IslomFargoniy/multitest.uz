@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,7 +39,7 @@ fun HtmlContentView(
 
     if (hasTable) {
         // Render rich table content using optimized transparent WebView with dark styling
-        RichHtmlWebView(html = html, modifier = modifier)
+        RichHtmlWebView(html = html, textColor = textColor, modifier = modifier)
     } else if (imgMatches.isNotEmpty()) {
         // Render images with AsyncImage and remaining text with clean Compose Text
         val cleanText = remember(html) {
@@ -117,14 +118,25 @@ private fun extractImages(html: String): List<String> {
 }
 
 @SuppressLint("SetJavaScriptEnabled")
+private fun Color.toCssHex(): String = String.format("#%06X", 0xFFFFFF and this.toArgb())
+
 @Composable
 private fun RichHtmlWebView(
     html: String,
+    textColor: Color,
     modifier: Modifier = Modifier
 ) {
-    val styledHtml = remember(html) {
+    // Colors follow the app theme (Night Focus tokens in dark: text #E8ECF5, border #2A3557, header #172040).
+    val text = textColor.toCssHex()
+    val border = MaterialTheme.colorScheme.outline.toCssHex()
+    val headerBg = MaterialTheme.colorScheme.surfaceVariant.toCssHex()
+
+    val styledHtml = remember(html, text, border, headerBg) {
         val fixedHtml = html.replace("src=\"/storage", "src=\"https://multitest.uz/storage")
             .replace("src='/storage", "src='https://multitest.uz/storage")
+            // Wide tables scroll sideways instead of shrinking
+            .replace(Regex("<table", RegexOption.IGNORE_CASE), "<div class=\"tbl\"><table")
+            .replace(Regex("</table>", RegexOption.IGNORE_CASE), "</table></div>")
         """
         <!DOCTYPE html>
         <html>
@@ -135,7 +147,7 @@ private fun RichHtmlWebView(
                     margin: 0;
                     padding: 4px;
                     background-color: transparent;
-                    color: #F1F5F9;
+                    color: $text;
                     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
                     font-size: 15px;
                     line-height: 1.5;
@@ -148,25 +160,34 @@ private fun RichHtmlWebView(
                     border-radius: 12px;
                     margin: 8px 0;
                 }
+                .tbl {
+                    overflow-x: auto;
+                    margin: 12px 0;
+                    border: 1px solid $border;
+                    border-radius: 8px;
+                }
                 table {
                     width: 100%;
                     border-collapse: collapse;
-                    margin: 12px 0;
-                    font-size: 13px;
-                    background: #1E293B;
-                    border-radius: 10px;
-                    overflow: hidden;
+                    background: transparent;
+                    font-size: 15px;
+                    font-weight: 400;
                 }
                 th, td {
-                    border: 1px solid #334155;
-                    padding: 8px 10px;
+                    border: 1px solid $border !important;
+                    padding: 8px 12px !important;
                     text-align: left;
+                    vertical-align: top;
                 }
                 th, thead td {
-                    background: #312E81;
-                    color: #A5B4FC;
-                    font-weight: bold;
+                    background: $headerBg;
+                    color: $text;
+                    font-weight: 600;
                 }
+                .tbl tr > :first-child { border-left: 0 !important; }
+                .tbl tr > :last-child { border-right: 0 !important; }
+                .tbl tr:first-child > * { border-top: 0 !important; }
+                .tbl tr:last-child > * { border-bottom: 0 !important; }
             </style>
         </head>
         <body>
@@ -179,7 +200,7 @@ private fun RichHtmlWebView(
     AndroidView(
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(min = 80.dp, max = 340.dp),
+            .heightIn(min = 80.dp, max = 600.dp),
         factory = { context ->
             WebView(context).apply {
                 layoutParams = ViewGroup.LayoutParams(
