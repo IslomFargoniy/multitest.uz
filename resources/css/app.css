@@ -152,6 +152,9 @@
     --color-danger-text: var(--danger-text);
     --color-danger-bg: var(--danger-bg);
 
+    --color-nav-active-bg: var(--nav-active-bg);
+    --color-nav-active-fg: var(--nav-active-fg);
+
     --color-sidebar: var(--sidebar);
     --color-sidebar-foreground: var(--sidebar-foreground);
     --color-sidebar-primary: var(--sidebar-primary);
@@ -247,13 +250,17 @@
 
     --radius: 0.75rem;
 
-    /* Sidebar Light (sidebar = surface-sunken, sidebar-accent = surface-2) */
+    /* Selected/current navigation state: must be visible without relying on a faint tint */
+    --nav-active-bg: #C3C8FF;
+    --nav-active-fg: #2E35A8;
+
+    /* Sidebar Light (sidebar = surface-sunken, sidebar-accent = nav-active) */
     --sidebar: #F0F3F9;
     --sidebar-foreground: #0F1424;
     --sidebar-primary: #4F57D9;
     --sidebar-primary-foreground: #FFFFFF;
-    --sidebar-accent: #EEF1F8;
-    --sidebar-accent-foreground: #0F1424;
+    --sidebar-accent: var(--nav-active-bg);
+    --sidebar-accent-foreground: var(--nav-active-fg);
     --sidebar-border: #DDE3EF;
     --sidebar-ring: #4F57D9;
 
@@ -327,13 +334,16 @@
     --danger-text: #F07178;
     --danger-bg: #3A1820;
 
-    /* Sidebar Dark (sidebar = surface-sunken, sidebar-accent = surface-2) */
+    --nav-active-bg: #262F66;
+    --nav-active-fg: #AEB5FF;
+
+    /* Sidebar Dark (sidebar = surface-sunken, sidebar-accent = nav-active) */
     --sidebar: #0D1326;
     --sidebar-foreground: #E8ECF5;
     --sidebar-primary: #5B63E6;
     --sidebar-primary-foreground: #FFFFFF;
-    --sidebar-accent: #172040;
-    --sidebar-accent-foreground: #E8ECF5;
+    --sidebar-accent: var(--nav-active-bg);
+    --sidebar-accent-foreground: var(--nav-active-fg);
     --sidebar-border: #1E2744;
     --sidebar-ring: #7B86FF;
 

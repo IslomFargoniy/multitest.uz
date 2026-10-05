@@ -117,7 +117,8 @@
         "submenu_example": "Boshqa variantlar",
         "dashboard": "Boshqaruv paneli",
         "test_details": "Test tafsilotlari",
-        "users": "Foydalanuvchilar"
+        "users": "Foydalanuvchilar",
+        "bottom": "Asosiy menyu"
     },
     "navigation": {
         "close": "Yopish",
@@ -1208,7 +1209,14 @@
     "start": "Boshlash",
     "start_with_name": "Boshlash: {{name}}",
     "started_at": "Boshlangan vaqt",
-    "status": "Holati",
+    "status": {
+        "graded": "Baholandi",
+        "no_speech": "Ovoz eshitilmadi",
+        "wrong_language": "Boshqa tilda javob",
+        "off_topic": "Savolga mos emas",
+        "pending": "Baholanmoqda",
+        "ai_error": "AI xatosi"
+    },
     "stop": "To'xtatish",
     "submit": "Yuborish",
     "submit_test": "Testni yuborish",
@@ -1463,14 +1471,6 @@
     "confirm_logout": "Haqiqatan ham tizimdan chiqmoqchimisiz?",
     "quick_actions": "Tezkor amallar",
     "logout": "Tizimdan chiqish",
-    "status": {
-        "graded": "Baholandi",
-        "no_speech": "Ovoz eshitilmadi",
-        "wrong_language": "Boshqa tilda javob",
-        "off_topic": "Savolga mos emas",
-        "pending": "Baholanmoqda",
-        "ai_error": "AI xatosi"
-    },
     "score_summary": {
         "total_score": "Umumiy ball",
         "teacher": "O'qituvchi",

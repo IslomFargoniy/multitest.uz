@@ -117,7 +117,8 @@
         "submenu_example": "More Options",
         "dashboard": "Dashboard",
         "test_details": "Test Details",
-        "users": "Users"
+        "users": "Users",
+        "bottom": "Main menu"
     },
     "navigation": {
         "close": "Close",
@@ -1208,7 +1209,14 @@
     "start": "Start",
     "start_with_name": "Start: {{name}}",
     "started_at": "Started at",
-    "status": "Status",
+    "status": {
+        "graded": "Graded",
+        "no_speech": "No speech detected",
+        "wrong_language": "Wrong language",
+        "off_topic": "Off topic",
+        "pending": "Evaluating",
+        "ai_error": "AI Error"
+    },
     "stop": "Stop",
     "submit": "Submit",
     "submit_test": "Submit Test",
@@ -1463,14 +1471,6 @@
     "confirm_logout": "Are you sure you want to log out?",
     "quick_actions": "Quick actions",
     "logout": "Log out",
-    "status": {
-        "graded": "Graded",
-        "no_speech": "No speech detected",
-        "wrong_language": "Wrong language",
-        "off_topic": "Off topic",
-        "pending": "Evaluating",
-        "ai_error": "AI Error"
-    },
     "score_summary": {
         "total_score": "Overall score",
         "teacher": "Teacher",

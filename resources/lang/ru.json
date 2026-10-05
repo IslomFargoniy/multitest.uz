@@ -117,7 +117,8 @@
         "submenu_example": "Дополнительно",
         "dashboard": "Панель управления",
         "test_details": "Детали теста",
-        "users": "Пользователи"
+        "users": "Пользователи",
+        "bottom": "Главное меню"
     },
     "navigation": {
         "close": "Закрыть",
@@ -1208,7 +1209,14 @@
     "start": "Начать",
     "start_with_name": "Начать: {{name}}",
     "started_at": "Начало",
-    "status": "Статус",
+    "status": {
+        "graded": "Оценено",
+        "no_speech": "Речь не обнаружена",
+        "wrong_language": "Ответ на другом языке",
+        "off_topic": "Не по теме вопроса",
+        "pending": "Оценивается",
+        "ai_error": "Ошибка ИИ"
+    },
     "stop": "Стоп",
     "submit": "Отправить",
     "submit_test": "Сдать тест",
@@ -1463,14 +1471,6 @@
     "confirm_logout": "Вы действительно хотите выйти из системы?",
     "quick_actions": "Быстрые действия",
     "logout": "Выйти из системы",
-    "status": {
-        "graded": "Оценено",
-        "no_speech": "Речь не обнаружена",
-        "wrong_language": "Ответ на другом языке",
-        "off_topic": "Не по теме вопроса",
-        "pending": "Оценивается",
-        "ai_error": "Ошибка ИИ"
-    },
     "score_summary": {
         "total_score": "Общий балл",
         "teacher": "Преподаватель",
