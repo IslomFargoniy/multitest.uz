@@ -106,8 +106,8 @@ class CertificateController extends Controller
         $issueDate = $issueDateObj->format('d.m.Y');
         $validUntil = $issueDateObj->copy()->addYears(2)->subDay()->format('d.m.Y');
 
-        $certNumber = '26BBA' . str_pad($attempt->id, 7, '0', STR_PAD_LEFT) . 'OB';
-        $idSeriesNumber = $attempt->mockStudent?->code ?? ('MT ' . str_pad($attempt->id, 7, '0', STR_PAD_LEFT));
+        $certNumber = 'MT-' . str_pad($attempt->id, 6, '0', STR_PAD_LEFT);
+        $candidateId = 'MT-' . $attempt->id;
 
         $logoPath = public_path('images/logo/logo-no-bg.png');
         $logoBase64 = file_exists($logoPath) ? ('data:image/png;base64,' . base64_encode(file_get_contents($logoPath))) : null;
@@ -128,7 +128,7 @@ class CertificateController extends Controller
             'logoBase64' => $logoBase64,
             'candidatePhoto' => $avatarBase64,
             'certNumber' => $certNumber,
-            'idSeriesNumber' => $idSeriesNumber,
+            'idSeriesNumber' => $candidateId,
             'surname' => $surname,
             'firstName' => $firstName,
             'patronymic' => $patronymic,
@@ -168,7 +168,7 @@ class CertificateController extends Controller
             'testName' => $attempt->mock?->name ?? $attempt->test?->name ?? 'Imtihon',
             'score' => $score ?? 'Hali baholanmagan',
             'level' => $attempt->cefr_level,
-            'certNumber' => '26BBA' . str_pad($attempt->id, 7, '0', STR_PAD_LEFT) . 'OB',
+            'certNumber' => 'MT-' . str_pad($attempt->id, 6, '0', STR_PAD_LEFT),
             'issueDate' => $attempt->evaluated_at ?? $attempt->finished_at ?? $attempt->created_at,
         ]);
     }

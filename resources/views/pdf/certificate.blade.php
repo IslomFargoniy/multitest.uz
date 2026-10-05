@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<title>Sertifikat - {{ $certNumber ?? 'UzBMB' }}</title>
+<title>Certificate - {{ $certNumber ?? 'MultiTest' }}</title>
 <style>
     @page {
         size: A4 portrait;
@@ -20,14 +20,14 @@
         line-height: 1.25;
         background-color: #ffffff;
     }
-    /* Official Certificate Security Frame */
+    /* MultiTest Official Frame */
     .cert-frame-outer {
         background-color: #fffdfa;
-        border: 4px double #d97706;
+        border: 4px double #0284c7;
         padding: 4px;
     }
     .cert-frame-middle {
-        border: 1px solid #b45309;
+        border: 1px solid #0369a1;
         padding: 4px;
     }
     .cert-frame-inner {
@@ -35,12 +35,12 @@
         padding: 18px 24px 18px 24px;
     }
 
-    /* Agency Header */
+    /* MultiTest Brand Header */
     .header-table {
         width: 100%;
         border-collapse: collapse;
     }
-    .header-uz {
+    .header-left {
         width: 42%;
         text-align: center;
         font-size: 7.2pt;
@@ -48,14 +48,14 @@
         line-height: 1.35;
         text-transform: uppercase;
         vertical-align: middle;
-        color: #111111;
+        color: #0369a1;
     }
     .header-crest {
         width: 16%;
         text-align: center;
         vertical-align: middle;
     }
-    .header-en {
+    .header-right {
         width: 42%;
         text-align: center;
         font-size: 7.2pt;
@@ -63,7 +63,7 @@
         line-height: 1.35;
         text-transform: uppercase;
         vertical-align: middle;
-        color: #111111;
+        color: #0369a1;
     }
     .crest-seal {
         width: 62px;
@@ -73,8 +73,9 @@
     }
 
     .divider-line {
-        border-top: 1px solid #111111;
+        border-top: 1px solid #0284c7;
         margin: 10px 0;
+        opacity: 0.8;
     }
 
     /* Titles */
@@ -85,7 +86,7 @@
     .title-sub-top {
         font-size: 8.5pt;
         font-weight: bold;
-        color: #b45309;
+        color: #0369a1;
         letter-spacing: 1.5px;
         margin-bottom: 5px;
         text-transform: uppercase;
@@ -93,7 +94,7 @@
     .title-main {
         font-size: 30pt;
         font-weight: bold;
-        color: #b45309;
+        color: #0369a1;
         letter-spacing: 2.5px;
         line-height: 1.1;
         margin: 0;
@@ -102,7 +103,7 @@
     .title-sub-bot {
         font-size: 8.5pt;
         font-weight: bold;
-        color: #b45309;
+        color: #0369a1;
         letter-spacing: 1.5px;
         margin-top: 5px;
         text-transform: uppercase;
@@ -250,12 +251,14 @@
         font-size: 8.5pt;
         font-weight: bold;
         line-height: 1.35;
+        color: #1e293b;
     }
     .director-name {
         font-size: 9.5pt;
         font-weight: bold;
         text-align: right;
         text-transform: uppercase;
+        color: #0369a1;
     }
     .qr-center {
         text-align: center;
@@ -279,30 +282,27 @@
 <div class="cert-frame-outer">
     <div class="cert-frame-middle">
         <div class="cert-frame-inner">
-            <!-- Header -->
+            <!-- MultiTest Header -->
             <table class="header-table">
                 <tr>
-                    <td class="header-uz">
-                        O'ZBEKISTON RESPUBLIKASI<br>
-                        OLIY TA'LIM, FAN VA INNOVATSIYALAR<br>
-                        VAZIRLIGI HUZURIDAGI<br>
-                        BILIM VA MALAKALARNI BAHOLASH<br>
-                        AGENTLIGI
+                    <td class="header-left">
+                        MULTITEST BAHOLASH TIZIMI<br>
+                        ONLINE CEFR VA TIL KO'NIKMALARI<br>
+                        BAHOLASH VA TESTLASH<br>
+                        PLATFORMASI
                     </td>
                     <td class="header-crest">
                         @if(isset($logoBase64) && !empty($logoBase64))
-                            <img src="{{ $logoBase64 }}" class="crest-seal" alt="Seal">
+                            <img src="{{ $logoBase64 }}" class="crest-seal" alt="MultiTest Logo">
                         @else
-                            <img src="{{ public_path('images/logo/logo-no-bg.png') }}" class="crest-seal" alt="Seal">
+                            <img src="{{ public_path('images/logo/logo-no-bg.png') }}" class="crest-seal" alt="MultiTest Logo">
                         @endif
                     </td>
-                    <td class="header-en">
-                        AGENCY FOR ASSESSMENT OF<br>
-                        KNOWLEDGE AND COMPETENCES<br>
-                        UNDER THE MINISTRY OF HIGHER<br>
-                        EDUCATION, SCIENCE AND<br>
-                        INNOVATIONS OF THE REPUBLIC OF<br>
-                        UZBEKISTAN
+                    <td class="header-right">
+                        MULTITEST ASSESSMENT SYSTEM<br>
+                        ONLINE CEFR & LANGUAGE SKILLS<br>
+                        EVALUATION AND TESTING<br>
+                        PLATFORM
                     </td>
                 </tr>
             </table>
@@ -311,10 +311,10 @@
 
             <!-- Title -->
             <div class="title-section">
-                <div class="title-sub-top">CHET TILINI BILISH DARAJASI TO'G'RISIDA</div>
+                <div class="title-sub-top">TIL BILISH DARAJASI BO'YICHA</div>
                 <div class="title-main">SERTIFIKAT</div>
                 <div class="title-main">CERTIFICATE</div>
-                <div class="title-sub-bot">OF FOREIGN LANGUAGE PROFICIENCY</div>
+                <div class="title-sub-bot">OF LANGUAGE PROFICIENCY</div>
             </div>
 
             <!-- Ref Number -->
@@ -322,7 +322,7 @@
                 <tr>
                     <td class="ref-label">Sertifikat № | Reference Number</td>
                     <td class="ref-box-wrap">
-                        <span class="bordered-box">{{ $certNumber ?? '26BBA' . str_pad($attempt->id, 7, '0', STR_PAD_LEFT) . 'OB' }}</span>
+                        <span class="bordered-box">{{ $certNumber ?? ('MT-' . str_pad($attempt->id, 6, '0', STR_PAD_LEFT)) }}</span>
                     </td>
                 </tr>
             </table>
@@ -336,8 +336,8 @@
                     <td class="details-fields">
                         <table class="field-row">
                             <tr>
-                                <td class="field-label">Shaxsni tasdiqlovchi hujjat seriyasi va raqami | ID series and number:</td>
-                                <td class="field-value">{{ $idSeriesNumber ?? ('MT ' . str_pad($attempt->id, 7, '0', STR_PAD_LEFT)) }}</td>
+                                <td class="field-label">Nomzod ID raqami | Candidate ID:</td>
+                                <td class="field-value">{{ $idSeriesNumber ?? ('MT-' . $attempt->id) }}</td>
                             </tr>
                         </table>
                         <table class="field-row">
@@ -464,20 +464,20 @@
             <!-- Signatures & QR -->
             <table class="bottom-table">
                 <tr>
-                    <td style="width: 28%; vertical-align: middle;">
+                    <td style="width: 30%; vertical-align: middle;">
                         <div class="director-label">
-                            Direktor |<br>Director
+                            MultiTest Baholash |<br>Official Assessment
                         </div>
                     </td>
-                    <td style="width: 44%;" class="qr-center">
+                    <td style="width: 40%;" class="qr-center">
                         @if(isset($qrCodeUrl) && !empty($qrCodeUrl))
                             <img src="{{ $qrCodeUrl }}" class="qr-img" alt="QR Code">
                         @elseif(isset($verifyUrl) && !empty($verifyUrl))
                             <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ urlencode($verifyUrl) }}" class="qr-img" alt="QR Code">
                         @endif
                     </td>
-                    <td style="width: 28%; vertical-align: middle;" class="director-name">
-                        M.KARIMOV
+                    <td style="width: 30%; vertical-align: middle;" class="director-name">
+                        MULTITEST.UZ
                     </td>
                 </tr>
             </table>
