@@ -54,8 +54,8 @@ const PartTable = ({ test }: PartTableProps) => {
                         >
                             {/* Header */}
                             <div className="flex items-start justify-between">
-                                <h3 className="text-base font-bold text-foreground hover:text-primary">
-                                    <Link href={`/part/${item.id}`}>{item.name}</Link>
+                                <h3 className="text-base font-bold text-foreground">
+                                    {item.name}
                                 </h3>
                                 <span className="text-xs text-muted-foreground font-mono">#{globalIndex}</span>
                             </div>

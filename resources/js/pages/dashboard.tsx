@@ -87,7 +87,7 @@ export default function Dashboard() {
                         </div>
                     </div>
                     <Button asChild variant="default" size="default">
-                        <Link href="/tests">
+                        <Link href="/test">
                             {t('dashboard.start_test', 'Testni boshlash')}
                         </Link>
                     </Button>
@@ -197,7 +197,7 @@ export default function Dashboard() {
                             <h2 className="text-base font-bold text-foreground">
                                 {t('recent_attempts', 'So‘nggi urinishlar')}
                             </h2>
-                            <Link href="/attempts" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                            <Link href="/attempt" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
                                 <span>{t('view_all', 'Barchasini ko‘rish')}</span>
                                 <LucideChevronRight className="h-3.5 w-3.5" />
                             </Link>
@@ -223,7 +223,7 @@ export default function Dashboard() {
                                             </div>
                                         </div>
                                         <Button asChild variant="outline" size="sm">
-                                            <Link href={`/attempts/${attempt.id}`}>
+                                            <Link href={`/attempt/${attempt.id}`}>
                                                 {t('view', 'Ko‘rish')}
                                             </Link>
                                         </Button>

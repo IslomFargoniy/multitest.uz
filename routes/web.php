@@ -57,6 +57,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('language-all-json', [LanguageController::class, 'allJson'])->name('language.all.json');
     Route::get('sidebar-language-json', [LanguageController::class, 'sidebarJson'])->name('sidebar.language.json');
 
+    // Plural route aliases to prevent 404s from plural URLs
+    Route::redirect('tests', '/test');
+    Route::redirect('attempts', '/attempt');
+    Route::redirect('mocks', '/mock');
+    Route::redirect('users', '/user');
+    Route::get('tests/{test}', fn($test) => redirect("/test/{$test}"));
+    Route::get('attempts/{attempt}', fn($attempt) => redirect("/attempt/{$attempt}"));
+
     Route::resource('part', PartController::class)->only(['store', 'update', 'destroy']);
     Route::resource('question', QuestionController::class)->only(['store', 'update', 'destroy']);
     Route::resource('mock', MockController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
