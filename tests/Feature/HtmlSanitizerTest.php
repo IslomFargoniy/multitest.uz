@@ -37,3 +37,18 @@ test('base64 svg and non-image payloads are dropped', function () {
 
     expect($q->fresh()->textarea)->not->toContain('<img')->not->toContain('svg');
 });
+
+test('tinymce table with border, collapse and cell padding survives sanitizing', function () {
+    $html = '<table border="1" style="border-collapse: collapse; width: 100%;"><tbody><tr>'
+        . '<th style="padding: 8px 12px; border: 1px solid #C9D1E2;">Pros</th>'
+        . '<td style="padding: 8px 12px; border: 1px solid #C9D1E2;" colspan="2">Cons</td></tr></tbody></table>';
+
+    $clean = HtmlSanitizer::clean($html);
+
+    expect($clean)->toContain('border="1"')
+        ->toContain('border-collapse:collapse')
+        ->toContain('padding:8px 12px')
+        ->toContain('border:1px solid #C9D1E2')
+        ->toContain('<th')
+        ->toContain('colspan="2"');
+});

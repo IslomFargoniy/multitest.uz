@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import DOMPurify from 'dompurify';
 import { HTMLAttributes, useMemo } from 'react';
 
@@ -56,9 +57,24 @@ interface SafeHtmlProps extends Omit<HTMLAttributes<HTMLDivElement>, 'dangerousl
     html?: string | null;
 }
 
-/** Renders trusted-by-allow-list HTML (question text, part descriptions). Never pass raw user HTML to dangerouslySetInnerHTML. */
-export default function SafeHtml({ html, ...props }: SafeHtmlProps) {
-    const clean = useMemo(() => DOMPurify.sanitize(html ?? '', { ALLOWED_TAGS, ALLOWED_ATTR }), [html]);
+/** Wraps every table in a horizontal scroll box. Runs after sanitizing, so user HTML can never set this class itself. */
+function wrapTables(html: string): string {
+    if (typeof DOMParser === 'undefined' || !/<table/i.test(html)) return html;
 
-    return <div {...props} dangerouslySetInnerHTML={{ __html: clean }} />;
+    const doc = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html');
+    doc.querySelectorAll('table').forEach((table) => {
+        const wrapper = doc.createElement('div');
+        wrapper.className = 'rich-table-scroll';
+        table.replaceWith(wrapper);
+        wrapper.appendChild(table);
+    });
+
+    return doc.body.innerHTML;
+}
+
+/** Renders allow-listed HTML (question text, part descriptions). Never pass raw user HTML to dangerouslySetInnerHTML. */
+export default function SafeHtml({ html, className, ...props }: SafeHtmlProps) {
+    const clean = useMemo(() => wrapTables(DOMPurify.sanitize(html ?? '', { ALLOWED_TAGS, ALLOWED_ATTR })), [html]);
+
+    return <div {...props} className={cn('rich-content', className)} dangerouslySetInnerHTML={{ __html: clean }} />;
 }

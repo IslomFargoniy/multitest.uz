@@ -122,7 +122,14 @@ export default function TextEditor({
                         "link image media table emoticons | alignleft aligncenter " +
                         "alignright alignjustify | bullist numlist outdent indent | " +
                         "removeformat | code fullscreen preview | help",
-                    content_style: "body { font-family:Arial,sans-serif; line-height:1.5; }",
+                    content_style:
+                        "body { font-family:Arial,sans-serif; line-height:1.5; } " +
+                        "table { border-collapse: collapse; width: 100%; margin: 12px 0; } " +
+                        "th, td { border: 1px solid #C9D1E2 !important; padding: 8px 12px !important; vertical-align: top; text-align: left; } " +
+                        "th, thead td { background: #EEF1F8; font-weight: 600; }",
+                    // New tables start bordered and full width (existing ones are styled by content_style above).
+                    table_default_attributes: { border: "1" },
+                    table_default_styles: { "border-collapse": "collapse", width: "100%" },
                 }}
             />
 

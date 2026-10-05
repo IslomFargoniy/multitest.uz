@@ -64,27 +64,58 @@
     margin-bottom: 1.5rem;
 }
 
-/* Generic Table Styles for user-generated content */
-:is(.tinymce-content, .prose) table {
+/* Tables inside rich text (TinyMCE content): always bordered, padded and scrollable on phones.
+   SafeHtml adds .rich-content and wraps every table in .rich-table-scroll. */
+:is(.rich-content, .tinymce-content, .prose) .rich-table-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 12px 0;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+}
+
+:is(.rich-content, .tinymce-content, .prose) table {
     width: 100% !important;
     border-collapse: collapse !important;
+    margin: 0 !important; /* the scroll wrapper owns the margin */
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    letter-spacing: normal !important;
     text-align: left !important;
-    margin-top: 1rem !important;
-    margin-bottom: 1rem !important;
-    border-radius: 0.5rem !important;
-}
-
-:is(.tinymce-content, .prose) :is(th, td) {
-    border: 1px solid var(--border) !important;
-    padding: 0.75rem 1rem !important;
-    text-align: left !important;
-    vertical-align: top !important;
-}
-
-:is(.tinymce-content, .prose) th {
-    background-color: var(--secondary) !important;
-    font-weight: 700 !important;
     color: var(--foreground) !important;
+}
+
+/* Tables rendered without the wrapper (e.g. legacy .prose content) keep a vertical margin */
+:is(.tinymce-content, .prose) table:not(.rich-table-scroll table) {
+    margin-top: 12px !important;
+    margin-bottom: 12px !important;
+}
+
+:is(.rich-content, .tinymce-content, .prose) :is(th, td) {
+    border: 1px solid var(--border-strong) !important; /* overrides border="0" and inline border:none */
+    padding: 8px 12px !important;
+    vertical-align: top !important;
+    text-align: left !important;
+}
+
+:is(.rich-content, .tinymce-content, .prose) :is(th, thead td) {
+    background-color: var(--secondary) !important;
+    font-weight: 600 !important;
+}
+
+/* The wrapper draws the outer frame: avoid a double line on the outside edge */
+:is(.rich-content, .tinymce-content, .prose) .rich-table-scroll tr > :first-child {
+    border-left: 0 !important;
+}
+:is(.rich-content, .tinymce-content, .prose) .rich-table-scroll tr > :last-child {
+    border-right: 0 !important;
+}
+:is(.rich-content, .tinymce-content, .prose) .rich-table-scroll tr:first-child > * {
+    border-top: 0 !important;
+}
+:is(.rich-content, .tinymce-content, .prose) .rich-table-scroll tr:last-child > * {
+    border-bottom: 0 !important;
 }
 
 @theme {
