@@ -118,6 +118,26 @@ android {
             }
         }
     }
+
+    tasks.matching { it.name == "bundleRelease" }.configureEach {
+        doLast {
+            val bundleFile = File(layout.buildDirectory.asFile.get(), "outputs/bundle/release/app-release.aab")
+            if (bundleFile.exists()) {
+                val targetAab = File(rootDir, "MultiTest_v${vName}_release.aab")
+                bundleFile.copyTo(targetAab, overwrite = true)
+                println("AAB muvaffaqiyatli saqlandi: ${targetAab.absolutePath}")
+
+                val publicDir = File(rootDir.parentFile, "public")
+                if (publicDir.exists()) {
+                    val publicVersionedAab = File(publicDir, "MultiTest_v${vName}_release.aab")
+                    bundleFile.copyTo(publicVersionedAab, overwrite = true)
+                    val publicLatestAab = File(publicDir, "MultiTest_release.aab")
+                    bundleFile.copyTo(publicLatestAab, overwrite = true)
+                    println("AAB public papkaga saqlandi: ${publicVersionedAab.absolutePath}")
+                }
+            }
+        }
+    }
 }
 
 dependencies {

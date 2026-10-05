@@ -26,3 +26,5 @@ yarn-error.log
 *.sqlite
 *.db
 /storage/framework/cache/htmlpurifier
+*.apk
+*.aab
