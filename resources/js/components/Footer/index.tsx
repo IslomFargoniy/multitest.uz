@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
         <footer id="contact" className="border-t border-border bg-card/40 py-14">
             <div className="container mx-auto px-6 md:max-w-screen-md lg:max-w-screen-xl">
                 <div className="grid grid-cols-1 gap-x-16 gap-y-12 sm:grid-cols-2 lg:grid-cols-12">
-                    {/* 🏢 Brand Section */}
+                    {/* Brand Section */}
                     <div className="col-span-1 sm:col-span-2 lg:col-span-5">
                         <Logo />
                         <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* 🔗 Quick Links */}
+                    {/* Quick Links */}
                     <div className="col-span-1 lg:col-span-3">
                         <h3 className="mb-4 text-xs font-bold tracking-wider text-foreground uppercase">
                             {t('footer.quick_links')}
@@ -66,7 +66,7 @@ const Footer: React.FC = () => {
                         </ul>
                     </div>
 
-                    {/* 📞 Contact Info */}
+                    {/* Contact Info */}
                     <div className="col-span-1 lg:col-span-4">
                         <h3 className="mb-4 text-xs font-bold tracking-wider text-foreground uppercase">
                             {t('footer.contact')}
@@ -100,7 +100,7 @@ const Footer: React.FC = () => {
                     </div>
                 </div>
 
-                {/* 📜 Bottom Bar */}
+                {/* Bottom Bar */}
                 <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 md:flex-row">
                     <span className="text-center text-xs font-medium text-muted-foreground">
                         © {new Date().getFullYear()} <span className="font-semibold text-foreground">{capitalizeDomain}</span>.{' '}

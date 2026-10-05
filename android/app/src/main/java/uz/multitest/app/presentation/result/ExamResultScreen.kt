@@ -302,7 +302,7 @@ fun ExamResultScreen(
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
                         if (attempt.testId != null) {
-                            GradientButton(
+                            PrimaryButton(
                                 text = "Qayta topshirish",
                                 onClick = { onRetryTest(attempt.testId) },
                                 icon = Icons.Rounded.Refresh

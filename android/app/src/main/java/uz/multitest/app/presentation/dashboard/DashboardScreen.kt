@@ -28,7 +28,7 @@ import coil.compose.AsyncImage
 import uz.multitest.app.core.theme.*
 import uz.multitest.app.data.models.AttemptDto
 import uz.multitest.app.data.models.TestDto
-import uz.multitest.app.presentation.components.GradientButton
+import uz.multitest.app.presentation.components.PrimaryButton
 import uz.multitest.app.presentation.components.LoadingStateView
 import uz.multitest.app.presentation.components.MultiTestCard
 
@@ -241,7 +241,7 @@ private fun StatsSection(
             title = "Jami",
             value = "$totalAttempts",
             icon = Icons.Rounded.BarChart,
-            color = NightPrimary,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.weight(1f)
         )
         StatCard(
@@ -356,7 +356,7 @@ private fun MockBannerSection(
                 onClick = onJoinClick,
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = NightPrimary,
+                    containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = Color.White
                 )
             ) {

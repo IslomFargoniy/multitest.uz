@@ -38,7 +38,7 @@ export default function RegisterCard() {
 
     return (
         <div className="mx-auto w-full max-w-md space-y-4 sm:space-y-6">
-            {/* 🔑 Social Login Section */}
+            {/* Social Login Section */}
             <SocialSignIn />
 
             <div className="relative">
@@ -50,7 +50,7 @@ export default function RegisterCard() {
                 </div>
             </div>
 
-            {/* 📝 Registration Form */}
+            {/* Registration Form */}
             <form className="flex flex-col gap-4 sm:gap-5" onSubmit={submit}>
                 <div className="grid gap-3 sm:gap-4">
                     {/* Name */}

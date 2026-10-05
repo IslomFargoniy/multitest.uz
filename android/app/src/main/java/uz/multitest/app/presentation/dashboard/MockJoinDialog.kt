@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import uz.multitest.app.core.theme.NightDestructive
-import uz.multitest.app.presentation.components.GradientButton
+import uz.multitest.app.presentation.components.PrimaryButton
 
 @Composable
 fun MockJoinDialog(
@@ -116,7 +116,7 @@ fun MockJoinDialog(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                GradientButton(
+                PrimaryButton(
                     text = "Imtihonni Boshlash",
                     onClick = { onJoin(pinCode) },
                     isLoading = isLoading,

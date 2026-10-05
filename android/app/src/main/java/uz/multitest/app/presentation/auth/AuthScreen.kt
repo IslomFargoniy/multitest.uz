@@ -41,7 +41,7 @@ import uz.multitest.app.BuildConfig
 import uz.multitest.app.MainActivity
 import uz.multitest.app.core.theme.*
 import uz.multitest.app.core.util.Constants
-import uz.multitest.app.presentation.components.GradientButton
+import uz.multitest.app.presentation.components.PrimaryButton
 import uz.multitest.app.presentation.components.MultiTestCard
 import uz.multitest.app.presentation.components.OtpInputField
 
@@ -251,7 +251,7 @@ fun AuthScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             // Login Button
-            GradientButton(
+            PrimaryButton(
                 text = "Tasdiqlash va Kirish",
                 onClick = { viewModel.loginWithOtp() },
                 isLoading = uiState.isLoading,
@@ -299,7 +299,7 @@ fun AuthScreen(
                             text = "G",
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = NightPrimary
+                                color = MaterialTheme.colorScheme.primary
                             )
                         )
                         Spacer(modifier = Modifier.width(10.dp))

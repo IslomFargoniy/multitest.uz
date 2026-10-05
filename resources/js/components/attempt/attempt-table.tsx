@@ -185,7 +185,7 @@ const AttemptTable = ({ searchData, ...attempt }: AttemptTableProps) => {
     return (
         <div className="space-y-4">
             {isMobile ? (
-                /* 📱 MOBILE CARD VIEW */
+                /* MOBILE CARD VIEW */
                 <div className="space-y-3">
                     {items.length > 0 ? (
                         items.map((item, index) => {
@@ -200,7 +200,7 @@ const AttemptTable = ({ searchData, ...attempt }: AttemptTableProps) => {
                     )}
                 </div>
             ) : (
-                /* 💻 DESKTOP TABLE VIEW */
+                /* DESKTOP TABLE VIEW */
                 <div className="overflow-x-auto rounded-xl border border-border bg-card">
                     <table className="w-full text-left text-sm">
                         <thead className="bg-surface-sunken text-xs font-semibold text-muted-foreground border-b border-border">

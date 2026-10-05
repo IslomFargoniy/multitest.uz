@@ -6,13 +6,13 @@ import { useTranslation } from 'react-i18next';
 import AppearanceTabs from '@/components/appearance-tabs';
 import LoginCard from '@/components/auth/login-card';
 import RegisterCard from '@/components/auth/register-card';
+import LanguageBar from '@/components/language';
 import FindMockModal from '@/components/mock/find-mock-modal';
 import type { SharedData } from '@/types';
 import HeaderLink from '../Header/Navigation/HeaderLink';
 import { headerData } from '../Header/Navigation/menuData';
 import MobileHeaderLink from '../Header/Navigation/MobileHeaderLink';
 import Logo from './Logo';
-import LanguageBar from '@/components/language';
 
 const Header: React.FC = () => {
     const { t } = useTranslation();
@@ -54,13 +54,13 @@ const Header: React.FC = () => {
     return (
         <header
             className={`fixed top-0 z-40 w-full transition-all duration-300 ${
-                sticky ? 'border-b border-border bg-card/90 backdrop-blur-md py-3 shadow-xs' : 'bg-transparent py-5'
+                sticky ? 'border-border bg-card border-b py-3 shadow-xs' : 'bg-transparent py-5'
             }`}
         >
             <div className="container mx-auto flex items-center justify-between px-4 md:max-w-screen-md lg:max-w-screen-xl">
                 <Logo />
 
-                {/* 💻 Desktop Navigation */}
+                {/* Desktop Navigation */}
                 <nav className="hidden items-center gap-8 lg:flex">
                     <div className="flex items-center gap-6">
                         {headerData.map((item) => (
@@ -70,7 +70,7 @@ const Header: React.FC = () => {
                         <FindMockModal />
                     </div>
 
-                    <div className="h-5 w-px bg-border" />
+                    <div className="bg-border h-5 w-px" />
 
                     <LanguageBar />
 
@@ -78,7 +78,7 @@ const Header: React.FC = () => {
                         {auth.user ? (
                             <Link
                                 href={route('dashboard')}
-                                className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
+                                className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold shadow-xs transition-colors"
                             >
                                 <Icon icon="tabler:layout-dashboard" className="text-lg" />
                                 {t('auth.profile')}
@@ -86,13 +86,13 @@ const Header: React.FC = () => {
                         ) : (
                             <>
                                 <button
-                                    className="px-4 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
+                                    className="text-muted-foreground hover:text-foreground cursor-pointer px-4 py-2 text-sm font-semibold transition-colors"
                                     onClick={() => setIsSignInOpen(true)}
                                 >
                                     {t('auth.sign_in')}
                                 </button>
                                 <button
-                                    className="rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 active:scale-95 cursor-pointer"
+                                    className="bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer rounded-xl px-6 py-2.5 text-sm font-semibold shadow-xs transition-colors active:scale-95"
                                     onClick={() => setIsSignUpOpen(true)}
                                 >
                                     {t('auth.sign_up')}
@@ -102,28 +102,28 @@ const Header: React.FC = () => {
                     </div>
                 </nav>
 
-                {/* 📱 Mobile Menu Toggle */}
+                {/* Mobile Menu Toggle */}
                 <button
                     onClick={() => setNavbarOpen(true)}
-                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary text-foreground lg:hidden"
+                    className="bg-secondary text-foreground flex h-10 w-10 items-center justify-center rounded-xl lg:hidden"
                 >
                     <Icon icon="tabler:menu-2" className="text-2xl" />
                 </button>
             </div>
 
-            {/* 🚪 Auth Modals */}
+            {/* Auth Modals */}
             {(isSignInOpen || isSignUpOpen) && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4">
                     <div
                         ref={isSignInOpen ? signInRef : signUpRef}
-                        className="relative w-full max-w-[480px] overflow-hidden rounded-2xl border border-border bg-card p-8 shadow-2xl"
+                        className="border-border bg-card relative w-full max-w-[480px] overflow-hidden rounded-2xl border p-8 shadow-2xl"
                     >
                         <button
                             onClick={() => {
                                 setIsSignInOpen(false);
                                 setIsSignUpOpen(false);
                             }}
-                            className="absolute top-5 right-5 flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-muted-foreground hover:text-foreground"
+                            className="bg-secondary text-muted-foreground hover:text-foreground absolute top-5 right-5 flex h-9 w-9 items-center justify-center rounded-full"
                         >
                             <Icon icon="tabler:x" className="text-lg" />
                         </button>
@@ -137,24 +137,24 @@ const Header: React.FC = () => {
                 </div>
             )}
 
-            {/* 📱 Mobile Drawer */}
+            {/* Mobile Drawer */}
             <div className={`fixed inset-0 z-50 lg:hidden ${navbarOpen ? 'visible' : 'invisible'}`}>
                 <div
-                    className={`absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-300 ${navbarOpen ? 'opacity-100' : 'opacity-0'}`}
+                    className={`absolute inset-0 bg-black/60 transition-opacity duration-300 ${navbarOpen ? 'opacity-100' : 'opacity-0'}`}
                     onClick={() => setNavbarOpen(false)}
                 />
 
                 <div
                     ref={mobileMenuRef}
-                    className={`absolute top-0 right-0 z-10 h-full w-full max-w-xs bg-card border-l border-border shadow-2xl transition-transform duration-300 ease-in-out ${navbarOpen ? 'translate-x-0' : 'translate-x-full'}`}
+                    className={`bg-card border-border absolute top-0 right-0 z-10 h-full w-full max-w-xs border-l shadow-2xl transition-transform duration-300 ease-in-out ${navbarOpen ? 'translate-x-0' : 'translate-x-full'}`}
                 >
                     <div className="flex h-full flex-col">
                         {/* Sidebar Header */}
-                        <div className="flex items-center justify-between border-b border-border p-5">
+                        <div className="border-border flex items-center justify-between border-b p-5">
                             <Logo />
                             <button
                                 onClick={() => setNavbarOpen(false)}
-                                className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-muted-foreground hover:text-foreground"
+                                className="bg-secondary text-muted-foreground hover:text-foreground flex h-9 w-9 items-center justify-center rounded-full"
                             >
                                 <Icon icon="tabler:x" className="text-xl" />
                             </button>
@@ -171,13 +171,13 @@ const Header: React.FC = () => {
                         </nav>
 
                         {/* Sidebar Footer Area */}
-                        <div className="mt-auto border-t border-border bg-surface-2 p-5">
-                            <AppearanceTabs className="mb-4 rounded-xl bg-secondary p-1" />
+                        <div className="border-border bg-surface-2 mt-auto border-t p-5">
+                            <AppearanceTabs className="bg-secondary mb-4 rounded-xl p-1" />
 
                             {!auth.user ? (
                                 <div className="grid grid-cols-2 gap-2.5">
                                     <button
-                                        className="rounded-xl border border-border bg-card py-2.5 text-sm font-semibold text-foreground"
+                                        className="border-border bg-card text-foreground rounded-xl border py-2.5 text-sm font-semibold"
                                         onClick={() => {
                                             setIsSignInOpen(true);
                                             setNavbarOpen(false);
@@ -186,7 +186,7 @@ const Header: React.FC = () => {
                                         {t('auth.sign_in')}
                                     </button>
                                     <button
-                                        className="rounded-xl bg-primary py-2.5 text-sm font-semibold text-primary-foreground shadow-xs"
+                                        className="bg-primary text-primary-foreground rounded-xl py-2.5 text-sm font-semibold shadow-xs"
                                         onClick={() => {
                                             setIsSignUpOpen(true);
                                             setNavbarOpen(false);
@@ -198,7 +198,7 @@ const Header: React.FC = () => {
                             ) : (
                                 <Link
                                     href={route('dashboard')}
-                                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-semibold text-primary-foreground shadow-xs"
+                                    className="bg-primary text-primary-foreground flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold shadow-xs"
                                 >
                                     <Icon icon="tabler:layout-dashboard" className="text-lg" />
                                     {t('auth.profile')}

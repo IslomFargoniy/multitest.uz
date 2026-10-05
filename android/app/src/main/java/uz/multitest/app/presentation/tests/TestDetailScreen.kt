@@ -24,7 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uz.multitest.app.core.theme.*
 import uz.multitest.app.data.models.PartDto
 import uz.multitest.app.presentation.components.ErrorStateView
-import uz.multitest.app.presentation.components.GradientButton
+import uz.multitest.app.presentation.components.PrimaryButton
 import uz.multitest.app.presentation.components.LoadingStateView
 import uz.multitest.app.presentation.components.MultiTestCard
 import uz.multitest.app.presentation.components.parseHtmlToPlainText
@@ -89,7 +89,7 @@ fun TestDetailScreen(
                             .navigationBarsPadding()
                             .padding(16.dp)
                     ) {
-                        GradientButton(
+                        PrimaryButton(
                             text = "Imtihonni Boshlash (${uiState.selectedPartIds.size} qism)",
                             onClick = { viewModel.startTest(test.id) },
                             isLoading = uiState.isStartingTest,

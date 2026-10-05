@@ -318,7 +318,7 @@ private fun PartIntroView(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        GradientButton(
+        PrimaryButton(
             text = "Savollarga O'tish",
             onClick = onStart,
             icon = Icons.Rounded.PlayArrow
@@ -380,7 +380,7 @@ private fun QuestionActiveView(
                     ExamPhaseChip(
                         title = "Tinglash",
                         isActive = isAudioPhase,
-                        activeColor = NightPrimary
+                        activeColor = MaterialTheme.colorScheme.primary
                     )
                     ExamPhaseChip(
                         title = "Tayyorlanish",
@@ -482,7 +482,7 @@ private fun QuestionActiveView(
                     onClick = onStartRecordingNow,
                     shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = NightPrimary,
+                        containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = Color.White
                     ),
                     modifier = Modifier.fillMaxWidth().height(52.dp)

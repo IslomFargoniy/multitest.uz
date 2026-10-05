@@ -35,7 +35,7 @@ export default function LoginCard() {
 
     return (
         <div className="mx-auto w-full max-w-md space-y-4 sm:space-y-6">
-            {/* 🔑 Social Login Section */}
+            {/* Social Login Section */}
             <SocialSignIn />
 
             <div className="relative">
@@ -47,7 +47,7 @@ export default function LoginCard() {
                 </div>
             </div>
 
-            {/* 📝 Main Login Form */}
+            {/* Main Login Form */}
             <form className="flex flex-col gap-4 sm:gap-5" onSubmit={submit}>
                 <div className="grid gap-3 sm:gap-4">
                     {/* Identifier Input (Email or Phone) */}

@@ -33,7 +33,7 @@ export default function Practice() {
 
                 <div className="mx-auto max-w-5xl px-4 py-6 sm:px-8 sm:py-12">
                     <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-                        {/* 📝 Left Side: Test Context (Col 7) */}
+                        {/* Left Side: Test Context (Col 7) */}
                         <div className="space-y-6 lg:col-span-7">
                             <div className="space-y-3">
                                 <div className="inline-flex items-center gap-2 rounded-lg bg-primary/10 border border-primary/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
@@ -78,7 +78,7 @@ export default function Practice() {
                             </div>
                         </div>
 
-                        {/* 🎙️ Right Side: Immersive Audio Card (Col 5) */}
+                        {/* Right Side: Immersive Audio Card (Col 5) */}
                         <div className="lg:col-span-5">
                             <div className="sticky top-8 overflow-hidden rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xl">
                                 <div className="relative space-y-6">

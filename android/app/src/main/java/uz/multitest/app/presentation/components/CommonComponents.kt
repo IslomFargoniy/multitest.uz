@@ -38,13 +38,12 @@ import androidx.compose.ui.unit.sp
 import uz.multitest.app.core.theme.*
 
 @Composable
-fun GradientButton(
+fun PrimaryButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     enabled: Boolean = true,
-    gradient: Brush = Brush.horizontalGradient(listOf(NightPrimary, NightPrimaryHover)),
     icon: ImageVector? = null
 ) {
     Button(
@@ -55,10 +54,10 @@ fun GradientButton(
             .height(52.dp),
         shape = RoundedCornerShape(14.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = NightPrimary,
+            containerColor = MaterialTheme.colorScheme.primary,
             contentColor = Color.White,
-            disabledContainerColor = NightSurface2,
-            disabledContentColor = NightTextMuted
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
         ),
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp, pressedElevation = 0.dp),
         contentPadding = PaddingValues(horizontal = 20.dp)
@@ -241,17 +240,7 @@ fun AudioWaveformVisualizer(
                     .width(4.dp)
                     .fillMaxHeight(heightFraction)
                     .clip(CircleShape)
-                    .background(
-                        if (isRecording) {
-                            Brush.verticalGradient(
-                                listOf(NightPrimary, NightChart)
-                            )
-                        } else {
-                            Brush.verticalGradient(
-                                listOf(NightBorder, NightBorder)
-                            )
-                        }
-                    )
+                    .background(if (isRecording) NightChart else MaterialTheme.colorScheme.outlineVariant)
             )
         }
     }
@@ -339,7 +328,7 @@ fun CountdownTimerCircle(
         currentSeconds.toFloat() / totalSeconds.toFloat()
     } else 0f
 
-    val color = if (isPreparation) NightWarning else NightPrimary
+    val color = if (isPreparation) NightWarning else MaterialTheme.colorScheme.primary
 
     Box(
         modifier = modifier.size(size),
