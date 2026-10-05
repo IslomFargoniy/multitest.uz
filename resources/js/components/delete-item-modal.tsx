@@ -1,15 +1,8 @@
 import { Button } from '@/components/ui/button';
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-} from '@/components/ui/dialog';
-import { useTranslation } from 'react-i18next';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { htmlToPlainText } from '@/utils/html';
 import { AlertTriangle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface DeleteItemModalProps {
     item: { id: number; name?: string; textarea?: string };
@@ -28,45 +21,35 @@ export default function DeleteItemModal({ item, open, setOpen, onDelete }: Delet
         }
     };
 
-    const displayName = item.name || (item.textarea ? item.textarea.replace(/<[^>]*>/g, '').slice(0, 40) : null);
+    const displayName = item.name || (item.textarea ? htmlToPlainText(item.textarea).slice(0, 40) : null);
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="sm:max-w-md w-full border-border bg-card">
-                <DialogHeader className="space-y-1 pb-2 border-b border-border">
-                    <div className="flex items-center gap-2 text-destructive">
-                        <AlertTriangle className="w-5 h-5 shrink-0" />
-                        <DialogTitle className="text-lg font-bold text-foreground">
-                            {t('modal.delete_title', "O'chirishni tasdiqlang")}
-                        </DialogTitle>
+            <DialogContent className="border-border bg-card w-full sm:max-w-md">
+                <DialogHeader className="border-border space-y-1 border-b pb-2">
+                    <div className="text-destructive flex items-center gap-2">
+                        <AlertTriangle className="h-5 w-5 shrink-0" />
+                        <DialogTitle className="text-foreground text-lg font-bold">{t('modal.delete_title', "O'chirishni tasdiqlang")}</DialogTitle>
                     </div>
-                    <DialogDescription className="text-xs text-muted-foreground">
+                    <DialogDescription className="text-muted-foreground text-xs">
                         {t('modal.delete_confirmation', "Ushbu ma'lumotni o'chirishga ishonchingiz komilmi? Ushbu amalni ortga qaytarib bo'lmaydi.")}
                     </DialogDescription>
                 </DialogHeader>
 
                 {displayName && (
-                    <div className="p-3 my-1 rounded-lg bg-destructive/10 border border-destructive/20 text-xs font-semibold text-destructive truncate">
+                    <div className="bg-destructive/10 border-destructive/20 text-destructive my-1 truncate rounded-lg border p-3 text-xs font-semibold">
                         "{displayName}"
                     </div>
                 )}
 
-                <DialogFooter className="flex items-center justify-end gap-3 pt-3 mt-2 border-t border-border">
+                <DialogFooter className="border-border mt-2 flex items-center justify-end gap-3 border-t pt-3">
                     <DialogClose asChild>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => setOpen && setOpen(false)}
-                        >
+                        <Button type="button" variant="outline" onClick={() => setOpen && setOpen(false)}>
                             {t('cancel', 'Bekor qilish')}
                         </Button>
                     </DialogClose>
 
-                    <Button
-                        type="button"
-                        variant="destructive"
-                        onClick={handleDelete}
-                    >
+                    <Button type="button" variant="destructive" onClick={handleDelete}>
                         {t('delete', "O'chirish")}
                     </Button>
                 </DialogFooter>

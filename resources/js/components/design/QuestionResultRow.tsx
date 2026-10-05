@@ -1,5 +1,6 @@
 import SafeHtml from '@/components/safe-html';
 import { cn } from '@/lib/utils';
+import { htmlToPlainText } from '@/utils/html';
 import { ChevronDown, VolumeX } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -127,10 +128,7 @@ export function QuestionResultRow({ index, question, answer, defaultExpanded = f
     const parsed = parseAnswerReview(answer);
 
     // Strip HTML for the header preview snippet
-    const questionSnippet = question
-        .replace(/<[^>]*>?/gm, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
+    const questionSnippet = htmlToPlainText(question);
 
     return (
         <div className={cn('border-border bg-card overflow-hidden rounded-xl border transition-colors', className)}>
