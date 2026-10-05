@@ -499,11 +499,11 @@ fun CefrBadge(
     }
 
     val (bg, text) = when (level) {
-        "C1" -> CefrC1Bg to CefrC1
-        "B2" -> CefrB2Bg to CefrB2
-        "B1" -> CefrB1Bg to CefrB1
-        "A2" -> CefrA2Bg to CefrA2
-        "A1" -> CefrA1Bg to CefrA1
+        "C1" -> CefrC1 to CefrC1Label
+        "B2" -> CefrB2 to CefrB2Label
+        "B1" -> CefrB1 to CefrB1Label
+        "A2" -> CefrA2 to CefrA2Label
+        "A1" -> CefrA1 to CefrA1Label
         else -> MaterialTheme.colorScheme.surfaceVariant to MaterialTheme.colorScheme.onSurfaceVariant
     }
 

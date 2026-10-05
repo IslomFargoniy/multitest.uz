@@ -2,46 +2,58 @@ package uz.multitest.app.core.theme
 
 import androidx.compose.ui.graphics.Color
 
-// 🌙 Night Focus Design Tokens (§2 & §6.1)
-val NightBackground = Color(0xFF0B0E14)
-val NightSurface = Color(0xFF121722)
-val NightSurface2 = Color(0xFF181F2E)
-val NightBorder = Color(0xFF222B3D)
-val NightBorderStrong = Color(0xFF2D384E)
-val NightTextPrimary = Color(0xFFF1F5F9)
-val NightTextMuted = Color(0xFF94A3B8)
-val NightPrimary = Color(0xFF2563EB)
-val NightPrimaryHover = Color(0xFF1D4ED8)
-val NightSuccess = Color(0xFF10B981)
-val NightSuccessBg = Color(0x1A10B981)
-val NightWarning = Color(0xFFF59E0B)
-val NightWarningBg = Color(0x1AF59E0B)
-val NightDestructive = Color(0xFFEF4444)
-val NightDestructiveBg = Color(0x1AEF4444)
-val NightChart = Color(0xFF3B82F6)
+// Night Focus design tokens: identical to the web (resources/css/app.css) so both clients look like one product.
 
-// 🎓 CEFR Colors (§2.3 & §6.1)
-val CefrA1 = Color(0xFF64748B)
-val CefrA1Bg = Color(0x2664748B)
-val CefrA2 = Color(0xFF38BDF8)
-val CefrA2Bg = Color(0x2638BDF8)
-val CefrB1 = Color(0xFF10B981)
-val CefrB1Bg = Color(0x2610B981)
-val CefrB2 = Color(0xFF3B82F6)
-val CefrB2Bg = Color(0x263B82F6)
-val CefrC1 = Color(0xFF8B5CF6)
-val CefrC1Bg = Color(0x268B5CF6)
+// Dark (default)
+val NightBackground = Color(0xFF0B1020)
+val NightSurface = Color(0xFF111830)
+val NightSurface2 = Color(0xFF172040)
+val NightSurfaceSunken = Color(0xFF0D1326)
+val NightBorder = Color(0xFF1E2744)
+val NightBorderStrong = Color(0xFF2A3557)
+val NightTextPrimary = Color(0xFFE8ECF5)
+val NightTextMuted = Color(0xFF9AA5BD)
+val NightPrimary = Color(0xFF5B63E6)
+val NightPrimaryHover = Color(0xFF4B52D1)
+val NightAccentText = Color(0xFFAEB5FF)
+val NightChart = Color(0xFF7B86FF)
+val NightSuccess = Color(0xFF3FCF8E)
+val NightSuccessBg = Color(0xFF173628)
+val NightWarning = Color(0xFFF5B14C)
+val NightWarningBg = Color(0xFF3A2A12)
+val NightDestructive = Color(0xFFF07178)
+val NightDestructiveBg = Color(0xFF3A1820)
 
-// ☀️ Clean Light Palette
-val LightBackground = Color(0xFFFFFFFF)
-val LightSurface = Color(0xFFF8FAFC)
-val LightSurface2 = Color(0xFFF1F5F9)
-val LightBorder = Color(0xFFE2E8F0)
-val LightBorderStrong = Color(0xFFCBD5E1)
-val LightTextPrimary = Color(0xFF0F172A)
-val LightTextMuted = Color(0xFF64748B)
+// Selected/current navigation state (must stay clearly visible: ≥ 1.4:1 vs the bar, ≥ 4.5:1 text on it)
+val NavActiveBg = Color(0xFF262F66)
+val NavActiveFg = Color(0xFFAEB5FF)
+val NavActiveBgLight = Color(0xFFC3C8FF)
+val NavActiveFgLight = Color(0xFF2E35A8)
 
-// Aliases for compatibility
+// Light
+val LightBackground = Color(0xFFF5F7FB)
+val LightSurface = Color(0xFFFFFFFF)
+val LightSurface2 = Color(0xFFEEF1F8)
+val LightSurfaceSunken = Color(0xFFF0F3F9)
+val LightBorder = Color(0xFFDDE3EF)
+val LightBorderStrong = Color(0xFFC9D1E2)
+val LightTextPrimary = Color(0xFF0F1424)
+val LightTextMuted = Color(0xFF566078)
+val LightPrimary = Color(0xFF4F57D9)
+
+// CEFR levels (UzBMB multilevel, 0–75): segment fill + label color on that fill
+val CefrA1 = Color(0xFF3A3F52)
+val CefrA1Label = Color(0xFFF1F3F8)
+val CefrA2 = Color(0xFF6B5A2E)
+val CefrA2Label = Color(0xFFF8EED3)
+val CefrB1 = Color(0xFF8A6F1E)
+val CefrB1Label = Color(0xFFFFF5DA)
+val CefrB2 = Color(0xFF3D4FA8)
+val CefrB2Label = Color(0xFFEEF1FF)
+val CefrC1 = Color(0xFF2F7A5A)
+val CefrC1Label = Color(0xFFE6FFF3)
+
+// Aliases kept so existing call sites compile
 val Primary = NightPrimary
 val BackgroundDark = NightBackground
 val SurfaceDark = NightSurface
@@ -58,14 +70,11 @@ val Destructive = NightDestructive
 val DestructiveBg = NightDestructiveBg
 val Chart = NightChart
 
-// Legacy aliases mapped to Night Focus tokens to keep existing callers working
 val ElectricIndigo = NightPrimary
 val ElectricIndigoDark = NightPrimary
 val ElectricIndigoLight = NightSurface2
 val IndigoPrimary = NightPrimary
 val IndigoAccent = NightPrimaryHover
-val RosePink = NightDestructive
-val CoralOrange = NightWarning
 val EmeraldGreen = NightSuccess
 val SlateBackgroundLight = LightBackground
 val SlateBackgroundDark = NightBackground

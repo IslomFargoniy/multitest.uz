@@ -33,7 +33,7 @@ const HeaderLink: React.FC<{ item: HeaderItem }> = ({ item }) => {
     const baseClasses =
         "text-sm font-semibold flex items-center gap-1 transition-colors relative py-1";
     const activeClasses =
-        "text-foreground after:absolute after:w-6 after:h-0.5 after:bg-primary after:rounded-full after:-bottom-1";
+        "text-nav-active-fg font-bold after:absolute after:w-6 after:h-0.5 after:bg-nav-active-fg after:rounded-full after:-bottom-1";
     const inactiveClasses =
         "text-muted-foreground hover:text-foreground";
 

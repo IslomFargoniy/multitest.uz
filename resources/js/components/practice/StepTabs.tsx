@@ -1,5 +1,4 @@
 import { type AttemptPart } from '@/types';
-import React from 'react';
 
 type StepTabsProps = {
     attempt_parts: AttemptPart[];
@@ -16,23 +15,17 @@ export default function StepTabs({ attempt_parts, active }: StepTabsProps) {
                 const isActive = p.id === active;
 
                 return (
-                    <div key={p.id} className="flex flex-1 max-w-[140px] flex-col gap-1.5 items-center">
+                    <div key={p.id} className="flex max-w-[140px] flex-1 flex-col items-center gap-1.5">
                         {/* 6px Progress Bar */}
                         <div
                             className={`h-1.5 w-full rounded-full transition-colors duration-300 ${
-                                isActive
-                                    ? 'bg-chart'
-                                    : isCompleted
-                                      ? 'bg-chart/60'
-                                      : 'bg-border'
+                                isActive ? 'bg-chart' : isCompleted ? 'bg-chart/60' : 'bg-border'
                             }`}
                         />
                         {/* Label under */}
                         <span
-                            className={`text-xs font-medium truncate max-w-full ${
-                                isActive
-                                    ? 'text-foreground font-semibold'
-                                    : 'text-muted-foreground'
+                            className={`max-w-full truncate text-xs font-medium ${
+                                isActive ? 'text-nav-active-fg font-bold' : 'text-muted-foreground'
                             }`}
                         >
                             {p.part?.name}
