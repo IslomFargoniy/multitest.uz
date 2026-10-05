@@ -1,5 +1,6 @@
 import DeleteItemModal from '@/components/delete-item-modal';
 import UpdateUserModal from '@/components/user/update-user-modal';
+import UserAvatarWithPreview from '@/components/user/UserAvatarWithPreview';
 import TablePagination from '@/components/ui/table-pagination';
 import { type UserPaginate, SearchData } from '@/types';
 import { useForm, router } from '@inertiajs/react';
@@ -53,11 +54,14 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
                                 <div key={item.id} className="p-4 flex flex-col gap-3 bg-card">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            {item.avatar ? (
-                                                <img src={item.avatar} alt={item.name} className="h-11 w-11 rounded-full object-cover border border-border" />
-                                            ) : (
-                                                <UserCircle className="h-11 w-11 text-muted-foreground" />
-                                            )}
+                                            <UserAvatarWithPreview
+                                                src={item.avatar}
+                                                name={item.name}
+                                                id={item.id}
+                                                username={item.username}
+                                                role={item.roles?.[0]?.name}
+                                                sizeClass="h-11 w-11"
+                                            />
                                             <div>
                                                 <div className="font-bold text-base text-foreground">{item.name}</div>
                                                 <div className="text-xs text-muted-foreground">{item.email || `@${item.username}` || '—'}</div>
@@ -110,13 +114,14 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
                                         </td>
                                         <td className="px-4 py-4">
                                             <div className="flex items-center gap-3">
-                                                {item.avatar ? (
-                                                    <img src={item.avatar} alt={item.name} className="h-10 w-10 rounded-full object-cover border border-border" />
-                                                ) : (
-                                                    <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground">
-                                                        <UserCircle className="h-6 w-6" />
-                                                    </div>
-                                                )}
+                                                <UserAvatarWithPreview
+                                                    src={item.avatar}
+                                                    name={item.name}
+                                                    id={item.id}
+                                                    username={item.username}
+                                                    role={item.roles?.[0]?.name}
+                                                    sizeClass="h-10 w-10"
+                                                />
                                                 <div>
                                                     <div className="font-bold text-sm text-foreground">{item.name}</div>
                                                     <div className="text-xs text-muted-foreground">ID: #{item.id}</div>

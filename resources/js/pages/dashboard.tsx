@@ -2,6 +2,7 @@ import { CefrBadge } from '@/components/design/CefrBadge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import UserAvatarWithPreview from '@/components/user/UserAvatarWithPreview';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type HourlyStatItem, type StatItem, type User, type WeeklyStatItem } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
@@ -51,16 +52,15 @@ export default function Dashboard() {
                 {/* Unified Hero Welcome & Action Card */}
                 <div className="border-border bg-card flex flex-col items-start justify-between gap-4 rounded-xl border p-5 shadow-sm sm:flex-row sm:items-center sm:p-6 dark:shadow-none">
                     <div className="flex items-center gap-4">
-                        <div className="relative shrink-0">
-                            {user.avatar ? (
-                                <img src={user.avatar} alt={user.name} className="border-border h-12 w-12 rounded-xl border object-cover" />
-                            ) : (
-                                <div className="bg-surface-2 text-primary border-border flex h-12 w-12 items-center justify-center rounded-xl border">
-                                    <LucideUserCircle className="h-7 w-7" />
-                                </div>
-                            )}
-                            <span className="border-card bg-success absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2" />
-                        </div>
+                        <UserAvatarWithPreview
+                            src={user.avatar}
+                            name={user.name}
+                            id={user.id}
+                            username={user.username}
+                            sizeClass="h-12 w-12"
+                            roundedClass="rounded-xl"
+                            showStatusDot
+                        />
                         <div className="flex flex-col gap-0.5">
                             <h1 className="text-foreground text-xl leading-tight font-bold tracking-tight sm:text-2xl">
                                 {t('welcome_back')}, {user.name.split(' ')[0]}! 👋
