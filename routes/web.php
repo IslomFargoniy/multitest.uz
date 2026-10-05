@@ -42,6 +42,7 @@ Route::get('/app/open', function (Request $request) {
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
+Route::view('/privacy', 'privacy')->name('privacy');
 Route::get('/landing-page-tests', [HomeController::class, 'landingPageTests'])->name('landing-page-tests');
 
 Route::middleware(['auth', 'verified'])->group(function () {

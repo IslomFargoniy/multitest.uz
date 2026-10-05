@@ -27,6 +27,11 @@ class PageSmokeTest extends TestCase
         $this->get('/')->assertOk();
     }
 
+    public function test_privacy_page_renders_for_guest(): void
+    {
+        $this->get('/privacy')->assertOk()->assertSee('Privacy Policy')->assertSee('MultiTest');
+    }
+
     public function test_attempt_index_works_on_sqlite_with_ai_score_avg(): void
     {
         $this->actingAs($this->admin())->get('/attempt')->assertOk();
