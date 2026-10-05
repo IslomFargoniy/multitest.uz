@@ -1,16 +1,17 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface CircularTimerProps {
     timeLeft: number;
     totalTime: number;
     phase: string;
+    /** Diameter in px; the compact variant (phones) hides the caption and shrinks the number. */
+    size?: number;
 }
 
-export default function CircularTimer({ timeLeft, totalTime, phase }: CircularTimerProps) {
+export default function CircularTimer({ timeLeft, totalTime, phase, size = 220 }: CircularTimerProps) {
     const { t } = useTranslation();
-    const size = 220;
-    const strokeWidth = 10;
+    const compact = size < 140;
+    const strokeWidth = compact ? 7 : 10;
     const radius = (size - strokeWidth) / 2;
     const circumference = 2 * Math.PI * radius;
 
@@ -32,21 +33,9 @@ export default function CircularTimer({ timeLeft, totalTime, phase }: CircularTi
 
     return (
         <div className="relative inline-flex flex-col items-center justify-center">
-            <svg
-                width={size}
-                height={size}
-                viewBox={`0 0 ${size} ${size}`}
-                className="-scale-x-100 rotate-[-90deg]"
-            >
+            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-scale-x-100 rotate-[-90deg]">
                 {/* Background track */}
-                <circle
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    fill="none"
-                    stroke="var(--border)"
-                    strokeWidth={strokeWidth}
-                />
+                <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="var(--border)" strokeWidth={strokeWidth} />
                 {/* Animated countdown arc */}
                 <circle
                     cx={size / 2}
@@ -63,11 +52,13 @@ export default function CircularTimer({ timeLeft, totalTime, phase }: CircularTi
             </svg>
 
             {/* Inner Circle Content */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
-                <span className="font-display text-[56px] font-bold leading-none tracking-tight text-foreground tabular-nums">
+            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center select-none">
+                <span
+                    className={`font-display text-foreground leading-none font-bold tracking-tight tabular-nums ${compact ? 'text-[26px]' : 'text-[56px]'}`}
+                >
                     {displayTime()}
                 </span>
-                <span className="text-[13px] font-medium text-muted-foreground mt-2">
+                <span className={`text-muted-foreground mt-2 text-[13px] font-medium ${compact ? 'hidden' : ''}`}>
                     {t('practice_show.seconds_left', 'soniya qoldi')}
                 </span>
             </div>

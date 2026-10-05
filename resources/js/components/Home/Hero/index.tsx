@@ -295,7 +295,7 @@ const Hero = () => {
                                 </div>
 
                                 {/* Score Breakdown Snippet */}
-                                <div className="mt-4 grid grid-cols-4 gap-2 text-center">
+                                <div className="mt-4 grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
                                     <div className="rounded-xl bg-secondary p-2">
                                         <p className="text-xs text-muted-foreground">{t('hero.card_fluency', 'Fluency')}</p>
                                         <p className="text-xs font-bold text-foreground">B2 (58)</p>

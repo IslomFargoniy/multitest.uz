@@ -39,7 +39,7 @@ export function PageHeader({ title, subtitle, breadcrumbs, actions, className }:
                         })}
                     </nav>
                 )}
-                <h1 className="text-foreground text-[28px] leading-tight font-bold tracking-tight">{title}</h1>
+                <h1 className="text-foreground text-[22px] leading-tight font-bold tracking-tight break-words sm:text-[28px]">{title}</h1>
                 {subtitle && <p className="text-muted-foreground mt-1 text-[14px] leading-normal">{subtitle}</p>}
             </div>
 

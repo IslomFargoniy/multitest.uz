@@ -39,6 +39,7 @@ VERSION_NAME=1.0.1
 ---
 
 ## 📜 Tarix (Changelog):
+- **v1.0.13 (code 14)**: Imtihon va natija ekranlarida jadval/rasmli savollar to'g'ri ko'rsatiladi (WebView, gorizontal aylantirish, chegara va padding), savol qismi aylanadi, javob tugmasi doim ko'rinadi.
 - **v1.0.12 (code 13)**: Pastki navigatsiyada aktiv bo'lim aniq ko'rinadi (yangi nav-active ranglari), palitra web bilan bir xil Night Focus tokenlariga keltirildi, gradientlar olib tashlandi, `GradientButton` → `PrimaryButton`.
 - **v1.0.10 (code 11)**: Javoblarni yuklash qayta urinish (retry) bilan, xatoda "Qayta urinish" ekrani (bo'limlar jimgina o'tkazib yuborilmaydi), audio faqat bir marta yuboriladi, vaqt belgilari UTC (ISO-8601), Mock'ga nomzod kodi (MSXXXXXXXX) bilan ulanish, demo-kod tugmasi olib tashlandi, Google tugmasi faqat `GOOGLE_WEB_CLIENT_ID` sozlanganda ko'rinadi, release imzosi `keystore.properties` orqali, backup o'chirildi.
 - **v1.0.9 (code 10)**: AI baholash JSON'ini tahlil qilish va natija kartochkalari.

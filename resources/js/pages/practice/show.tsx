@@ -14,7 +14,7 @@ export default function PracticeShow() {
             <Toaster position="top-center" richColors />
             <Head title={`${attempt_part.part?.name || t('practice_show.part_label')} - CEFR Speaking`} />
 
-            <div className="min-h-screen bg-background text-foreground">
+            <div className="min-h-dvh bg-background text-foreground">
                 <QuestionPlayer key={attempt_part.id} attempt_part={attempt_part} />
             </div>
         </AppShell>

@@ -289,13 +289,22 @@ private fun PartIntroView(
                 )
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = parseHtmlToPlainText(partDescription),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    lineHeight = 22.sp
+            if (partDescription.contains("<table", ignoreCase = true) || partDescription.contains("<img", ignoreCase = true)) {
+                HtmlContentView(
+                    html = partDescription,
+                    textColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.fillMaxWidth()
                 )
-            )
+            } else {
+                Text(
+                    text = parseHtmlToPlainText(partDescription),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        lineHeight = 22.sp
+                    )
+                )
+            }
         }
 
         if (isPlayingAudio) {
@@ -340,23 +349,25 @@ private fun QuestionActiveView(
     onStartRecordingNow: () -> Unit,
     onFinishEarly: () -> Unit
 ) {
+    // The question (which may hold a long table) scrolls; the timer state and the action button stay visible.
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
         ) {
-            // Question Counter & Phase Chips Row (§6.2)
-            Row(
+            // Question Counter & Phase Chips (stacked so they never overflow on narrow phones)
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Surface(
                     shape = RoundedCornerShape(8.dp),
@@ -415,7 +426,17 @@ private fun QuestionActiveView(
 
             // Question Box (24sp/700 per §6.2)
             MultiTestCard(shape = RoundedCornerShape(12.dp)) {
-                if (questionText.isNotBlank()) {
+                val hasRichContent = questionText.contains("<table", ignoreCase = true) ||
+                    questionText.contains("<img", ignoreCase = true)
+                if (questionText.isNotBlank() && hasRichContent) {
+                    // Tables and images need real HTML rendering; plain text would merge the columns and drop pictures.
+                    HtmlContentView(
+                        html = questionText,
+                        textColor = MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                } else if (questionText.isNotBlank()) {
                     Text(
                         text = parseHtmlToPlainText(questionText),
                         style = MaterialTheme.typography.headlineSmall.copy(
@@ -442,9 +463,9 @@ private fun QuestionActiveView(
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        // Bottom Controls / Waveform
+        // Bottom Controls / Waveform (always visible, outside the scrolling question area)
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()

@@ -35,14 +35,14 @@ export function ScoreSummary({ score, max = 75, source = 'ai', className, showSc
                 <div className="my-2 flex items-baseline gap-2">
                     {isPending ? (
                         <div className="flex items-baseline gap-3">
-                            <span className="font-display text-muted-foreground text-[56px] leading-none font-bold tabular-nums sm:text-[72px]">
+                            <span className="font-display text-muted-foreground text-[44px] leading-none font-bold tabular-nums sm:text-[56px]">
                                 —
                             </span>
                             <span className="text-muted-foreground text-[14px] font-medium">{t('score_summary.pending', 'Baholanmoqda')}</span>
                         </div>
                     ) : (
                         <div className="flex items-baseline">
-                            <span className="font-display text-foreground text-[56px] leading-none font-bold tracking-tight tabular-nums sm:text-[72px]">
+                            <span className="font-display text-foreground text-[44px] leading-none font-bold tracking-tight tabular-nums sm:text-[56px]">
                                 {score}
                             </span>
                             <span className="font-display text-muted-foreground ml-2 text-[22px] font-semibold tabular-nums sm:text-[28px]">

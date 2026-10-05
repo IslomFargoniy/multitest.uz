@@ -461,14 +461,23 @@ private fun QuestionResultRowItem(
                 // Question Text
                 val questionText = answer.question?.textarea
                 if (!questionText.isNullOrBlank()) {
-                    Text(
-                        text = parseHtmlToPlainText(questionText),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.onSurface,
-                            lineHeight = 22.sp,
-                            fontWeight = FontWeight.Medium
+                    if (questionText.contains("<table", ignoreCase = true) || questionText.contains("<img", ignoreCase = true)) {
+                        HtmlContentView(
+                            html = questionText,
+                            textColor = MaterialTheme.colorScheme.onSurface,
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier.fillMaxWidth()
                         )
-                    )
+                    } else {
+                        Text(
+                            text = parseHtmlToPlainText(questionText),
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.colorScheme.onSurface,
+                                lineHeight = 22.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        )
+                    }
                     Spacer(modifier = Modifier.height(12.dp))
                 }
 

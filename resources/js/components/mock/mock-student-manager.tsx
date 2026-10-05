@@ -1,12 +1,11 @@
+import { router, useForm } from '@inertiajs/react';
+import { Check, CheckCircle2, Clock, Copy, FileSpreadsheet, Plus, Printer, Trash2, Users } from 'lucide-react';
 import React, { useState } from 'react';
-import { useForm, router } from '@inertiajs/react';
-import { Users, Plus, Copy, Check, Trash2, Printer, CheckCircle2, Clock, FileSpreadsheet } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 export interface MockStudentItem {
@@ -44,7 +43,7 @@ export default function MockStudentManager({ mockId, mockName, students = [] }: 
                 toast.success(t('mock_students.added_success', "O'quvchilar ro'yxatga qo'shildi!"));
             },
             onError: (err: any) => {
-                toast.error(err?.names || t('error.create_failed', "Xatolik yuz berdi"));
+                toast.error(err?.names || t('error.create_failed', 'Xatolik yuz berdi'));
             },
         });
     };
@@ -141,10 +140,15 @@ export default function MockStudentManager({ mockId, mockName, students = [] }: 
                     [t('mock_exam.student_name', "O'quvchi Ismi")]: st.name,
                     [t('mock_exam.candidate_code', 'Nomzod Kodi')]: st.code,
                     [t('common.phone', 'Telefon')]: st.phone || '-',
-                    [t('mock_exam.attendance', 'Davomat')]: st.attended ? (t('attended', 'Qatnashdi')) : (t('pending', 'Kutilmoqda')),
-                    [t('overall_score', 'Umumiy Ball')]: att?.score != null ? att.score : (att?.ai_score_avg != null ? Number(att.ai_score_avg).toFixed(2) : '-'),
+                    [t('mock_exam.attendance', 'Davomat')]: st.attended ? t('attended', 'Qatnashdi') : t('pending', 'Kutilmoqda'),
+                    [t('overall_score', 'Umumiy Ball')]:
+                        att?.score != null ? att.score : att?.ai_score_avg != null ? Number(att.ai_score_avg).toFixed(2) : '-',
                     [t('tab_switches', 'Tab Almashtirish')]: att?.tab_switch_count ?? 0,
-                    [t('status', 'Holati')]: att?.finished_at ? (t('finished', 'Yakunlangan')) : (att?.started_at ? (t('in_progress', 'Jarayonda')) : (t('not_started', 'Boshlanmagan'))),
+                    [t('status', 'Holati')]: att?.finished_at
+                        ? t('finished', 'Yakunlangan')
+                        : att?.started_at
+                          ? t('in_progress', 'Jarayonda')
+                          : t('not_started', 'Boshlanmagan'),
                 };
             });
 
@@ -152,7 +156,7 @@ export default function MockStudentManager({ mockId, mockName, students = [] }: 
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, t('mock_exam.candidates', 'Nomzodlar'));
             XLSX.writeFile(workbook, `Mock_${mockName.replace(/\s+/g, '_')}_Nomzodlar.xlsx`);
-            toast.success(t('excel_export_success', "Excel fayl yuklab olindi!"));
+            toast.success(t('excel_export_success', 'Excel fayl yuklab olindi!'));
         });
     };
 
@@ -161,54 +165,51 @@ export default function MockStudentManager({ mockId, mockName, students = [] }: 
             <DialogTrigger asChild>
                 <button
                     type="button"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-foreground bg-surface-2 hover:bg-secondary rounded-lg transition-colors border border-border cursor-pointer"
+                    className="text-foreground bg-surface-2 hover:bg-secondary border-border inline-flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors"
                 >
-                    <Users className="w-3.5 h-3.5 text-muted-foreground" />
-                    <span>{t('students', "O'quvchilar")} ({students.length})</span>
+                    <Users className="text-muted-foreground h-3.5 w-3.5" />
+                    <span>
+                        {t('students', "O'quvchilar")} ({students.length})
+                    </span>
                 </button>
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-2xl w-full p-0 overflow-hidden rounded-xl bg-card border border-border shadow-lg flex flex-col max-h-[88vh]">
+            <DialogContent className="bg-card border-border flex max-h-[88vh] w-full flex-col overflow-hidden rounded-xl border p-0 shadow-lg sm:max-w-2xl">
                 {/* Header */}
-                <DialogHeader className="p-5 border-b border-border bg-surface-2 flex items-center justify-between">
+                <DialogHeader className="border-border bg-surface-2 flex items-center justify-between border-b p-5">
                     <div>
-                        <DialogTitle className="text-lg font-bold text-foreground flex items-center gap-2">
-                            <Users className="w-5 h-5 text-primary" />
+                        <DialogTitle className="text-foreground flex items-center gap-2 text-lg font-bold">
+                            <Users className="text-primary h-5 w-5" />
                             {t('mock_students.management', "Mock O'quvchilari Boshqaruvi")}
                         </DialogTitle>
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                            {t('test', 'Test')}: <span className="font-semibold text-foreground">{mockName}</span>
+                        <p className="text-muted-foreground mt-0.5 text-xs">
+                            {t('test', 'Test')}: <span className="text-foreground font-semibold">{mockName}</span>
                         </p>
                     </div>
                 </DialogHeader>
 
-                <div className="p-5 space-y-5 overflow-y-auto flex-1">
+                <div className="flex-1 space-y-5 overflow-y-auto p-5">
                     {/* Add Students Form */}
-                    <form onSubmit={handleAddStudents} className="space-y-3 bg-surface-2 p-4 rounded-lg border border-border">
-                        <Label htmlFor="names-input" className="text-xs font-semibold text-foreground">
+                    <form onSubmit={handleAddStudents} className="bg-surface-2 border-border space-y-3 rounded-lg border p-4">
+                        <Label htmlFor="names-input" className="text-foreground text-xs font-semibold">
                             {t('mock_students.add_names_label', "Yangi O'quvchilar Ismlarini Qo'shish (Har bir ismni yangi qatorga yozing)")}
                         </Label>
                         <textarea
                             id="names-input"
                             rows={3}
-                            placeholder={t('mock_students.placeholder', "Masalan:\nAnvar Karimov\nMalika Aliyeva\nSardor Qodirov")}
-                            className="w-full rounded-lg border border-border bg-card p-3 text-xs font-medium text-foreground placeholder:text-muted-foreground focus:outline-hidden"
+                            placeholder={t('mock_students.placeholder', 'Masalan:\nAnvar Karimov\nMalika Aliyeva\nSardor Qodirov')}
+                            className="border-border bg-card text-foreground placeholder:text-muted-foreground w-full rounded-lg border p-3 text-xs font-medium focus:outline-hidden"
                             value={data.names}
                             onChange={(e) => setData('names', e.target.value)}
                             required
                         />
 
                         <div className="flex items-center justify-between pt-1">
-                            <span className="text-xs text-muted-foreground">
-                                {t('mock_students.code_generation_note', "* Tizim har biriga avtomatik MSXXXXXXXX formatida kod generatsiya qiladi.")}
+                            <span className="text-muted-foreground text-xs">
+                                {t('mock_students.code_generation_note', '* Tizim har biriga avtomatik MSXXXXXXXX formatida kod generatsiya qiladi.')}
                             </span>
-                            <Button
-                                type="submit"
-                                size="sm"
-                                disabled={processing || !data.names.trim()}
-                                className="font-semibold text-xs"
-                            >
-                                <Plus className="w-3.5 h-3.5 mr-1" />
+                            <Button type="submit" size="sm" disabled={processing || !data.names.trim()} className="text-xs font-semibold">
+                                <Plus className="mr-1 h-3.5 w-3.5" />
                                 {t('common.add', "Qo'shish")}
                             </Button>
                         </div>
@@ -216,7 +217,7 @@ export default function MockStudentManager({ mockId, mockName, students = [] }: 
 
                     {/* Students List Toolbar */}
                     <div className="flex items-center justify-between">
-                        <h4 className="text-xs font-semibold text-muted-foreground">
+                        <h4 className="text-muted-foreground text-xs font-semibold">
                             {t('mock_students.registered_students', "Ro'yxatga Olinganlar")} ({students.length})
                         </h4>
                         {students.length > 0 && (
@@ -226,9 +227,9 @@ export default function MockStudentManager({ mockId, mockName, students = [] }: 
                                     variant="outline"
                                     size="sm"
                                     onClick={handleExportExcel}
-                                    className="text-xs font-semibold flex items-center gap-1.5"
+                                    className="flex items-center gap-1.5 text-xs font-semibold"
                                 >
-                                    <FileSpreadsheet className="w-3.5 h-3.5 text-success" />
+                                    <FileSpreadsheet className="text-success h-3.5 w-3.5" />
                                     {t('excel', 'Excel')}
                                 </Button>
                                 <Button
@@ -236,10 +237,10 @@ export default function MockStudentManager({ mockId, mockName, students = [] }: 
                                     variant="outline"
                                     size="sm"
                                     onClick={handlePrintPasses}
-                                    className="text-xs font-semibold flex items-center gap-1.5"
+                                    className="flex items-center gap-1.5 text-xs font-semibold"
                                 >
-                                    <Printer className="w-3.5 h-3.5 text-muted-foreground" />
-                                    {t('print_passes', "Chop Etish")}
+                                    <Printer className="text-muted-foreground h-3.5 w-3.5" />
+                                    {t('print_passes', 'Chop Etish')}
                                 </Button>
                             </div>
                         )}
@@ -247,57 +248,61 @@ export default function MockStudentManager({ mockId, mockName, students = [] }: 
 
                     {/* Table */}
                     {students.length === 0 ? (
-                        <div className="text-center py-8 border border-dashed border-border rounded-lg text-xs text-muted-foreground">
+                        <div className="border-border text-muted-foreground rounded-lg border border-dashed py-8 text-center text-xs">
                             {t('mock_students.no_students_yet', "Hali o'quvchilar qo'shilmagan. Yuqoridagi maydonga ismlarni kiriting.")}
                         </div>
                     ) : (
-                        <div className="rounded-lg border border-border overflow-hidden">
-                            <table className="w-full text-xs text-left border-collapse">
-                                <thead className="bg-surface-2 text-muted-foreground font-semibold text-xs">
+                        <div className="border-border overflow-x-auto rounded-lg border">
+                            <table className="w-full min-w-[560px] border-collapse text-left text-xs">
+                                <thead className="bg-surface-2 text-muted-foreground text-xs font-semibold">
                                     <tr>
                                         <th className="px-3.5 py-2.5">{t('mock_exam.student_name', "O'quvchi Ismi")}</th>
-                                        <th className="px-3.5 py-2.5">{t('mock_exam.candidate_code', "Nomzod Kodi (MSXXXXXXXX)")}</th>
-                                        <th className="px-3.5 py-2.5 text-center">{t('mock_exam.attendance', "Davomat")}</th>
-                                        <th className="px-3.5 py-2.5 text-right">{t('common.actions', "Amal")}</th>
+                                        <th className="px-3.5 py-2.5">{t('mock_exam.candidate_code', 'Nomzod Kodi (MSXXXXXXXX)')}</th>
+                                        <th className="px-3.5 py-2.5 text-center">{t('mock_exam.attendance', 'Davomat')}</th>
+                                        <th className="px-3.5 py-2.5 text-right">{t('common.actions', 'Amal')}</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-border bg-card">
+                                <tbody className="divide-border bg-card divide-y">
                                     {students.map((item) => (
                                         <tr key={item.id} className="hover:bg-surface-2/60 transition-colors">
-                                            <td className="px-3.5 py-2.5 font-semibold text-foreground">
-                                                {item.name}
-                                            </td>
-                                            <td className="px-3.5 py-2.5 font-mono font-semibold text-primary">
-                                                <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-border bg-surface-2">
+                                            <td className="text-foreground px-3.5 py-2.5 font-semibold">{item.name}</td>
+                                            <td className="text-primary px-3.5 py-2.5 font-mono font-semibold">
+                                                <div className="border-border bg-surface-2 inline-flex items-center gap-1.5 rounded border px-2 py-0.5">
                                                     <span>{item.code}</span>
                                                     <button
                                                         type="button"
                                                         onClick={() => copyCode(item.code)}
-                                                        className="hover:text-foreground transition-colors cursor-pointer"
-                                                        title={t('common.copy', "Nusxalash")}
+                                                        className="hover:text-foreground cursor-pointer transition-colors"
+                                                        title={t('common.copy', 'Nusxalash')}
                                                     >
-                                                        {copiedCode === item.code ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5 text-muted-foreground" />}
+                                                        {copiedCode === item.code ? (
+                                                            <Check className="text-success h-3.5 w-3.5" />
+                                                        ) : (
+                                                            <Copy className="text-muted-foreground h-3.5 w-3.5" />
+                                                        )}
                                                     </button>
                                                 </div>
                                             </td>
                                             <td className="px-3.5 py-2.5 text-center">
-                                                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold ${
-                                                    item.attended
-                                                        ? 'bg-success/10 text-success border border-success/20'
-                                                        : 'bg-warning/10 text-warning border border-warning/20'
-                                                }`}>
-                                                    {item.attended ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                                                    {item.attended ? (t('attended', 'Qatnashdi')) : (t('pending', 'Kutilmoqda'))}
+                                                <span
+                                                    className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-semibold ${
+                                                        item.attended
+                                                            ? 'bg-success/10 text-success border-success/20 border'
+                                                            : 'bg-warning/10 text-warning border-warning/20 border'
+                                                    }`}
+                                                >
+                                                    {item.attended ? <CheckCircle2 className="h-3 w-3" /> : <Clock className="h-3 w-3" />}
+                                                    {item.attended ? t('attended', 'Qatnashdi') : t('pending', 'Kutilmoqda')}
                                                 </span>
                                             </td>
                                             <td className="px-3.5 py-2.5 text-right">
                                                 <button
                                                     type="button"
                                                     onClick={() => handleDelete(item.id)}
-                                                    className="p-1.5 text-destructive hover:bg-destructive/10 rounded transition-colors cursor-pointer"
+                                                    className="text-destructive hover:bg-destructive/10 cursor-pointer rounded p-1.5 transition-colors"
                                                     title={t('delete', "O'chirish")}
                                                 >
-                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                    <Trash2 className="h-3.5 w-3.5" />
                                                 </button>
                                             </td>
                                         </tr>
@@ -308,7 +313,7 @@ export default function MockStudentManager({ mockId, mockName, students = [] }: 
                     )}
                 </div>
 
-                <DialogFooter className="p-4 border-t border-border bg-surface-2">
+                <DialogFooter className="border-border bg-surface-2 border-t p-4">
                     <DialogClose asChild>
                         <Button type="button" variant="outline" size="sm">
                             {t('common.close', 'Yopish')}

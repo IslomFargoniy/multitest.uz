@@ -93,7 +93,7 @@ export default function Welcome() {
                 <meta property="og:type" content="website" />
             </Head>
 
-            <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
+            <div className="min-h-dvh bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
                 {!isMobile && <Header />}
 
                 <main>

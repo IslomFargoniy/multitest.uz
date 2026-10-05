@@ -137,21 +137,21 @@ export function QuestionResultRow({ index, question, answer, defaultExpanded = f
                 type="button"
                 aria-expanded={isExpanded}
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="hover:bg-secondary/40 focus-visible:ring-ring flex w-full items-center justify-between gap-3 p-4 text-left transition-colors focus:outline-none focus-visible:ring-2"
+                className="hover:bg-secondary/40 focus-visible:ring-ring flex w-full flex-wrap items-center justify-between gap-x-3 gap-y-2 p-4 text-left transition-colors focus:outline-none focus-visible:ring-2 sm:flex-nowrap"
             >
-                <div className="flex min-w-0 flex-1 items-center gap-3">
+                <div className="flex min-w-0 basis-full items-start gap-3 sm:flex-1 sm:basis-auto sm:items-center">
                     {/* 32px number chip */}
                     <div className="bg-secondary text-accent-text font-display flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-semibold select-none">
                         {index.toString().padStart(2, '0')}
                     </div>
 
                     {/* Question 15/600 */}
-                    <div className="text-foreground min-w-0 flex-1 truncate text-[15px] font-semibold">
+                    <div className="text-foreground line-clamp-2 min-w-0 flex-1 text-[15px] font-semibold break-words sm:truncate">
                         {questionSnippet || `${t('question_result.question', 'Savol')} ${index}`}
                     </div>
                 </div>
 
-                <div className="flex shrink-0 items-center gap-3">
+                <div className="flex w-full shrink-0 items-center justify-between gap-3 pl-11 sm:w-auto sm:justify-end sm:pl-0">
                     <StatusPill status={parsed.status} />
 
                     {/* Score Space Grotesk */}

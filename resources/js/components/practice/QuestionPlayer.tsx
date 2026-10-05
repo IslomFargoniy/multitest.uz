@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import type { AttemptPart, Part, Question } from '@/types';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
-import { AlertTriangle, Check, CloudUpload, Info, Maximize, Mic, Minimize, ShieldAlert, Timer, Volume2 } from 'lucide-react';
+import { AlertTriangle, Check, CloudUpload, Maximize, Minimize, ShieldAlert } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -378,33 +378,33 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
             onCopy={(e) => e.preventDefault()}
             onCut={(e) => e.preventDefault()}
             onPaste={(e) => e.preventDefault()}
-            className="w-full min-h-screen flex flex-col bg-background text-foreground select-none"
+            className="bg-background text-foreground flex min-h-dvh w-full flex-col select-none"
         >
             {/* Anti-Cheat Violation Warning Modal Overlay */}
             {showViolationModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 animate-in fade-in">
-                    <div className="w-full max-w-md space-y-4 rounded-2xl border border-border bg-card p-6 text-center shadow-sm dark:shadow-none">
-                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
+                <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+                    <div className="border-border bg-card w-full max-w-md space-y-4 rounded-2xl border p-6 text-center shadow-sm dark:shadow-none">
+                        <div className="bg-destructive/10 text-destructive mx-auto flex h-12 w-12 items-center justify-center rounded-xl">
                             <ShieldAlert className="h-6 w-6" />
                         </div>
                         <div>
-                            <h3 className="text-[18px] font-bold text-foreground">
+                            <h3 className="text-foreground text-[18px] font-bold">
                                 {t('question_player.violation_title', 'Qoidabuzarlik qayd etildi')}
                             </h3>
-                            <p className="mt-2 text-[15px] leading-relaxed text-muted-foreground">
-                                {t('question_player.violation_desc', "Imtihon davomida boshqa oynaga (tab) o'tish yoki ilovani yashirish taqiqlanadi. Har bir holat tizim tomonidan qayd etilmoqda.")}
+                            <p className="text-muted-foreground mt-2 text-[15px] leading-relaxed">
+                                {t(
+                                    'question_player.violation_desc',
+                                    "Imtihon davomida boshqa oynaga (tab) o'tish yoki ilovani yashirish taqiqlanadi. Har bir holat tizim tomonidan qayd etilmoqda.",
+                                )}
                             </p>
                         </div>
-                        <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 bg-destructive/10 text-destructive text-xs font-semibold border border-destructive/20">
-                            <span>{t('question_player.violations_count', 'Buzilishlar soni')}: {tabSwitchCount} marta</span>
+                        <div className="bg-destructive/10 text-destructive border-destructive/20 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold">
+                            <span>
+                                {t('question_player.violations_count', 'Buzilishlar soni')}: {tabSwitchCount} marta
+                            </span>
                         </div>
                         <div className="pt-2">
-                            <Button
-                                type="button"
-                                variant="default"
-                                className="w-full"
-                                onClick={() => setShowViolationModal(false)}
-                            >
+                            <Button type="button" variant="default" className="w-full" onClick={() => setShowViolationModal(false)}>
                                 {t('question_player.continue_test', 'Tushundim, testni davom ettirish')}
                             </Button>
                         </div>
@@ -413,25 +413,25 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
             )}
 
             {/* Top Bar (sunken, border-b): left {test} · {part} (700) + Savol {i}/{n} (13 muted), middle part progress, right exit button */}
-            <header className="h-14 bg-surface-sunken border-b border-border px-4 sm:px-6 flex items-center justify-between gap-4 sticky top-0 z-30">
-                <div className="flex items-center gap-3 min-w-0">
-                    <span className="font-bold text-sm text-foreground truncate">
+            <header className="bg-surface-sunken border-border sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b px-4 sm:px-6">
+                <div className="flex min-w-0 items-center gap-3">
+                    <span className="text-foreground truncate text-sm font-bold">
                         {attempt_part.attempt?.mock?.name || attempt_part.attempt?.test?.name || 'CEFR Speaking'} · {part.name}
                     </span>
                     {index >= 0 && (
-                        <span className="text-[13px] text-muted-foreground whitespace-nowrap">
+                        <span className="text-muted-foreground text-[13px] whitespace-nowrap">
                             Savol {index + 1} / {questions.length}
                         </span>
                     )}
                 </div>
 
-                <div className="hidden md:flex flex-1 justify-center max-w-md">
+                <div className="hidden max-w-md flex-1 justify-center md:flex">
                     <StepTabs attempt_parts={attempt_part.attempt?.attempt_parts ?? []} active={attempt_part.id} />
                 </div>
 
                 <div className="flex items-center gap-2">
                     {tabSwitchCount > 0 && (
-                        <span className="hidden sm:inline-flex items-center gap-1 rounded-lg border border-destructive/20 bg-destructive/10 px-2.5 py-1 text-xs font-semibold text-destructive">
+                        <span className="border-destructive/20 bg-destructive/10 text-destructive hidden items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-semibold sm:inline-flex">
                             <AlertTriangle className="h-3.5 w-3.5" />
                             {tabSwitchCount} ta ogohlantirish
                         </span>
@@ -439,7 +439,7 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
                     <button
                         type="button"
                         onClick={toggleFullscreen}
-                        className="flex h-9 w-9 items-center justify-center rounded-lg border border-border-strong bg-surface-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                        className="border-border-strong bg-surface-2 text-muted-foreground hover:text-foreground flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border transition-colors"
                         title={isFullscreen ? t('common.exit_fullscreen') : t('common.fullscreen')}
                     >
                         {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
@@ -451,62 +451,54 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
             </header>
 
             {/* Main (max 1200, wrap) */}
-            <main className="w-full max-w-[1200px] mx-auto px-4 py-6 sm:px-6 sm:py-8 flex-1 flex flex-col justify-center">
-                <div className="flex flex-col lg:flex-row gap-6 items-stretch">
+            <main className="mx-auto flex w-full max-w-[1200px] flex-1 flex-col justify-center px-4 py-6 sm:px-6 sm:py-8">
+                <div className="flex flex-col items-stretch gap-4 lg:flex-row lg:gap-6">
                     {/* Left card (flex 999 1 520px, padding 40, vertically centered) */}
-                    <div className="flex-[999_1_520px] rounded-xl border border-border bg-card p-6 sm:p-10 flex flex-col justify-center min-h-[460px] shadow-sm dark:shadow-none">
+                    <div className="border-border bg-card flex w-full min-w-0 flex-col justify-center rounded-xl border p-4 shadow-sm sm:p-6 lg:min-h-[460px] lg:flex-[999_1_520px] lg:p-10 dark:shadow-none">
                         {phase === 'introduction' ? (
                             <div className="space-y-4">
-                                <span className="text-xs font-semibold text-muted-foreground block">
+                                <span className="text-muted-foreground block text-xs font-semibold">
                                     {t('question_player.introduction', 'Kirish')}
                                 </span>
-                                <h2 className="text-[28px] sm:text-[36px] font-bold text-foreground leading-tight tracking-tight">
+                                <h2 className="text-foreground text-[22px] leading-snug font-semibold tracking-tight break-words sm:text-[28px] lg:text-[36px] lg:leading-tight lg:font-bold">
                                     {part.name}
                                 </h2>
                                 <SafeHtml
-                                    className="text-base sm:text-lg leading-relaxed text-muted-foreground mt-4"
+                                    className="text-muted-foreground mt-4 min-w-0 text-base leading-relaxed break-words sm:text-lg"
                                     html={part.description}
                                 />
                             </div>
                         ) : phase === 'uploading' ? (
                             uploadError ? (
-                                <div role="alert" className="flex flex-col items-center justify-center space-y-6 py-12 text-center max-w-md mx-auto">
-                                    <NoticeBanner
-                                        tone="danger"
-                                        title={t('question_player.upload_failed_title', 'Javoblar yuklanmadi')}
-                                    >
+                                <div role="alert" className="mx-auto flex max-w-md flex-col items-center justify-center space-y-6 py-12 text-center">
+                                    <NoticeBanner tone="danger" title={t('question_player.upload_failed_title', 'Javoblar yuklanmadi')}>
                                         {t(
                                             'question_player.upload_failed_desc',
                                             'Internet aloqasini tekshiring. Javoblaringiz yo‘qolmaydi, qayta urinib ko‘ring.',
                                         )}
                                     </NoticeBanner>
-                                    <Button
-                                        type="button"
-                                        variant="default"
-                                        onClick={() => void finalize()}
-                                        className="px-8"
-                                    >
+                                    <Button type="button" variant="default" onClick={() => void finalize()} className="px-8">
                                         {t('question_player.retry', 'Qayta urinish')}
                                     </Button>
                                 </div>
                             ) : (
                                 <div className="flex flex-col items-center justify-center space-y-4 py-16 text-center">
-                                    <CloudUpload className="h-10 w-10 text-accent-text animate-pulse" />
-                                    <h2 className="text-2xl font-bold text-foreground">
+                                    <CloudUpload className="text-accent-text h-10 w-10 animate-pulse" />
+                                    <h2 className="text-foreground text-2xl font-bold">
                                         {t('question_player.uploading_title', 'Javoblar saqlanmoqda')}
                                     </h2>
-                                    <p className="text-sm text-muted-foreground max-w-sm">
+                                    <p className="text-muted-foreground max-w-sm text-sm">
                                         {t('question_player.uploading_desc', 'Iltimos, kuting. Natijalaringiz tizimga yuborilmoqda.')}
                                     </p>
                                 </div>
                             )
                         ) : (
-                            <div className="space-y-4">
-                                <span className="text-xs font-semibold text-muted-foreground block">
+                            <div className="min-w-0 space-y-4">
+                                <span className="text-muted-foreground block text-xs font-semibold">
                                     Savol {index + 1} / {questions.length}
                                 </span>
                                 <SafeHtml
-                                    className="text-[28px] sm:text-[36px] font-bold text-foreground leading-tight tracking-tight"
+                                    className="text-foreground min-w-0 text-[22px] leading-snug font-semibold tracking-tight break-words sm:text-[28px] lg:text-[36px] lg:leading-tight lg:font-bold"
                                     html={question?.textarea ?? ''}
                                 />
                             </div>
@@ -514,13 +506,13 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
                     </div>
 
                     {/* Right card (flex 1 1 340px, centered column, gap 24) */}
-                    <div className="flex-[1_1_340px] rounded-xl border border-border bg-card p-6 sm:p-8 flex flex-col items-center justify-center gap-6 min-h-[460px] shadow-sm dark:shadow-none">
+                    <div className="border-border bg-card sticky bottom-0 z-20 flex w-full flex-col items-center justify-center gap-3 rounded-xl border p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-sm sm:p-4 lg:static lg:min-h-[460px] lg:flex-[1_1_340px] lg:gap-6 lg:p-8 lg:pb-8 dark:shadow-none">
                         {/* Phase chips grid(3): Tinglash / Tayyorlanish / Gapiring */}
-                        <div className="grid grid-cols-3 gap-2 w-full">
+                        <div className="grid w-full grid-cols-3 gap-2">
                             {/* Chip 1: Tinglash */}
                             <div
                                 className={cn(
-                                    'flex items-center justify-center gap-1 py-2 px-2 rounded-lg text-xs transition-colors text-center',
+                                    'flex min-h-9 items-center justify-center gap-1 rounded-lg px-1.5 py-1.5 text-center text-xs leading-tight transition-colors',
                                     phase === 'audio' || phase === 'introduction'
                                         ? 'bg-primary text-primary-foreground font-bold'
                                         : phase === 'ready' || phase === 'recording' || phase === 'uploading'
@@ -535,7 +527,7 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
                             {/* Chip 2: Tayyorlanish */}
                             <div
                                 className={cn(
-                                    'flex items-center justify-center gap-1 py-2 px-2 rounded-lg text-xs transition-colors text-center',
+                                    'flex min-h-9 items-center justify-center gap-1 rounded-lg px-1.5 py-1.5 text-center text-xs leading-tight transition-colors',
                                     phase === 'ready'
                                         ? 'bg-primary text-primary-foreground font-bold'
                                         : phase === 'recording' || phase === 'uploading'
@@ -550,7 +542,7 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
                             {/* Chip 3: Gapiring */}
                             <div
                                 className={cn(
-                                    'flex items-center justify-center gap-1 py-2 px-2 rounded-lg text-xs transition-colors text-center',
+                                    'flex min-h-9 items-center justify-center gap-1 rounded-lg px-1.5 py-1.5 text-center text-xs leading-tight transition-colors',
                                     phase === 'recording'
                                         ? 'bg-primary text-primary-foreground font-bold'
                                         : phase === 'uploading'
@@ -564,32 +556,37 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
                         </div>
 
                         {/* Ring timer 220px: conic ring, inner circle card color, number Space Grotesk 56/700 */}
-                        <CircularTimer timeLeft={timer} totalTime={totalTime} phase={phase} />
-
-                        {/* Mic level meter 40px bars, green; above it ● Yozilmoqda */}
-                        {phase === 'recording' && (
-                            <div className="w-full flex flex-col items-center gap-3">
-                                <LiveAudioMeter stream={streamRef.current} />
-                                <Button
-                                    type="button"
-                                    variant="secondary"
-                                    className="w-full"
-                                    onClick={() => {
-                                        if (recorderRef.current && recorderRef.current.state === 'recording') {
-                                            recorderRef.current.stop();
-                                        }
-                                    }}
-                                >
-                                    {t('question_player.finish_answer', 'Javobni yakunlash')}
-                                </Button>
+                        <div className="flex w-full items-center justify-center gap-4 lg:flex-col lg:gap-6">
+                            <div className="hidden lg:block">
+                                <CircularTimer timeLeft={timer} totalTime={totalTime} phase={phase} />
                             </div>
-                        )}
+                            <div className="shrink-0 lg:hidden">
+                                <CircularTimer timeLeft={timer} totalTime={totalTime} phase={phase} size={88} />
+                            </div>
+
+                            {/* Mic level meter 40px bars, green; above it ● Yozilmoqda */}
+                            {phase === 'recording' && (
+                                <div className="flex min-w-0 flex-1 flex-col items-center gap-3 lg:w-full lg:flex-none">
+                                    <LiveAudioMeter stream={streamRef.current} />
+                                    <Button
+                                        type="button"
+                                        variant="secondary"
+                                        className="w-full"
+                                        onClick={() => {
+                                            if (recorderRef.current && recorderRef.current.state === 'recording') {
+                                                recorderRef.current.stop();
+                                            }
+                                        }}
+                                    >
+                                        {t('question_player.finish_answer', 'Javobni yakunlash')}
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
 
                         {/* Last save status line 13 muted */}
                         {index > 0 && (
-                            <span className="text-[13px] text-muted-foreground text-center">
-                                {index}-savol javobi saqlandi ✓
-                            </span>
+                            <span className="text-muted-foreground hidden text-center text-[13px] lg:block">{index}-savol javobi saqlandi ✓</span>
                         )}
                     </div>
                 </div>
@@ -643,22 +640,19 @@ function LiveAudioMeter({ stream }: { stream: MediaStream | null }) {
 
     return (
         <div className="flex flex-col items-center gap-2">
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-success">
-                <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
+            <div className="text-success flex items-center gap-1.5 text-xs font-semibold">
+                <span className="bg-success h-2 w-2 animate-pulse rounded-full" />
                 <span>{t('question_player.recording_now', 'Yozilmoqda')}</span>
             </div>
             {/* 40px bars */}
-            <div className="flex h-10 items-end gap-1 px-3 py-1 rounded-lg bg-surface-2 border border-border">
+            <div className="bg-surface-2 border-border flex h-10 items-end gap-1 rounded-lg border px-3 py-1">
                 {[15, 30, 45, 60, 75, 90, 100].map((threshold, idx) => {
                     const isActive = level >= threshold || (level > 8 && idx < 2);
                     const barHeight = isActive ? Math.max(12, Math.min(36, Math.round((level / 100) * 36) + (idx % 2 === 0 ? 4 : -2))) : 6;
                     return (
                         <div
                             key={idx}
-                            className={cn(
-                                'w-1.5 rounded-full transition-all duration-75',
-                                isActive ? 'bg-success' : 'bg-muted-foreground/30',
-                            )}
+                            className={cn('w-1.5 rounded-full transition-all duration-75', isActive ? 'bg-success' : 'bg-muted-foreground/30')}
                             style={{ height: `${barHeight}px` }}
                         />
                     );

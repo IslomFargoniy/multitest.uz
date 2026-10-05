@@ -20,7 +20,7 @@ export default function ErrorPage({ status }: { status: number }) {
     });
 
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background px-4 text-center">
+        <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-background px-4 text-center">
             <Head title={`${status} - ${title}`} />
             <p className="text-6xl font-display font-black text-primary">{status}</p>
             <h1 className="text-2xl font-bold text-foreground">{title}</h1>
