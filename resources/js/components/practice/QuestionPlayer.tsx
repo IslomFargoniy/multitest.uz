@@ -9,7 +9,7 @@ import type { AttemptPart, Part, Question } from '@/types';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { AlertTriangle, Check, CloudUpload, Maximize, Minimize, ShieldAlert } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const RETRY_DELAYS_MS = [1000, 3000, 9000];
@@ -107,11 +107,11 @@ export default function QuestionPlayer({ attempt_part }: { attempt_part: Attempt
         return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
     }, [attempt_part, phase]);
 
-    const handleExit = () => {
+    const handleExit = useCallback(() => {
         if (confirm(t('question_player.exit_confirm', 'Haqiqatan ham testdan chiqmoqchimisiz? Natijalaringiz saqlanmasligi mumkin.'))) {
             router.visit('/dashboard');
         }
-    };
+    }, [t]);
 
     // Show native BackButton to exit test with confirmation
     useTelegramBackButton(phase !== 'uploading', handleExit);

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 export function TelegramThemeProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
@@ -75,11 +75,20 @@ export const useHaptic = () => {
 };
 
 export function useTelegramMainButton(text: string, show: boolean, onClick: () => void, loading = false) {
+    const callbackRef = useRef(onClick);
+    useEffect(() => {
+        callbackRef.current = onClick;
+    }, [onClick]);
+
     useEffect(() => {
         const tg = window.Telegram?.WebApp;
         if (!tg || tg.platform === 'unknown') return;
 
         const mainButton = tg.MainButton;
+        const handleClick = () => {
+            callbackRef.current?.();
+        };
+
         mainButton.setText(text);
 
         if (show) {
@@ -94,21 +103,36 @@ export function useTelegramMainButton(text: string, show: boolean, onClick: () =
             mainButton.hideProgress();
         }
 
-        mainButton.onClick(onClick);
+        mainButton.onClick(handleClick);
 
         return () => {
-            mainButton.offClick(onClick);
-            mainButton.hide();
+            mainButton.offClick(handleClick);
         };
-    }, [text, show, onClick, loading]);
+    }, [text, show, loading]);
+
+    useEffect(() => {
+        return () => {
+            const tg = window.Telegram?.WebApp;
+            if (!tg || tg.platform === 'unknown') return;
+            tg.MainButton?.hide();
+        };
+    }, []);
 }
 
 export function useTelegramBackButton(show: boolean, onClick: () => void) {
+    const callbackRef = useRef(onClick);
+    useEffect(() => {
+        callbackRef.current = onClick;
+    }, [onClick]);
+
     useEffect(() => {
         const tg = window.Telegram?.WebApp;
         if (!tg || tg.platform === 'unknown') return;
 
         const backButton = tg.BackButton;
+        const handleClick = () => {
+            callbackRef.current?.();
+        };
 
         if (show) {
             backButton.show();
@@ -116,11 +140,18 @@ export function useTelegramBackButton(show: boolean, onClick: () => void) {
             backButton.hide();
         }
 
-        backButton.onClick(onClick);
+        backButton.onClick(handleClick);
 
         return () => {
-            backButton.offClick(onClick);
-            backButton.hide();
+            backButton.offClick(handleClick);
         };
-    }, [show, onClick]);
+    }, [show]);
+
+    useEffect(() => {
+        return () => {
+            const tg = window.Telegram?.WebApp;
+            if (!tg || tg.platform === 'unknown') return;
+            tg.BackButton?.hide();
+        };
+    }, []);
 }
