@@ -98,4 +98,17 @@ class MockEntryTest extends TestCase
             'id' => $response->json('data.attempt_id'),
         ]);
     }
+
+    public function test_api_reviewer_candidate_code_always_joins_mock(): void
+    {
+        $test = \App\Models\Test::factory()->create(['is_public' => true]);
+        $part = \App\Models\Part::factory()->create(['test_id' => $test->id]);
+        \App\Models\Question::factory()->create(['part_id' => $part->id]);
+
+        $response = $this->postJson('/api/v1/auth/candidate', ['code' => 'MS77777777']);
+
+        $response->assertOk()
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.name', 'Google Play Reviewer');
+    }
 }

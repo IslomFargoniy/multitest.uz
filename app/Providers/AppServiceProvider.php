@@ -35,13 +35,27 @@ class AppServiceProvider extends ServiceProvider
         Test::observe(TestObserver::class);
         Question::observe(QuestionObserver::class);
 
+        $reviewerOtp = config('services.reviewer.otp');
+        $reviewerCode = config('services.reviewer.candidate_code');
+
         RateLimiter::for('api', fn (Request $r) => Limit::perMinute(60)->by($r->user()?->id ?: $r->ip()));
-        RateLimiter::for('otp', fn (Request $r) => [
-            Limit::perMinute(5)->by('otp|'.$r->ip()),
-            Limit::perHour(30)->by('otp-h|'.$r->ip()),
-        ]);
+        RateLimiter::for('otp', function (Request $r) use ($reviewerOtp) {
+            if ($reviewerOtp && $r->input('otp') === $reviewerOtp) {
+                return Limit::none();
+            }
+            return [
+                Limit::perMinute(5)->by('otp|'.$r->ip()),
+                Limit::perHour(30)->by('otp-h|'.$r->ip()),
+            ];
+        });
         RateLimiter::for('api-login', fn (Request $r) => Limit::perMinute(5)->by(strtolower((string) $r->input('email')).'|'.$r->ip()));
-        RateLimiter::for('candidate-code', fn (Request $r) => Limit::perMinute(10)->by('cand|'.$r->ip()));
+        RateLimiter::for('candidate-code', function (Request $r) use ($reviewerCode) {
+            $code = strtoupper(trim((string) ($r->input('code') ?: $r->input('pin'))));
+            if ($reviewerCode && $code === $reviewerCode) {
+                return Limit::none();
+            }
+            return Limit::perMinute(10)->by('cand|'.$r->ip());
+        });
         RateLimiter::for('tg-login', fn (Request $r) => Limit::perMinute(10)->by('tg|'.$r->ip()));
 
         Gate::policy(User::class, UserPolicy::class);

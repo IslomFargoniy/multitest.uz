@@ -55,4 +55,9 @@ return [
         'per_question_notify' => (bool) env('TELEGRAM_PER_QUESTION_NOTIFY', true),
     ],
 
+    'reviewer' => [
+        'otp' => env('REVIEWER_OTP', '777888'),
+        'candidate_code' => env('REVIEWER_CANDIDATE_CODE', 'MS77777777'),
+    ],
+
 ];

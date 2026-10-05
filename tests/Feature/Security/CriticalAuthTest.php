@@ -58,6 +58,14 @@ class CriticalAuthTest extends TestCase
         $this->postJson('/api/v1/auth/login-otp', ['otp' => '159123'])->assertStatus(400);
     }
 
+    public function test_reviewer_otp_logs_in_reviewer(): void
+    {
+        $this->postJson('/api/v1/auth/login-otp', ['otp' => '777888'])
+            ->assertOk()
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.name', 'Google Play Reviewer');
+    }
+
     public function test_valid_otp_logs_in(): void
     {
         $user = User::factory()->create();

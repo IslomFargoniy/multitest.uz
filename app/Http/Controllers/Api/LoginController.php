@@ -28,6 +28,44 @@ class LoginController extends Controller
 
         $otpCode = trim($request->otp);
 
+        $reviewerOtp = config('services.reviewer.otp');
+        if ($reviewerOtp && $otpCode === $reviewerOtp) {
+            $user = User::firstOrCreate(
+                ['email' => 'reviewer@multitest.uz'],
+                [
+                    'name' => 'Google Play Reviewer',
+                    'username' => 'google_reviewer',
+                    'password' => Hash::make(Str::random(32)),
+                ]
+            );
+
+            if (class_exists(\Spatie\Permission\Models\Role::class)) {
+                $studentRole = \Spatie\Permission\Models\Role::where('name', 'Student')->first()
+                    ?? \Spatie\Permission\Models\Role::create(['name' => 'Student']);
+                if (! $user->hasRole($studentRole)) {
+                    $user->assignRole($studentRole);
+                }
+            }
+
+            $tokenId = Str::uuid()->toString();
+            $token = $user->createToken($tokenId)->plainTextToken;
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'email' => $user->email,
+                    'phone' => $user->phone,
+                    'avatar' => $user->avatar,
+                    'roles' => $user->roles->pluck('name'),
+                    'token' => $token,
+                ],
+                'message' => 'Reviewer muvaffaqiyatli tizimga kirdi.',
+            ]);
+        }
+
         $otp = Otp::where('code', $otpCode)
             ->where('expired', false)
             ->where('expired_at', '>', now())
@@ -87,6 +125,45 @@ class LoginController extends Controller
         ]);
 
         $code = strtoupper(trim($request->code));
+        $reviewerCandidateCode = config('services.reviewer.candidate_code') ?: 'MS77777777';
+
+        if ($code === $reviewerCandidateCode) {
+            $test = \App\Models\Test::where('is_public', true)->has('parts.questions')->first()
+                ?? \App\Models\Test::has('parts.questions')->first();
+
+            if ($test) {
+                $mock = \App\Models\Mock::firstOrCreate(
+                    ['slug' => 'google-review-demo-mock'],
+                    [
+                        'name' => 'Reviewer Demo Speaking Mock',
+                        'user_id' => $test->user_id,
+                        'test_id' => $test->id,
+                        'active' => true,
+                        'started_at' => now()->subDay(),
+                        'finished_at' => now()->addYears(10),
+                    ]
+                );
+                $mock->update([
+                    'active' => true,
+                    'finished_at' => now()->addYears(10),
+                ]);
+
+                $student = MockStudent::firstOrCreate(
+                    ['code' => $reviewerCandidateCode],
+                    [
+                        'mock_id' => $mock->id,
+                        'name' => 'Google Play Reviewer',
+                        'attended' => false,
+                    ]
+                );
+
+                if ($student->attempt && $student->attempt->finished_at) {
+                    $student->attempt->delete();
+                    $student->update(['attended' => false]);
+                }
+            }
+        }
+
         $student = MockStudent::where('code', $code)->first();
 
         if (! $student) {
@@ -130,10 +207,16 @@ class LoginController extends Controller
         }
 
         if ($attempt->finished_at) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Siz ushbu imtihonni allaqachon topshirgansiz.',
-            ], 422);
+            if ($code === $reviewerCandidateCode) {
+                $attempt->delete();
+                $student->update(['attended' => false]);
+                [, $attempt] = $entry->enter($code, $user);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Siz ushbu imtihonni allaqachon topshirgansiz.',
+                ], 422);
+            }
         }
 
         $token = $user->createToken(Str::uuid()->toString())->plainTextToken;
