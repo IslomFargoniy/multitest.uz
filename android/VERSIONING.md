@@ -39,6 +39,7 @@ VERSION_NAME=1.0.1
 ---
 
 ## 📜 Tarix (Changelog):
+- **v1.0.16 (code 17)**: Google Play talabiga asosan `compileSdk` va `targetSdk` 36 ga (Android 16) ko'tarildi, release AAB to'liq yangilandi.
 - **v1.0.15 (code 16)**: Kirish ekranida Google login vaqtincha olib tashlandi, Telegram OTP va Mock nomzod kodi (Candidate PIN / Code) orqali to'g'ridan-to'g'ri imtihonga ulanish imkoniyati qo'shildi.
 - **v1.0.13 (code 14)**: Imtihon va natija ekranlarida jadval/rasmli savollar to'g'ri ko'rsatiladi (WebView, gorizontal aylantirish, chegara va padding), savol qismi aylanadi, javob tugmasi doim ko'rinadi.
 - **v1.0.12 (code 13)**: Pastki navigatsiyada aktiv bo'lim aniq ko'rinadi (yangi nav-active ranglari), palitra web bilan bir xil Night Focus tokenlariga keltirildi, gradientlar olib tashlandi, `GradientButton` → `PrimaryButton`.

@@ -38,12 +38,12 @@ val googleWebClientId: String =
 
 android {
     namespace = "uz.multitest.app"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "uz.multitest.app"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = vCode
         versionName = vName
 
