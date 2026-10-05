@@ -38,11 +38,11 @@ class MockEntryService
         $start = $mock->started_at;
 
         if ($start && $now->lt($start)) {
-            $this->fail('Ushbu Mock test hali boshlanmagan! Boshlanish vaqti: '.$start->format('d.m.Y H:i'));
+            $this->fail('Ushbu Mock test hali boshlanmagan! Boshlanish vaqti: '.$start->format('Y-m-d H:i'));
         }
 
         if ($mock->finished_at && $now->gt($mock->finished_at)) {
-            $this->fail('Ushbu Mock test vaqti tugagan! Yakunlangan vaqti: '.$mock->finished_at->format('d.m.Y H:i'));
+            $this->fail('Ushbu Mock test vaqti tugagan! Yakunlangan vaqti: '.$mock->finished_at->format('Y-m-d H:i'));
         }
 
         $test = $mock->test;

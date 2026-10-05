@@ -225,7 +225,7 @@
                 <td class="stat-card">
                     <div class="label">Issue Date</div>
                     <div class="value-date">
-                        {{ $attempt->evaluated_at?->format('d.m.Y') ?? $attempt->finished_at?->format('d.m.Y') ?? now()->format('d.m.Y') }}
+                        {{ $attempt->evaluated_at?->format('Y-m-d H:i') ?? $attempt->finished_at?->format('Y-m-d H:i') ?? now()->format('Y-m-d H:i') }}
                     </div>
                 </td>
             </tr>

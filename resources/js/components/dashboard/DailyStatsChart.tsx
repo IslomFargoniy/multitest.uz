@@ -1,5 +1,6 @@
 import { StatItem } from '@/types';
 import { useIsDarkMode } from '@/hooks/use-is-dark-mode';
+import { formatDate } from '@/lib/date';
 import {
     BarElement,
     CategoryScale,
@@ -70,9 +71,7 @@ export default function DailyStatsChart({ daily_users, daily_attempts }: Props) 
         return Math.max(0, total - unique);
     });
 
-    const labels = allDates.map((d) =>
-        new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-    );
+    const labels = allDates.map((d) => formatDate(d));
 
     const chartData = {
         labels,

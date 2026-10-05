@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { format } from 'date-fns';
+import { formatDateTime } from '@/lib/date';
 
 import {
     Dialog,
@@ -113,7 +113,7 @@ export default function CreateMockModal({ tests = [] }: { tests: Test[] }) {
                                 selected={data.started_at ? new Date(data.started_at) : null}
                                 onChange={(date: Date | null) => {
                                     if (date) {
-                                        setData('started_at', format(date, 'yyyy-MM-dd HH:mm'));
+                                        setData('started_at', formatDateTime(date));
                                     }
                                 }}
                                 showTimeSelect
@@ -133,7 +133,7 @@ export default function CreateMockModal({ tests = [] }: { tests: Test[] }) {
                                 selected={data.finished_at ? new Date(data.finished_at) : null}
                                 onChange={(date: Date | null) => {
                                     if (date) {
-                                        setData('finished_at', format(date, 'yyyy-MM-dd HH:mm'));
+                                        setData('finished_at', formatDateTime(date));
                                     }
                                 }}
                                 showTimeSelect

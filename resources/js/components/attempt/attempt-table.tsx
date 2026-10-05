@@ -8,6 +8,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { formatDateTime } from '@/lib/date';
 import axios from 'axios';
 
 interface AttemptTableProps extends AttemptPaginate {
@@ -157,15 +158,9 @@ const AttemptTable = ({ searchData, ...attempt }: AttemptTableProps) => {
 
                 {/* Bottom Meta Row */}
                 <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                            <Calendar className="h-3.5 w-3.5" />
-                            {new Date(item.started_at).toLocaleDateString()}
-                        </span>
-                        <span className="flex items-center gap-1 font-display">
-                            <Clock className="h-3.5 w-3.5" />
-                            {new Date(item.started_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-                        </span>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono tabular-nums">
+                        <Calendar className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                        <span>{formatDateTime(item.started_at)}</span>
                     </div>
 
                     {(isAdmin || isTeacher) && (
@@ -252,11 +247,8 @@ const AttemptTable = ({ searchData, ...attempt }: AttemptTableProps) => {
                                                 </div>
                                             </td>
 
-                                            <td className="px-5 py-3.5 text-xs text-muted-foreground">
-                                                <div>{new Date(item.started_at).toLocaleDateString()}</div>
-                                                <div className="font-display">
-                                                    {new Date(item.started_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-                                                </div>
+                                            <td className="px-5 py-3.5 text-xs text-muted-foreground font-mono tabular-nums whitespace-nowrap">
+                                                <div>{formatDateTime(item.started_at)}</div>
                                             </td>
 
                                             <td className="px-5 py-3.5">

@@ -4,7 +4,7 @@ import UpdateMockModal from '@/components/mock/update-mock-modal';
 import TablePagination from '@/components/ui/table-pagination';
 import { Auth, Mock, type MockPaginate, SearchData, Test } from '@/types';
 import { Link, useForm, usePage } from '@inertiajs/react';
-import { format } from 'date-fns';
+import { formatDateTime } from '@/lib/date';
 import { PencilIcon, TrashIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -87,12 +87,7 @@ const MockTable = ({ tests = [], searchData, ...mock }: MockTableProps) => {
     };
 
     const formatSafeDate = (d?: string | null) => {
-        if (!d) return '-';
-        try {
-            return format(new Date(d), 'MMM dd, HH:mm');
-        } catch {
-            return '-';
-        }
+        return formatDateTime(d);
     };
 
     return (

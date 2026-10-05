@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { BsTelegram } from 'react-icons/bs';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { formatDateTime } from '@/lib/date';
 
 interface UserTableProps extends UserPaginate {
     searchData: SearchData;
@@ -75,7 +76,7 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
                                                 </span>
                                             ))}
                                         </div>
-                                        <div className="font-medium">{new Date(item.created_at).toLocaleDateString()}</div>
+                                        <div className="font-medium font-mono tabular-nums">{formatDateTime(item.created_at)}</div>
                                     </div>
                                 </div>
                             );
@@ -131,10 +132,10 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
                                                 ))}
                                             </div>
                                         </td>
-                                        <td className="px-4 py-4 text-muted-foreground text-xs font-medium">
+                                        <td className="px-4 py-4 text-muted-foreground text-xs font-medium font-mono tabular-nums whitespace-nowrap">
                                             <div className="flex items-center gap-1.5">
                                                 <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                                                {new Date(item.created_at).toLocaleDateString()}
+                                                {formatDateTime(item.created_at)}
                                             </div>
                                         </td>
                                         <td className="px-4 py-4">

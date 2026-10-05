@@ -8,6 +8,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { LucideActivity, LucideAward, LucideChevronRight, LucideTrendingUp, LucideUserCheck, LucideUserCircle } from 'lucide-react';
 import { lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
+import { formatDateTime } from '@/lib/date';
 
 interface DashboardProps {
     user: User;
@@ -194,8 +195,8 @@ export default function Dashboard() {
                                                 <p className="text-foreground text-sm font-semibold">
                                                     {attempt.test?.name || `Attempt #${attempt.id}`}
                                                 </p>
-                                                <p className="text-muted-foreground text-xs tabular-nums">
-                                                    {new Date(attempt.finished_at || attempt.created_at).toLocaleDateString()}
+                                                <p className="text-muted-foreground text-xs font-mono tabular-nums">
+                                                    {formatDateTime(attempt.finished_at || attempt.created_at)}
                                                 </p>
                                             </div>
                                         </div>

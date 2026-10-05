@@ -5,6 +5,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowLeft, Calendar, Mail, Phone, ShieldCheck, User as UserIcon, Zap, FileText, Layout, Activity } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { BsTelegram } from 'react-icons/bs';
+import { formatDateTime } from '@/lib/date';
 
 export default function UserShow() {
     const { user } = usePage<{
@@ -107,9 +108,9 @@ export default function UserShow() {
                         <CardContent className="flex items-center justify-between p-6">
                             <div>
                                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Last Activity</p>
-                                <div className="text-base font-bold text-foreground mt-2">
+                                <div className="text-base font-bold text-foreground mt-2 font-mono tabular-nums">
                                     {user.last_attempt 
-                                        ? new Date(user.last_attempt.finished_at || user.last_attempt.created_at).toLocaleDateString() 
+                                        ? formatDateTime(user.last_attempt.finished_at || user.last_attempt.created_at) 
                                         : 'No activity'}
                                 </div>
                             </div>
@@ -133,7 +134,7 @@ export default function UserShow() {
                                 </div>
                                 <h3 className="text-xl font-bold text-foreground">{user.name}</h3>
                                 <p className="mt-1 text-sm font-medium text-muted-foreground">
-                                    {t('user_management.member_since', { date: new Date(user.created_at).toLocaleDateString() })}
+                                    {t('user_management.member_since', { date: formatDateTime(user.created_at) })}
                                 </p>
                             </div>
 
@@ -168,8 +169,8 @@ export default function UserShow() {
                                     </div>
                                     <div>
                                         <div className="text-xs font-semibold text-muted-foreground uppercase">Registered At</div>
-                                        <div className="text-sm font-semibold text-foreground">
-                                            {new Date(user.created_at).toLocaleString()}
+                                        <div className="text-sm font-semibold text-foreground font-mono tabular-nums">
+                                            {formatDateTime(user.created_at)}
                                         </div>
                                     </div>
                                 </div>

@@ -144,6 +144,11 @@
                 <div class="value" style="font-size: 16px;">{{ $testName }}</div>
             </div>
 
+            <div class="info-group">
+                <div class="label">Berilgan Vaqti</div>
+                <div class="value" style="font-family: monospace; font-size: 15px;">{{ $issueDate ? \Carbon\Carbon::parse($issueDate)->format('Y-m-d H:i') : now()->format('Y-m-d H:i') }}</div>
+            </div>
+
             <div class="info-group" style="border-bottom: none; margin-bottom: 0;">
                 <div class="label">Imtihon Natijasi</div>
                 <div class="score-pill">

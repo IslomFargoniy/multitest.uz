@@ -4,7 +4,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { type BreadcrumbItem } from '@/types';
 import { useTranslation } from 'react-i18next';
 import { Users, Calendar, CheckCircle2, Clock, FileText, ArrowLeft, FileSpreadsheet } from 'lucide-react';
-import { format } from 'date-fns';
+import { formatDateTime } from '@/lib/date';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 
@@ -39,12 +39,7 @@ export default function MockShow() {
     const isActive = mock.active === 1 || mock.active === true;
 
     const formatSafeDate = (d?: string | null) => {
-        if (!d) return '-';
-        try {
-            return format(new Date(d), 'dd.MM.yyyy HH:mm');
-        } catch {
-            return '-';
-        }
+        return formatDateTime(d);
     };
 
     const exportToExcel = () => {

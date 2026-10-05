@@ -79,6 +79,7 @@ const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => 
                             id="from-date"
                             placeholderText={t('search_form.from')}
                             value={data.from}
+                            dateFormat="yyyy-MM-dd"
                             onChange={(from) => {
                                 setData('from', from ? format(from, 'yyyy-MM-dd') : '');
                             }}
@@ -92,6 +93,7 @@ const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => 
                             id="to-date"
                             placeholderText={t('search_form.to')}
                             value={data.to}
+                            dateFormat="yyyy-MM-dd"
                             onChange={(to) => {
                                 setData('to', to ? format(to, 'yyyy-MM-dd') : '');
                             }}
@@ -117,6 +119,7 @@ const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => 
                         id="date"
                         placeholderText={t('search_form.date')}
                         value={data.date}
+                        dateFormat="yyyy-MM-dd"
                         onChange={(date) => {
                             setData('date', date ? format(date, 'yyyy-MM-dd') : '');
                         }}

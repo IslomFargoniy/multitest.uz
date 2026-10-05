@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react';
 import { useTranslation } from 'react-i18next';
 import { Attempt, AttemptPart } from '@/types';
 import { toast } from 'sonner';
+import { formatDateTime } from '@/lib/date';
 
 interface ShareableCertificateModalProps {
     attempt: Attempt;
@@ -140,7 +141,7 @@ const ShareableCertificateModal: React.FC<ShareableCertificateModalProps> = ({ a
         ctx.fillText(`• Pronunciation:  ${criteria.pronunciation} / 75`, 600, 455);
 
         // Date & Verification footer
-        const examDate = new Date(attempt.created_at || Date.now()).toLocaleDateString();
+        const examDate = formatDateTime(attempt.created_at || Date.now());
         ctx.font = '16px sans-serif';
         ctx.fillStyle = '#64748b';
         ctx.fillText(`Date: ${examDate}  •  Verified at: multitest.uz`, 60, 630);
@@ -261,8 +262,8 @@ const ShareableCertificateModal: React.FC<ShareableCertificateModalProps> = ({ a
                                 </div>
 
                                 {/* Date Footer */}
-                                <div className="flex items-center justify-between text-xs text-muted-foreground pt-1">
-                                    <span>{new Date(attempt.created_at || Date.now()).toLocaleDateString()}</span>
+                                <div className="flex items-center justify-between text-xs text-muted-foreground pt-1 font-mono tabular-nums">
+                                    <span>{formatDateTime(attempt.created_at || Date.now())}</span>
                                     <span>multitest.uz/attempt/{attempt.id}</span>
                                 </div>
                             </div>

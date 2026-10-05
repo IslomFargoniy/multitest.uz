@@ -20,7 +20,7 @@ import {
 import { Mock, Test } from '@/types';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { format } from 'date-fns';
+import { formatDateTime } from '@/lib/date';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 
 interface UpdateMockModalProps {
@@ -35,12 +35,7 @@ export default function UpdateMockModal({ tests = [], mock, open, setOpen }: Upd
     const nameInput = useRef<HTMLInputElement>(null);
 
     const formatSafeDate = (d?: string | null) => {
-        if (!d) return '';
-        try {
-            return format(new Date(d), 'yyyy-MM-dd HH:mm');
-        } catch {
-            return '';
-        }
+        return formatDateTime(d, '');
     };
 
     const { data, setData, put, processing, reset, errors, clearErrors } = useForm({
@@ -128,7 +123,7 @@ export default function UpdateMockModal({ tests = [], mock, open, setOpen }: Upd
                                 selected={data.started_at ? new Date(data.started_at) : null}
                                 onChange={(date: Date | null) => {
                                     if (date) {
-                                        setData('started_at', format(date, 'yyyy-MM-dd HH:mm'));
+                                        setData('started_at', formatDateTime(date));
                                     }
                                 }}
                                 showTimeSelect
@@ -148,7 +143,7 @@ export default function UpdateMockModal({ tests = [], mock, open, setOpen }: Upd
                                 selected={data.finished_at ? new Date(data.finished_at) : null}
                                 onChange={(date: Date | null) => {
                                     if (date) {
-                                        setData('finished_at', format(date, 'yyyy-MM-dd HH:mm'));
+                                        setData('finished_at', formatDateTime(date));
                                     }
                                 }}
                                 showTimeSelect
