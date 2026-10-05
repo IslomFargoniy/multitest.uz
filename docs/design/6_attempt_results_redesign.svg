@@ -1,0 +1,133 @@
+<svg width="1200" height="780" viewBox="0 0 1200 780" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .bg { fill: #0B1020; }
+      .surface { fill: #111830; stroke: #1E2744; stroke-width: 1; }
+      .surface-2 { fill: #172040; }
+      .surface-sunken { fill: #0D1326; stroke: #1E2744; stroke-width: 1; }
+      .text-title { fill: #E8ECF5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 700; }
+      .text-body { fill: #E8ECF5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 500; }
+      .text-muted { fill: #9AA5BD; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 400; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="780" class="bg" />
+
+  <!-- Top Bar -->
+  <rect x="0" y="0" width="1200" height="64" class="surface-sunken" />
+  <circle cx="48" cy="32" r="14" fill="#5B63E6" />
+  <path d="M42 27 L48 37 L54 27" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="72" y="38" class="text-title" font-size="18">MultiTest<tspan fill="#5B63E6">.uz</tspan></text>
+  <text x="210" y="38" class="text-muted" font-size="13">Boshqaruv / Natijalar / <tspan class="text-title">Urinish #1042</tspan></text>
+
+  <!-- Certificate & Official Score Banner -->
+  <rect x="80" y="88" width="1040" height="190" rx="20" class="surface" stroke="#3FCF8E" stroke-opacity="0.3" />
+  
+  <!-- Left: Big CEFR C1 Certificate Seal -->
+  <rect x="116" y="118" width="130" height="130" rx="24" fill="#173628" stroke="#3FCF8E" stroke-width="2" />
+  <circle cx="181" cy="165" r="32" fill="#1B4D36" />
+  <text x="160" y="174" fill="#6EE0A8" font-family="sans-serif" font-weight="900" font-size="28">C1</text>
+  <text x="138" y="222" fill="#6EE0A8" font-family="sans-serif" font-weight="700" font-size="11">UZBMB RASMIY</text>
+
+  <!-- Center: Candidate & Test details -->
+  <text x="274" y="132" class="text-muted" font-size="12">TEST NATIJASI VA SERTIFIKAT</text>
+  <text x="274" y="160" class="text-title" font-size="24">UzBMB Milliy Sertifikat — Mock #12</text>
+  
+  <text x="274" y="190" class="text-muted" font-size="13">Nomzod: <tspan class="text-title">Islom Farg'oniy</tspan> · Sana: <tspan class="text-title">05.10.2026</tspan> · Baholash: <tspan fill="#6EE0A8">AI + O'qituvchi tasdiqlagan</tspan></text>
+
+  <rect x="274" y="210" width="150" height="30" rx="6" class="surface-2" />
+  <text x="286" y="230" class="text-title" font-size="14">Umumiy ball: <tspan fill="#6EE0A8" font-size="16">68</tspan> / 75</text>
+
+  <rect x="436" y="210" width="150" height="30" rx="6" class="surface-2" />
+  <text x="448" y="230" class="text-title" font-size="14">Daraja: <tspan fill="#6EE0A8" font-size="16">C1 (Ilg'or)</tspan></text>
+
+  <!-- Right: Actions (Download PDF & Share) -->
+  <rect x="880" y="128" width="200" height="46" rx="10" fill="#5B63E6" />
+  <text x="906" y="156" fill="#FFFFFF" font-family="sans-serif" font-weight="700" font-size="13">Sertifikatni yuklab olish (PDF)</text>
+
+  <rect x="880" y="186" width="200" height="42" rx="10" class="surface-2" stroke="#2A3557" stroke-width="1" />
+  <text x="930" y="212" class="text-title" font-size="13">Ulashish (Share) ↗</text>
+
+  <!-- Lower Section: 5 Criteria Bars (Left) + Question Review (Right) -->
+  <!-- Left: 5 Mezon Bahosi -->
+  <rect x="80" y="300" width="450" height="440" rx="16" class="surface" />
+  <text x="110" y="336" class="text-title" font-size="17">Mezonlar Bo'yicha Tahlil</text>
+  <text x="110" y="356" class="text-muted" font-size="12">Davlat ta'lim standarti talablari asosida</text>
+
+  <!-- Crit 1 -->
+  <text x="110" y="396" class="text-body" font-size="13">Fluency (Ravonlik)</text>
+  <text x="450" y="396" fill="#6EE0A8" font-family="sans-serif" font-weight="700" font-size="13">7.0 / 7.5</text>
+  <rect x="110" y="406" width="390" height="8" rx="4" class="surface-2" />
+  <rect x="110" y="406" width="364" height="8" rx="4" fill="#3FCF8E" />
+
+  <!-- Crit 2 -->
+  <text x="110" y="446" class="text-body" font-size="13">Vocabulary (Lug'at)</text>
+  <text x="450" y="446" fill="#6EE0A8" font-family="sans-serif" font-weight="700" font-size="13">7.0 / 7.5</text>
+  <rect x="110" y="456" width="390" height="8" rx="4" class="surface-2" />
+  <rect x="110" y="456" width="364" height="8" rx="4" fill="#3FCF8E" />
+
+  <!-- Crit 3 -->
+  <text x="110" y="496" class="text-body" font-size="13">Grammar (Grammatika)</text>
+  <text x="450" y="496" fill="#AEB5FF" font-family="sans-serif" font-weight="700" font-size="13">6.0 / 7.5</text>
+  <rect x="110" y="506" width="390" height="8" rx="4" class="surface-2" />
+  <rect x="110" y="506" width="312" height="8" rx="4" fill="#5B63E6" />
+
+  <!-- Crit 4 -->
+  <text x="110" y="546" class="text-body" font-size="13">Pronunciation (Talaffuz)</text>
+  <text x="450" y="546" fill="#6EE0A8" font-family="sans-serif" font-weight="700" font-size="13">7.2 / 7.5</text>
+  <rect x="110" y="556" width="390" height="8" rx="4" class="surface-2" />
+  <rect x="110" y="556" width="374" height="8" rx="4" fill="#3FCF8E" />
+
+  <!-- Crit 5 -->
+  <text x="110" y="596" class="text-body" font-size="13">Interaction (Muloqot)</text>
+  <text x="450" y="596" fill="#AEB5FF" font-family="sans-serif" font-weight="700" font-size="13">6.5 / 7.5</text>
+  <rect x="110" y="606" width="390" height="8" rx="4" class="surface-2" />
+  <rect x="110" y="606" width="338" height="8" rx="4" fill="#5B63E6" />
+
+  <!-- CEFR Level scale card -->
+  <rect x="110" y="640" width="390" height="76" rx="10" class="surface-2" stroke="#1E2744" stroke-width="1" />
+  <text x="126" y="664" class="text-muted" font-size="11">SERTIFIKAT STATUSI:</text>
+  <text x="126" y="688" fill="#6EE0A8" font-family="sans-serif" font-weight="700" font-size="14">✅ C1 daraja talabi to'liq bajarildi</text>
+  <text x="126" y="704" class="text-muted" font-size="11">Davlat attestatsiyasida 100% ustama olish huquqini beradi.</text>
+
+  <!-- Right: Question-by-Question Audio Review -->
+  <rect x="550" y="300" width="570" height="440" rx="16" class="surface" />
+  <text x="578" y="336" class="text-title" font-size="17">Savollar Bo'yicha Audio Tahlil</text>
+  <text x="578" y="356" class="text-muted" font-size="12">Yozilgan javoblaringizni tinglang va fikr-mulohazalarni o'qing</text>
+
+  <!-- Question 1 Accordion Card (Expanded) -->
+  <rect x="576" y="380" width="518" height="190" rx="12" class="surface-2" stroke="#5B63E6" stroke-width="1" />
+  <rect x="590" y="394" width="60" height="22" rx="4" fill="#262F66" />
+  <text x="598" y="409" fill="#AEB5FF" font-family="sans-serif" font-weight="700" font-size="11">Part 1.1</text>
+  <text x="660" y="410" class="text-title" font-size="13">What is your favourite type of weather?</text>
+  <text x="1030" y="410" fill="#6EE0A8" font-family="sans-serif" font-weight="700" font-size="13">7.2 ball</text>
+
+  <!-- Audio player in review -->
+  <rect x="590" y="426" width="490" height="40" rx="8" class="surface-sunken" />
+  <circle cx="612" cy="446" r="12" fill="#5B63E6" />
+  <path d="M609 441 L618 446 L609 451 Z" fill="#FFFFFF" />
+  <text x="632" y="450" class="text-muted" font-size="11">00:18 / 00:24</text>
+  <line x1="710" y1="446" x2="1010" y2="446" stroke="#2A3557" stroke-width="3" stroke-linecap="round" />
+  <line x1="710" y1="446" x2="880" y2="446" stroke="#5B63E6" stroke-width="3" stroke-linecap="round" />
+  <text x="1030" y="450" class="text-title" font-size="11">1.0x</text>
+
+  <!-- AI / Teacher Feedback note -->
+  <rect x="590" y="476" width="490" height="80" rx="8" fill="#111830" stroke="#1E2744" stroke-width="1" />
+  <text x="604" y="498" fill="#AEB5FF" font-family="sans-serif" font-weight="700" font-size="12">💡 Sun'iy intellekt tahlili:</text>
+  <text x="604" y="520" class="text-muted" font-size="12">"Fikr bildirish ravon va tabiiy. Lug'at boyligi yaxshi namoyon bo'lgan ('crisp autumn morning', 'refreshing breeze'). Grammatikada hech qanday jiddiy xato aniqlanmadi."</text>
+
+  <!-- Question 2 Accordion Card (Collapsed) -->
+  <rect x="576" y="584" width="518" height="58" rx="10" class="surface-2" stroke="#1E2744" stroke-width="1" />
+  <rect x="590" y="602" width="60" height="22" rx="4" class="surface" />
+  <text x="598" y="617" class="text-muted" font-size="11">Part 1.2</text>
+  <text x="660" y="618" class="text-body" font-size="13">Do you prefer studying alone or in a group?</text>
+  <text x="1030" y="618" fill="#6EE0A8" font-family="sans-serif" font-weight="700" font-size="13">6.8 ball</text>
+
+  <!-- Question 3 Accordion Card (Collapsed) -->
+  <rect x="576" y="654" width="518" height="58" rx="10" class="surface-2" stroke="#1E2744" stroke-width="1" />
+  <rect x="590" y="672" width="60" height="22" rx="4" class="surface" />
+  <text x="598" y="687" class="text-muted" font-size="11">Part 2</text>
+  <text x="660" y="688" class="text-body" font-size="13">Describe a traditional dish you like...</text>
+  <text x="1030" y="688" fill="#6EE0A8" font-family="sans-serif" font-weight="700" font-size="13">7.0 ball</text>
+</svg>

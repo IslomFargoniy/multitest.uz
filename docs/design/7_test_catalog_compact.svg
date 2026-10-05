@@ -1,0 +1,134 @@
+<svg width="1200" height="780" viewBox="0 0 1200 780" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .bg { fill: #0B1020; }
+      .surface { fill: #111830; stroke: #1E2744; stroke-width: 1; }
+      .surface-2 { fill: #172040; }
+      .surface-sunken { fill: #0D1326; stroke: #1E2744; stroke-width: 1; }
+      .text-title { fill: #E8ECF5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 700; }
+      .text-body { fill: #E8ECF5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 500; }
+      .text-muted { fill: #9AA5BD; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 400; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="780" class="bg" />
+
+  <!-- Top Navigation Bar -->
+  <rect x="0" y="0" width="1200" height="60" class="surface-sunken" />
+  <circle cx="48" cy="30" r="13" fill="#5B63E6" />
+  <path d="M43 25 L48 35 L53 25" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="70" y="36" class="text-title" font-size="17">MultiTest<tspan fill="#5B63E6">.uz</tspan></text>
+  <rect x="315" y="16" width="76" height="28" rx="6" fill="#262F66" />
+  <text x="330" y="34" fill="#AEB5FF" font-family="sans-serif" font-weight="700" font-size="12">Testlar</text>
+  <text x="410" y="34" class="text-muted" font-size="12">Mock Imtihonlar</text>
+  <text x="530" y="34" class="text-muted" font-size="12">Boshqaruv</text>
+
+  <!-- Page Header & Actions (Compact single row) -->
+  <text x="48" y="96" class="text-title" font-size="22">Speaking Testlar Katalogi</text>
+  <text x="330" y="96" class="text-muted" font-size="13">(Jami 34 ta mavjud test)</text>
+
+  <!-- Compact Toolbar: Search + Quick Filter Chips -->
+  <rect x="48" y="114" width="1104" height="48" rx="10" class="surface" />
+  
+  <!-- Search Input -->
+  <rect x="56" y="120" width="280" height="36" rx="6" class="surface-2" stroke="#2A3557" stroke-width="1" />
+  <text x="72" y="143" class="text-muted" font-size="12">🔍 Qidirish (nomi, kodi)...</text>
+
+  <!-- Filter Chips -->
+  <rect x="350" y="120" width="94" height="36" rx="6" fill="#5B63E6" />
+  <text x="366" y="143" fill="#FFFFFF" font-family="sans-serif" font-weight="700" font-size="12">Barchasi (34)</text>
+
+  <rect x="452" y="120" width="136" height="36" rx="6" class="surface-2" stroke="#1E2744" stroke-width="1" />
+  <text x="466" y="143" class="text-title" font-size="12">UzBMB Milliy (12)</text>
+
+  <rect x="596" y="120" width="134" height="36" rx="6" class="surface-2" stroke="#1E2744" stroke-width="1" />
+  <text x="610" y="143" class="text-title" font-size="12">IELTS Speaking (14)</text>
+
+  <rect x="738" y="120" width="114" height="36" rx="6" class="surface-2" stroke="#1E2744" stroke-width="1" />
+  <text x="752" y="143" class="text-title" font-size="12">CEFR Mock (8)</text>
+
+  <!-- Right: Sort Select -->
+  <rect x="1000" y="120" width="144" height="36" rx="6" class="surface-2" stroke="#2A3557" stroke-width="1" />
+  <text x="1014" y="143" class="text-muted" font-size="12">Saralash: Yangi ▾</text>
+
+  <!-- Compact List of Test Rows (Height: 68px each) -->
+
+  <!-- Row 1 -->
+  <rect x="48" y="176" width="1104" height="68" rx="10" class="surface" />
+  <!-- Badge -->
+  <rect x="64" y="193" width="46" height="34" rx="6" fill="#173628" stroke="#3FCF8E" stroke-width="1" />
+  <text x="76" y="215" fill="#6EE0A8" font-family="sans-serif" font-weight="800" font-size="13">C1</text>
+  <!-- Title & Meta -->
+  <text x="124" y="206" class="text-title" font-size="14">UzBMB Speaking Milliy Sertifikat — Mock #12</text>
+  <text x="124" y="226" class="text-muted" font-size="12">⏱ 18 daqiqa  ·  📋 3 ta bo'lim (Part 1, 2, 3)  ·  👥 1,420 topshirildi  ·  <tspan fill="#6EE0A8">⚡️ Tezkor AI + Ustoz</tspan></text>
+  <!-- Action -->
+  <rect x="996" y="192" width="140" height="36" rx="8" fill="#5B63E6" />
+  <text x="1022" y="215" fill="#FFFFFF" font-family="sans-serif" font-weight="700" font-size="12">Boshlash →</text>
+
+  <!-- Row 2 -->
+  <rect x="48" y="252" width="1104" height="68" rx="10" class="surface" />
+  <rect x="64" y="269" width="46" height="34" rx="6" fill="#202A54" stroke="#9EB0EC" stroke-width="1" />
+  <text x="76" y="291" fill="#9EB0EC" font-family="sans-serif" font-weight="800" font-size="13">B2</text>
+  <text x="124" y="282" class="text-title" font-size="14">CEFR Multi-Level Speaking Test — Variant #8</text>
+  <text x="124" y="302" class="text-muted" font-size="12">⏱ 15 daqiqa  ·  📋 3 ta bo'lim  ·  👥 890 topshirildi  ·  <tspan fill="#6EE0A8">⚡️ Tezkor AI</tspan></text>
+  <rect x="996" y="268" width="140" height="36" rx="8" fill="#5B63E6" />
+  <text x="1022" y="291" fill="#FFFFFF" font-family="sans-serif" font-weight="700" font-size="12">Boshlash →</text>
+
+  <!-- Row 3 -->
+  <rect x="48" y="328" width="1104" height="68" rx="10" class="surface" />
+  <rect x="64" y="345" width="46" height="34" rx="6" fill="#3A2A12" stroke="#F5B14C" stroke-width="1" />
+  <text x="72" y="367" fill="#F5C46A" font-family="sans-serif" font-weight="800" font-size="13">7.5</text>
+  <text x="124" y="358" class="text-title" font-size="14">IELTS Full Speaking Simulation — Practice #5</text>
+  <text x="124" y="378" class="text-muted" font-size="12">⏱ 14 daqiqa  ·  📋 3 ta bo'lim  ·  👥 2,110 topshirildi  ·  <tspan fill="#6EE0A8">⚡️ Tezkor AI</tspan></text>
+  <rect x="996" y="344" width="140" height="36" rx="8" fill="#5B63E6" />
+  <text x="1022" y="367" fill="#FFFFFF" font-family="sans-serif" font-weight="700" font-size="12">Boshlash →</text>
+
+  <!-- Row 4 -->
+  <rect x="48" y="404" width="1104" height="68" rx="10" class="surface" />
+  <rect x="64" y="421" width="46" height="34" rx="6" fill="#173628" stroke="#3FCF8E" stroke-width="1" />
+  <text x="76" y="443" fill="#6EE0A8" font-family="sans-serif" font-weight="800" font-size="13">C1</text>
+  <text x="124" y="434" class="text-title" font-size="14">UzBMB Speaking Milliy Sertifikat — Mock #11</text>
+  <text x="124" y="454" class="text-muted" font-size="12">⏱ 18 daqiqa  ·  📋 3 ta bo'lim  ·  👥 3,450 topshirildi  ·  <tspan fill="#6EE0A8">⚡️ Tezkor AI + Ustoz</tspan></text>
+  <rect x="996" y="420" width="140" height="36" rx="8" fill="#5B63E6" />
+  <text x="1022" y="443" fill="#FFFFFF" font-family="sans-serif" font-weight="700" font-size="12">Boshlash →</text>
+
+  <!-- Row 5 -->
+  <rect x="48" y="480" width="1104" height="68" rx="10" class="surface" />
+  <rect x="64" y="497" width="46" height="34" rx="6" fill="#242838" stroke="#8C93A8" stroke-width="1" />
+  <text x="76" y="519" fill="#B4BAC9" font-family="sans-serif" font-weight="800" font-size="13">B1</text>
+  <text x="124" y="510" class="text-title" font-size="14">CEFR B1 Speaking Standard Practice #2</text>
+  <text x="124" y="530" class="text-muted" font-size="12">⏱ 12 daqiqa  ·  📋 2 ta bo'lim  ·  👥 640 topshirildi  ·  <tspan fill="#6EE0A8">⚡️ Tezkor AI</tspan></text>
+  <rect x="996" y="496" width="140" height="36" rx="8" fill="#5B63E6" />
+  <text x="1022" y="519" fill="#FFFFFF" font-family="sans-serif" font-weight="700" font-size="12">Boshlash →</text>
+
+  <!-- Row 6 -->
+  <rect x="48" y="556" width="1104" height="68" rx="10" class="surface" />
+  <rect x="64" y="573" width="46" height="34" rx="6" fill="#3A2A12" stroke="#F5B14C" stroke-width="1" />
+  <text x="72" y="595" fill="#F5C46A" font-family="sans-serif" font-weight="800" font-size="13">8.0</text>
+  <text x="124" y="586" class="text-title" font-size="14">IELTS Advanced Speaking Simulator #3</text>
+  <text x="124" y="606" class="text-muted" font-size="12">⏱ 15 daqiqa  ·  📋 3 ta bo'lim  ·  👥 1,820 topshirildi  ·  <tspan fill="#6EE0A8">⚡️ Tezkor AI</tspan></text>
+  <rect x="996" y="572" width="140" height="36" rx="8" fill="#5B63E6" />
+  <text x="1022" y="595" fill="#FFFFFF" font-family="sans-serif" font-weight="700" font-size="12">Boshlash →</text>
+
+  <!-- Compact Pagination Controls -->
+  <g transform="translate(480, 650)">
+    <rect x="0" y="0" width="36" height="36" rx="6" class="surface-2" stroke="#1E2744" stroke-width="1" />
+    <text x="13" y="23" class="text-muted" font-size="13">‹</text>
+
+    <rect x="46" y="0" width="36" height="36" rx="6" fill="#5B63E6" />
+    <text x="60" y="23" fill="#FFFFFF" font-family="sans-serif" font-weight="700" font-size="13">1</text>
+
+    <rect x="92" y="0" width="36" height="36" rx="6" class="surface-2" />
+    <text x="106" y="23" class="text-title" font-size="13">2</text>
+
+    <rect x="138" y="0" width="36" height="36" rx="6" class="surface-2" />
+    <text x="152" y="23" class="text-title" font-size="13">3</text>
+
+    <rect x="184" y="0" width="36" height="36" rx="6" class="surface-2" />
+    <text x="198" y="23" class="text-title" font-size="13">4</text>
+
+    <rect x="230" y="0" width="36" height="36" rx="6" class="surface-2" stroke="#1E2744" stroke-width="1" />
+    <text x="243" y="23" class="text-muted" font-size="13">›</text>
+  </g>
+</svg>

@@ -3,10 +3,10 @@ import CreateAttemptModal from '@/components/mock/create-attempt-modal';
 import UpdateTestModal from '@/components/test/update-test-modal';
 import { Auth, SearchData, type TestPaginate } from '@/types';
 import { Link, useForm, usePage } from '@inertiajs/react';
+import axios from 'axios';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
 
 interface TestTableProps extends TestPaginate {
     searchData: SearchData;
@@ -44,9 +44,9 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
 
             const response = await axios.get(`${window.location.pathname}?${params.toString()}`, {
                 headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+                    Accept: 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
             });
 
             const newData = response.data;
@@ -70,7 +70,7 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
             {
                 threshold: 0.1,
                 rootMargin: '150px',
-            }
+            },
         );
 
         const currentSentinel = sentinelRef.current;
@@ -99,24 +99,25 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
 
     return (
         <div>
-            {/* TEST CARDS GRID */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {/* TEST CARDS GRID - COMPACT CARDS */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {items.map((item, index) => {
                     const globalIndex = index + 1;
 
                     return (
                         <div
                             key={item.id}
-                            className="group relative flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-sm dark:shadow-none transition-colors hover:border-border-strong"
+                            className="group border-border bg-card hover:border-border-strong relative flex flex-col justify-between rounded-xl border p-4 shadow-sm transition-all dark:shadow-none"
                         >
                             <div className="min-w-0">
                                 {/* Top bar info */}
-                                <div className="mb-3 flex items-center justify-between gap-2">
-                                    <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-                                        <span className="font-mono text-muted-foreground">#{globalIndex.toString().padStart(2, '0')}</span>
-                                        <span className="h-1 w-1 rounded-full bg-border" />
-                                        {item.language?.flag && <span className="text-sm">{item.language.flag}</span>}
-                                        <span className="truncate">
+                                <div className="mb-2.5 flex items-center justify-between gap-2">
+                                    <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-semibold">
+                                        <span className="bg-surface-2 text-foreground border-border inline-flex items-center rounded border px-1.5 py-0.5 font-mono text-[11px] font-bold">
+                                            #{globalIndex.toString().padStart(2, '0')}
+                                        </span>
+                                        {item.language?.flag && <span className="text-xs">{item.language.flag}</span>}
+                                        <span className="max-w-[120px] truncate text-[11px]">
                                             {i18n.language === 'uz'
                                                 ? item.language?.name_uz
                                                 : i18n.language === 'ru'
@@ -125,56 +126,50 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
                                         </span>
                                     </div>
 
-                                    {item.is_public ? (
-                                        <span className="inline-flex items-center rounded-md bg-success/10 px-2 py-0.5 text-xs font-semibold text-success border border-success/20">
-                                            {t('common.public', 'Public')}
-                                        </span>
-                                    ) : (
-                                        <span className="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-xs font-semibold text-muted-foreground border border-border">
-                                            {t('common.private', 'Private')}
-                                        </span>
-                                    )}
+                                    <div className="flex items-center gap-1.5">
+                                        {item.is_public ? (
+                                            <span className="bg-success-bg text-success-text border-success/30 inline-flex items-center rounded-md border px-2 py-0.5 text-[10px] font-bold">
+                                                {t('common.public', 'Public')}
+                                            </span>
+                                        ) : (
+                                            <span className="bg-secondary text-muted-foreground border-border inline-flex items-center rounded-md border px-2 py-0.5 text-[10px] font-semibold">
+                                                {t('common.private', 'Private')}
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <Link
                                     href={`/test/${item.id}`}
-                                    className="block text-base font-bold text-foreground transition-colors hover:text-primary"
+                                    className="text-foreground hover:text-primary line-clamp-1 block text-sm leading-snug font-bold transition-colors sm:text-base"
                                 >
-                                    <span className="line-clamp-2 min-h-[2.5rem] break-words">{item.name}</span>
+                                    {item.name}
                                 </Link>
 
-                                {!isStudent && (
-                                    <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                                        {item.description || t('common.no_description', 'Tavsif mavjud emas')}
-                                    </p>
-                                )}
-
-                                {(isAdmin || isTeacher) && item.audio_path && (
-                                    <div className="mt-3 rounded-lg border border-border bg-surface-2 p-2">
-                                        <audio
-                                            preload="none"
-                                            controls
-                                            controlsList="nodownload"
-                                            className="h-7 w-full opacity-80 transition-opacity hover:opacity-100"
-                                        >
-                                            <source src={item.audio_path} />
-                                        </audio>
-                                    </div>
-                                )}
+                                <div className="text-muted-foreground mt-2 flex items-center gap-2 text-xs">
+                                    <span>⏱ 15-18 daq</span>
+                                    <span>•</span>
+                                    <span>📋 {item.parts?.length || 3} ta bo'lim</span>
+                                </div>
                             </div>
 
-                            <div className="mt-5 pt-3.5 border-t border-border flex flex-col gap-2.5">
-                                <div className="transform transition-transform active:scale-[0.98]">
-                                    <CreateAttemptModal test={item} label={t('start', 'Boshlash')} />
-                                </div>
+                            <div className="border-border mt-4 flex items-center justify-between gap-2 border-t pt-3">
+                                <span className="text-success flex items-center gap-1 text-[11px] font-semibold">
+                                    <span>⚡️</span>
+                                    <span>AI + Ustoz</span>
+                                </span>
 
-                                {(isAdmin || auth?.user.id === item.user_id) && (
-                                    <div className="flex items-center justify-center gap-2 mt-1">
-                                        <UpdateTestModal test={item} />
-                                        <span className="h-1 w-1 rounded-full bg-border" />
-                                        <DeleteItemModal item={item} onDelete={handleDelete} />
+                                <div className="flex items-center gap-1.5">
+                                    {(isAdmin || auth?.user.id === item.user_id) && (
+                                        <div className="flex items-center gap-1">
+                                            <UpdateTestModal test={item} />
+                                            <DeleteItemModal item={item} onDelete={handleDelete} />
+                                        </div>
+                                    )}
+                                    <div className="min-w-[100px]">
+                                        <CreateAttemptModal test={item} label={t('start', 'Boshlash')} />
                                     </div>
-                                )}
+                                </div>
                             </div>
                         </div>
                     );
@@ -182,23 +177,21 @@ const TestTable = ({ searchData, ...test }: TestTableProps) => {
             </div>
 
             {/* Infinite Scroll Sentinel & Loading Indicator */}
-            <div ref={sentinelRef} className="py-6 flex flex-col items-center justify-center gap-4 w-full">
+            <div ref={sentinelRef} className="flex w-full flex-col items-center justify-center gap-4 py-6">
                 {isLoading && (
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full">
+                    <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {Array.from({ length: 4 }).map((_, idx) => (
-                            <div key={idx} className="rounded-xl border border-border bg-card p-5 space-y-3 animate-pulse">
-                                <div className="h-5 bg-surface-2 rounded w-3/4" />
-                                <div className="h-4 bg-surface-2 rounded w-full" />
-                                <div className="h-4 bg-surface-2 rounded w-2/3" />
-                                <div className="h-10 bg-surface-2 rounded-lg mt-4" />
+                            <div key={idx} className="border-border bg-card animate-pulse space-y-3 rounded-xl border p-5">
+                                <div className="bg-surface-2 h-5 w-3/4 rounded" />
+                                <div className="bg-surface-2 h-4 w-full rounded" />
+                                <div className="bg-surface-2 h-4 w-2/3 rounded" />
+                                <div className="bg-surface-2 mt-4 h-10 rounded-lg" />
                             </div>
                         ))}
                     </div>
                 )}
                 {!hasMore && items.length > 0 && (
-                    <div className="text-xs font-semibold text-muted-foreground py-2">
-                        {t('common.no_more_items', 'Barcha testlar yuklandi')}
-                    </div>
+                    <div className="text-muted-foreground py-2 text-xs font-semibold">{t('common.no_more_items', 'Barcha testlar yuklandi')}</div>
                 )}
             </div>
         </div>

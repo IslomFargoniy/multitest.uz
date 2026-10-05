@@ -1,8 +1,7 @@
 import DeleteItemModal from '@/components/delete-item-modal';
-import UpdateMockModal from '@/components/mock/update-mock-modal';
 import MockStudentManager from '@/components/mock/mock-student-manager';
+import UpdateMockModal from '@/components/mock/update-mock-modal';
 import TablePagination from '@/components/ui/table-pagination';
-import { StatusPill } from '@/components/design/StatusPill';
 import { Auth, Mock, type MockPaginate, SearchData, Test } from '@/types';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { format } from 'date-fns';
@@ -29,31 +28,31 @@ const MockTable = ({ tests = [], searchData, ...mock }: MockTableProps) => {
         const status = (item as any).status || (item.active ? 'active' : 'inactive');
         if (!item.active || status === 'inactive') {
             return (
-                <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold bg-secondary text-muted-foreground border border-border">
-                    <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground" />
+                <span className="bg-secondary text-muted-foreground border-border inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold">
+                    <span className="bg-muted-foreground h-1.5 w-1.5 rounded-full" />
                     {t('inactive', 'Nofaol')}
                 </span>
             );
         }
         if (status === 'scheduled') {
             return (
-                <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold bg-warning-bg text-warning-text border border-warning/20">
-                    <span className="h-1.5 w-1.5 rounded-full bg-warning" />
+                <span className="bg-warning-bg text-warning-text border-warning/20 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold">
+                    <span className="bg-warning h-1.5 w-1.5 rounded-full" />
                     {t('scheduled', 'Boshlanmagan')}
                 </span>
             );
         }
         if (status === 'expired') {
             return (
-                <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold bg-danger-bg text-danger-text border border-danger/20">
-                    <span className="h-1.5 w-1.5 rounded-full bg-danger" />
+                <span className="bg-danger-bg text-danger-text border-danger/20 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold">
+                    <span className="bg-danger h-1.5 w-1.5 rounded-full" />
                     {t('expired', 'Vaqti tugagan')}
                 </span>
             );
         }
         return (
-            <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold bg-success-bg text-success-text border border-success/20">
-                <span className="h-1.5 w-1.5 rounded-full bg-success" />
+            <span className="bg-success-bg text-success-text border-success/20 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold">
+                <span className="bg-success h-1.5 w-1.5 rounded-full" />
                 {t('active', 'Faol')}
             </span>
         );
@@ -99,71 +98,63 @@ const MockTable = ({ tests = [], searchData, ...mock }: MockTableProps) => {
     return (
         <div>
             {mock.data.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-border p-12 text-center text-sm text-muted-foreground">
+                <div className="border-border text-muted-foreground rounded-xl border border-dashed p-12 text-center text-sm">
                     {t('mock_exam.no_mocks_found', 'Hozircha hech qanday mock test mavjud emas. Yangi mock test yaratishingiz mumkin.')}
                 </div>
             ) : (
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {mock.data.map((item, index) => {
                         const globalIndex = (mock.current_page - 1) * mock.per_page + index + 1;
 
                         return (
                             <div
                                 key={item.id}
-                                className="group flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-sm dark:shadow-none transition-colors hover:border-border-strong"
+                                className="group border-border bg-card hover:border-border-strong flex flex-col justify-between rounded-xl border p-4 shadow-sm transition-all dark:shadow-none"
                             >
                                 {/* Header */}
                                 <div className="mb-3">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="text-xs font-semibold font-mono text-muted-foreground">
+                                    <div className="mb-2 flex items-center justify-between">
+                                        <span className="text-muted-foreground font-mono text-xs font-semibold">
                                             #{globalIndex.toString().padStart(2, '0')}
                                         </span>
                                         {renderStatusBadge(item)}
                                     </div>
-                                    <h3 className="line-clamp-1 text-base font-bold text-foreground transition-colors hover:text-primary">
+                                    <h3 className="text-foreground hover:text-primary line-clamp-1 text-base font-bold transition-colors">
                                         <Link href={`/mock/${item.id}`}>{item.name}</Link>
                                     </h3>
-                                    <div className="mt-1 flex items-center text-xs font-medium text-muted-foreground">
+                                    <div className="text-muted-foreground mt-1 flex items-center text-xs font-medium">
                                         <span className="truncate">{item.test?.name || t('mock_exam.no_test_selected', 'Test tanlanmagan')}</span>
                                     </div>
                                 </div>
 
                                 {/* Comment */}
                                 <div className="mb-4 flex-grow">
-                                    <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                                    <p className="text-muted-foreground line-clamp-2 text-xs leading-relaxed">
                                         {item.comment || item.description || t('no_comment', "Izoh yo'q")}
                                     </p>
                                 </div>
 
                                 {/* Dates */}
-                                <div className="mb-4 space-y-1.5 rounded-lg border border-border bg-surface-2 p-3 text-xs">
+                                <div className="border-border bg-surface-2 mb-4 space-y-1.5 rounded-lg border p-3 text-xs">
                                     <div className="flex justify-between">
                                         <span className="text-muted-foreground">{t('started_at', 'Boshlanadi')}</span>
-                                        <span className="font-mono font-medium text-foreground tabular-nums">
-                                            {formatSafeDate(item.started_at)}
-                                        </span>
+                                        <span className="text-foreground font-mono font-medium tabular-nums">{formatSafeDate(item.started_at)}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-muted-foreground">{t('finished_at', 'Tugaydi')}</span>
-                                        <span className="font-mono font-medium text-foreground tabular-nums">
-                                            {formatSafeDate(item.finished_at)}
-                                        </span>
+                                        <span className="text-foreground font-mono font-medium tabular-nums">{formatSafeDate(item.finished_at)}</span>
                                     </div>
                                 </div>
 
                                 {/* Actions */}
-                                <div className="flex items-center justify-between gap-2 pt-3 border-t border-border">
-                                    <MockStudentManager
-                                        mockId={item.id}
-                                        mockName={item.name}
-                                        students={(item as any).students ?? []}
-                                    />
+                                <div className="border-border flex items-center justify-between gap-2 border-t pt-3">
+                                    <MockStudentManager mockId={item.id} mockName={item.name} students={(item as any).students ?? []} />
 
                                     <div className="flex items-center gap-1">
                                         <button
                                             type="button"
                                             onClick={() => handleUpdateClick(item)}
-                                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface-2 text-muted-foreground transition-colors hover:border-border-strong hover:text-foreground cursor-pointer"
+                                            className="border-border bg-surface-2 text-muted-foreground hover:border-border-strong hover:text-foreground flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border transition-colors"
                                             title={t('edit', 'Tahrirlash')}
                                         >
                                             <PencilIcon className="h-3.5 w-3.5" />
@@ -171,7 +162,7 @@ const MockTable = ({ tests = [], searchData, ...mock }: MockTableProps) => {
                                         <button
                                             type="button"
                                             onClick={() => handleDeleteClick(item)}
-                                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface-2 text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
+                                            className="border-border bg-surface-2 text-destructive hover:bg-destructive/10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border transition-colors"
                                             title={t('delete', "O'chirish")}
                                         >
                                             <TrashIcon className="h-3.5 w-3.5" />
@@ -187,24 +178,10 @@ const MockTable = ({ tests = [], searchData, ...mock }: MockTableProps) => {
             {/* Modals */}
             {selectedMock && open && <UpdateMockModal tests={tests} mock={selectedMock} open={open} setOpen={setOpen} />}
 
-            {selectedMock && openDelete && (
-                <DeleteItemModal
-                    item={selectedMock}
-                    open={openDelete}
-                    setOpen={setOpenDelete}
-                    onDelete={handleDelete}
-                />
-            )}
+            {selectedMock && openDelete && <DeleteItemModal item={selectedMock} open={openDelete} setOpen={setOpenDelete} onDelete={handleDelete} />}
 
             {/* Pagination */}
-            <TablePagination
-                from={mock.from}
-                to={mock.to}
-                total={mock.total}
-                per_page={mock.per_page}
-                links={mock.links}
-                searchParams={searchData}
-            />
+            <TablePagination from={mock.from} to={mock.to} total={mock.total} per_page={mock.per_page} links={mock.links} searchParams={searchData} />
         </div>
     );
 };

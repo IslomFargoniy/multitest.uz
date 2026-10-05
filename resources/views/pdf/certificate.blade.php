@@ -2,254 +2,257 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Certificate Of Achievement - {{ $certNumber ?? 'MT' }}</title>
     <style>
         @page {
             size: A4 landscape;
-            margin: 0;
+            margin: 8mm;
+        }
+        * {
+            box-sizing: border-box;
         }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'DejaVu Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
             background-color: #f8fafc;
             color: #1e293b;
             margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            padding: 0;
             -webkit-print-color-adjust: exact;
         }
-        .certificate-container {
-            width: 1040px;
-            height: 720px;
+        .cert-card {
             background: #ffffff;
-            position: relative;
-            border: 24px solid #4f46e5;
-            padding: 40px;
-            box-sizing: border-box;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            border: 6px solid #4f46e5;
+            outline: 2px solid #c7d2fe;
+            outline-offset: -4px;
+            padding: 20px 32px;
+            width: 100%;
         }
-        .decorative-elements {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden;
-            pointer-events: none;
-            z-index: 0;
+        .top-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 12px;
         }
-        .circle-1 {
-            position: absolute; top: -100px; right: -100px;
-            width: 300px; height: 300px;
-            background: #eef2ff; border-radius: 50%;
-        }
-        .circle-2 {
-            position: absolute; bottom: -50px; left: -50px;
-            width: 200px; height: 200px;
-            background: #f1f5f9; border-radius: 50%;
-        }
-        .content {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-        }
-        .brand-logo {
-            font-size: 20px;
+        .brand-title {
+            font-size: 22px;
             font-weight: 900;
             color: #4f46e5;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             text-transform: uppercase;
         }
-        .cert-code {
+        .brand-sub {
+            font-size: 10px;
+            font-weight: 700;
+            color: #64748b;
+            letter-spacing: 1.5px;
+            margin-left: 6px;
+            text-transform: uppercase;
+        }
+        .cert-badge {
             font-family: monospace;
             font-size: 13px;
             font-weight: bold;
-            color: #64748b;
-            background: #f1f5f9;
-            padding: 4px 12px;
+            color: #4338ca;
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            padding: 4px 14px;
             border-radius: 6px;
         }
-        .header h1 {
-            margin: 10px 0 0;
-            font-size: 44px;
+        .main-header {
+            text-align: center;
+            margin: 0 0 8px 0;
+        }
+        .main-header h1 {
+            margin: 0;
+            font-size: 36px;
             font-weight: 900;
             color: #1e1b4b;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 4px;
         }
-        .header p {
-            font-size: 14px;
+        .main-header p {
+            margin: 4px 0 0;
+            font-size: 12px;
             font-weight: 700;
             color: #6366f1;
-            margin-top: 4px;
             text-transform: uppercase;
             letter-spacing: 3px;
         }
-        .present-text {
-            margin-top: 15px;
+        .presented-to {
+            text-align: center;
             font-style: italic;
-            font-size: 16px;
+            font-size: 13px;
             color: #64748b;
+            margin-top: 12px;
         }
-        .recipient-name {
-            margin: 10px 0;
-            font-size: 38px;
+        .candidate-name-box {
+            text-align: center;
+            margin: 6px 0 10px;
+        }
+        .candidate-name {
+            display: inline-block;
+            font-size: 30px;
             font-weight: 800;
             color: #1e293b;
-            border-bottom: 2px solid #e2e8f0;
-            display: inline-block;
-            padding: 0 40px 5px;
+            border-bottom: 2px solid #6366f1;
+            padding: 0 35px 4px;
         }
-        .achievement-text {
-            margin: 10px auto 20px;
-            max-width: 650px;
-            font-size: 15px;
-            line-height: 1.5;
+        .desc-text {
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.4;
             color: #475569;
+            max-width: 660px;
+            margin: 0 auto 12px;
         }
-        .stats-grid {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 0 40px;
+        .stats-table {
+            width: 78%;
+            margin: 0 auto 14px;
+            border-collapse: separate;
+            border-spacing: 16px 0;
         }
         .stat-card {
             background: #f8fafc;
-            padding: 12px 24px;
-            border-radius: 14px;
             border: 1px solid #e2e8f0;
-            min-width: 140px;
+            border-radius: 10px;
+            padding: 10px 16px;
             text-align: center;
+            width: 33.33%;
         }
-        .stat-label {
+        .stat-card .label {
             font-size: 9px;
             font-weight: 800;
             text-transform: uppercase;
             color: #94a3b8;
             letter-spacing: 1px;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
-        .stat-value {
-            font-size: 22px;
+        .stat-card .value {
+            font-size: 24px;
             font-weight: 900;
             color: #4f46e5;
         }
-        .footer-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 40px;
-            margin-top: 20px;
+        .stat-card .value-cefr {
+            font-size: 24px;
+            font-weight: 900;
+            color: #059669;
         }
-        .signature-box {
-            text-align: center;
+        .stat-card .value-date {
+            font-size: 15px;
+            font-weight: 800;
+            color: #334155;
+            padding-top: 6px;
         }
-        .signature-line {
-            width: 160px;
-            height: 1px;
-            background: #94a3b8;
+        .footer-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        .sig-line {
+            width: 150px;
+            border-bottom: 1px solid #94a3b8;
             margin-bottom: 6px;
         }
-        .signature-text {
-            font-size: 12px;
+        .sig-title {
+            font-size: 11px;
             font-weight: 700;
             color: #475569;
         }
-        .qr-box {
+        .qr-wrapper {
             text-align: center;
         }
         .qr-img {
-            width: 70px;
-            height: 70px;
-            border-radius: 8px;
+            width: 66px;
+            height: 66px;
+            border-radius: 6px;
             border: 1px solid #e2e8f0;
-            background: white;
+            background: #ffffff;
             padding: 2px;
+            display: block;
+            margin: 0 auto;
         }
-        .qr-label {
+        .qr-hint {
             font-size: 8px;
-            font-weight: bold;
+            font-weight: 700;
             color: #94a3b8;
             text-transform: uppercase;
-            margin-top: 2px;
+            margin-top: 3px;
             letter-spacing: 0.5px;
         }
     </style>
 </head>
 <body>
-    <div class="certificate-container">
-        <div class="decorative-elements">
-            <div class="circle-1"></div>
-            <div class="circle-2"></div>
+    <div class="cert-card">
+        <table class="top-table">
+            <tr>
+                <td align="left" style="vertical-align: middle;">
+                    <span class="brand-title">MULTITEST</span>
+                    <span class="brand-sub">ASSESSMENT SYSTEM</span>
+                </td>
+                <td align="right" style="vertical-align: middle;">
+                    <span class="cert-badge">{{ $certNumber ?? ('MT-' . str_pad($attempt->id, 6, '0', STR_PAD_LEFT)) }}</span>
+                </td>
+            </tr>
+        </table>
+
+        <div class="main-header">
+            <h1>Certificate</h1>
+            <p>Of Achievement</p>
         </div>
-        <div class="content">
-            <div class="top-bar">
-                <span class="brand-logo">MULTITEST</span>
-                <span class="cert-code">{{ $certNumber ?? ('MT-' . str_pad($attempt->id, 6, '0', STR_PAD_LEFT)) }}</span>
-            </div>
 
-            <div class="header">
-                <h1>Certificate</h1>
-                <p>Of Achievement</p>
-            </div>
-            
-            <p class="present-text">This certificate is proudly awarded to</p>
-            <div class="recipient-name">
+        <div class="presented-to">This certificate is proudly awarded to</div>
+        
+        <div class="candidate-name-box">
+            <span class="candidate-name">
                 {{ $attempt->mockStudent?->name ?? $attempt->user?->name ?? 'Candidate' }}
-            </div>
-            
-            <p class="achievement-text">
-                For successfully completing the <strong>{{ $attempt->mock?->name ?? $attempt->test?->name ?? 'Exam' }}</strong> 
-                examination evaluated by our MultiTest assessment system.
-            </p>
+            </span>
+        </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Overall Score</div>
-                    <div class="stat-value">{{ $attempt->final_score !== null ? number_format($attempt->final_score, 1) : '-' }}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">CEFR / Band</div>
-                    <div class="stat-value">{{ $attempt->cefr_level ?? '-' }}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Issue Date</div>
-                    <div class="stat-value" style="font-size: 15px; padding-top: 4px;">
+        <div class="desc-text">
+            For successfully completing the <strong>{{ $attempt->mock?->name ?? $attempt->test?->name ?? 'Exam' }}</strong>
+            examination evaluated by MultiTest assessment system.
+        </div>
+
+        <table class="stats-table">
+            <tr>
+                <td class="stat-card">
+                    <div class="label">Overall Score</div>
+                    <div class="value">{{ $attempt->final_score !== null ? number_format($attempt->final_score, 1) : '-' }}</div>
+                </td>
+                <td class="stat-card">
+                    <div class="label">CEFR / Band</div>
+                    <div class="value-cefr">{{ $attempt->cefr_level ?? '-' }}</div>
+                </td>
+                <td class="stat-card">
+                    <div class="label">Issue Date</div>
+                    <div class="value-date">
                         {{ $attempt->evaluated_at?->format('d.m.Y') ?? $attempt->finished_at?->format('d.m.Y') ?? now()->format('d.m.Y') }}
                     </div>
-                </div>
-            </div>
+                </td>
+            </tr>
+        </table>
 
-            <div class="footer-info">
-                <div class="signature-box">
-                    <div class="signature-line"></div>
-                    <div class="signature-text">Platform Director</div>
-                </div>
-
-                <div class="qr-box">
-                    @if(isset($qrCodeUrl))
-                        <img src="{{ $qrCodeUrl }}" alt="Verify QR Code" class="qr-img">
-                    @else
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ urlencode($verifyUrl) }}" alt="Verify QR Code" class="qr-img">
-                    @endif
-                    <div class="qr-label">Scan to verify</div>
-                </div>
-
-                <div class="signature-box">
-                    <div class="signature-line"></div>
-                    <div class="signature-text">AI Evaluation Board</div>
-                </div>
-            </div>
-        </div>
+        <table class="footer-table">
+            <tr>
+                <td align="left" style="width: 33%; vertical-align: bottom;">
+                    <div class="sig-line"></div>
+                    <div class="sig-title">Platform Director</div>
+                </td>
+                <td align="center" style="width: 34%; vertical-align: middle;">
+                    <div class="qr-wrapper">
+                        @if(isset($qrCodeUrl) && !empty($qrCodeUrl))
+                            <img src="{{ $qrCodeUrl }}" alt="QR Code" class="qr-img">
+                        @elseif(isset($verifyUrl) && !empty($verifyUrl))
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ urlencode($verifyUrl) }}" alt="QR Code" class="qr-img">
+                        @endif
+                        <div class="qr-hint">Scan to verify</div>
+                    </div>
+                </td>
+                <td align="right" style="width: 33%; vertical-align: bottom;">
+                    <div class="sig-line" style="margin-left: auto;"></div>
+                    <div class="sig-title">AI Evaluation Board</div>
+                </td>
+            </tr>
+        </table>
     </div>
 </body>
 </html>

@@ -3,9 +3,6 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import LoginCard from '@/components/auth/login-card';
-import LanguageBar from '@/components/language';
-import TextLink from '@/components/text-link';
-import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 import { User } from '@/types';
 
@@ -14,7 +11,7 @@ interface LoginProps {
     canResetPassword: boolean;
 }
 
-export default function Login({ status, canResetPassword }: LoginProps) {
+export default function Login({ status, canResetPassword = true }: LoginProps) {
     const { auth } = usePage<{ auth: { user: User } }>().props;
     const { t } = useTranslation();
     const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -57,70 +54,39 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
     if (isLoggingIn) {
         return (
-            <div className="fixed inset-0 flex flex-col items-center justify-center bg-background z-50">
+            <div className="bg-background fixed inset-0 z-50 flex flex-col items-center justify-center">
                 <div className="relative mb-8">
-                    <img 
-                        src="/images/logo/logo.png" 
-                        alt="Logo" 
-                        className="h-24 w-24 rounded-3xl object-cover animate-pulse shadow-2xl"
-                    />
-                    <div className="absolute -inset-4 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
+                    <img src="/images/logo/logo.png" alt="Logo" className="h-20 w-20 animate-pulse rounded-2xl object-cover shadow-2xl" />
+                    <div className="border-primary/20 border-t-primary absolute -inset-3 animate-spin rounded-full border-2" />
                 </div>
-                <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <div className="text-muted-foreground flex items-center gap-2 text-sm font-medium">
                     <div className="flex gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce [animation-delay:-0.3s]"></span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce [animation-delay:-0.15s]"></span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce"></span>
+                        <span className="bg-primary h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:-0.3s]"></span>
+                        <span className="bg-primary h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:-0.15s]"></span>
+                        <span className="bg-primary h-1.5 w-1.5 animate-bounce rounded-full"></span>
                     </div>
-                    {t('auth.signing_in', 'Signing you in...')}
+                    {t('auth.signing_in', 'Tizimga ulanmoqda...')}
                 </div>
             </div>
         );
     }
 
     return (
-        <AuthLayout title={t('login.title')} description={t('login.description')}>
-            <Head title={t('login.submit')} />
+        <AuthLayout
+            title={t('login.title', 'Tizimga kirish')}
+            description={t('login.description', 'Speaking imtihonlariga tayyorgarlik uchun hisobingizga kiring')}
+        >
+            <Head title={t('login.submit', 'Kirish')} />
 
-            {/* Language Selection Bar */}
-            <div className="mb-4 flex justify-center sm:mb-8">
-                <LanguageBar />
-            </div>
+            {/* Success Status Message */}
+            {status && (
+                <div className="bg-success-bg border-success/30 text-success-text mb-4 rounded-xl border p-3 text-center text-xs font-semibold">
+                    {status}
+                </div>
+            )}
 
             {/* Main Login Form Card */}
-            <LoginCard />
-
-            {/* Password Management & Status */}
-            <div className="mt-4 space-y-3 sm:mt-6 sm:space-y-4">
-                <div className="flex items-center justify-between">
-                    <Label className="text-muted-foreground">{t('login.password')}</Label>
-
-                    {canResetPassword && (
-                        <TextLink
-                            href={route('password.request')}
-                            className="text-sm font-semibold text-primary hover:underline"
-                            tabIndex={5}
-                        >
-                            {t('login.forgot')}
-                        </TextLink>
-                    )}
-                </div>
-
-                {/* Success Status Message */}
-                {status && (
-                    <div className="rounded-xl bg-success-bg border border-success/20 p-4 text-center text-sm font-medium text-success-text">
-                        {t('login.status_success')}
-                    </div>
-                )}
-
-                {/* Registration Link */}
-                <p className="text-center text-sm text-muted-foreground">
-                    {t('login.no_account')}{' '}
-                    <TextLink href={route('register')} className="font-bold text-primary hover:underline">
-                        {t('login.register')}
-                    </TextLink>
-                </p>
-            </div>
+            <LoginCard canResetPassword={canResetPassword} />
         </AuthLayout>
     );
 }

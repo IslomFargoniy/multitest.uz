@@ -51,11 +51,12 @@ const SocialSignIn = () => {
             <div className="flex gap-4">
                 {/* Google Button */}
                 <button
+                    type="button"
                     onClick={() => signIn('google')}
-                    className="flex w-full items-center justify-center gap-3 rounded-xl border border-border bg-card p-3 text-sm font-semibold text-foreground transition-colors hover:bg-accent hover:border-border-strong"
+                    className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-border bg-surface-2 py-2.5 px-4 text-xs font-semibold text-foreground transition-all hover:bg-accent hover:border-border-strong cursor-pointer active:scale-[0.99]"
                 >
                     <GoogleIcon />
-                    {t('auth.google')}
+                    <span>{t('auth.google', 'Google orqali davom etish')}</span>
                 </button>
             </div>
 

@@ -14,7 +14,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "chillerlan/php-qrcode": "^6.0",
         "darkaonline/l5-swagger": "^9.0",
+        "dompdf/dompdf": "^3.1",
         "ezyang/htmlpurifier": "^4.19",
         "google-gemini-php/client": "^2.7",
         "inertiajs/inertia-laravel": "^2.0",

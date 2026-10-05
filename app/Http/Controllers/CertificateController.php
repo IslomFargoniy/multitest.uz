@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attempt;
+use chillerlan\QRCode\Output\QRGdImagePNG;
+use chillerlan\QRCode\QRCode;
+use chillerlan\QRCode\QROptions;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Spatie\LaravelPdf\Facades\Pdf;
 
 class CertificateController extends Controller
@@ -27,14 +32,32 @@ class CertificateController extends Controller
             return back()->with('error', 'Natijalar hali tayyor emas.');
         }
 
+        if (empty($attempt->verify_code)) {
+            $attempt->verify_code = Str::lower(Str::random(32));
+            $attempt->saveQuietly();
+        }
+
         $verifyUrl = route('certificate.verify', $attempt->verify_code);
+
+        try {
+            $qrOptions = new QROptions([
+                'outputInterface' => QRGdImagePNG::class,
+                'imageBase64' => true,
+                'scale' => 6,
+            ]);
+            $qrCodeDataUri = (new QRCode($qrOptions))->render($verifyUrl);
+        } catch (\Throwable $e) {
+            Log::warning('Local QR code generation failed, fallback to external API: ' . $e->getMessage());
+            $qrCodeDataUri = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode($verifyUrl);
+        }
 
         return Pdf::view('pdf.certificate', [
             'attempt' => $attempt,
-            'qrCodeUrl' => 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode($verifyUrl),
+            'qrCodeUrl' => $qrCodeDataUri,
             'verifyUrl' => $verifyUrl,
             'certNumber' => 'MT-' . str_pad($attempt->id, 6, '0', STR_PAD_LEFT),
         ])
+            ->landscape()
             ->name("certificate-{$attempt->id}.pdf")
             ->download();
     }
