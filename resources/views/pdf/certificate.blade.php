@@ -1,258 +1,488 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
-    <meta charset="UTF-8">
-    <title>Certificate Of Achievement - {{ $certNumber ?? 'MT' }}</title>
-    <style>
-        @page {
-            size: A4 landscape;
-            margin: 8mm;
-        }
-        * {
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'DejaVu Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
-            margin: 0;
-            padding: 0;
-            -webkit-print-color-adjust: exact;
-        }
-        .cert-card {
-            background: #ffffff;
-            border: 6px solid #4f46e5;
-            outline: 2px solid #c7d2fe;
-            outline-offset: -4px;
-            padding: 20px 32px;
-            width: 100%;
-        }
-        .top-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 12px;
-        }
-        .brand-title {
-            font-size: 22px;
-            font-weight: 900;
-            color: #4f46e5;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-        .brand-sub {
-            font-size: 10px;
-            font-weight: 700;
-            color: #64748b;
-            letter-spacing: 1.5px;
-            margin-left: 6px;
-            text-transform: uppercase;
-        }
-        .cert-badge {
-            font-family: monospace;
-            font-size: 13px;
-            font-weight: bold;
-            color: #4338ca;
-            background: #eef2ff;
-            border: 1px solid #c7d2fe;
-            padding: 4px 14px;
-            border-radius: 6px;
-        }
-        .main-header {
-            text-align: center;
-            margin: 0 0 8px 0;
-        }
-        .main-header h1 {
-            margin: 0;
-            font-size: 36px;
-            font-weight: 900;
-            color: #1e1b4b;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-        }
-        .main-header p {
-            margin: 4px 0 0;
-            font-size: 12px;
-            font-weight: 700;
-            color: #6366f1;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-        .presented-to {
-            text-align: center;
-            font-style: italic;
-            font-size: 13px;
-            color: #64748b;
-            margin-top: 12px;
-        }
-        .candidate-name-box {
-            text-align: center;
-            margin: 6px 0 10px;
-        }
-        .candidate-name {
-            display: inline-block;
-            font-size: 30px;
-            font-weight: 800;
-            color: #1e293b;
-            border-bottom: 2px solid #6366f1;
-            padding: 0 35px 4px;
-        }
-        .desc-text {
-            text-align: center;
-            font-size: 13px;
-            line-height: 1.4;
-            color: #475569;
-            max-width: 660px;
-            margin: 0 auto 12px;
-        }
-        .stats-table {
-            width: 78%;
-            margin: 0 auto 14px;
-            border-collapse: separate;
-            border-spacing: 16px 0;
-        }
-        .stat-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 10px 16px;
-            text-align: center;
-            width: 33.33%;
-        }
-        .stat-card .label {
-            font-size: 9px;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: #94a3b8;
-            letter-spacing: 1px;
-            margin-bottom: 3px;
-        }
-        .stat-card .value {
-            font-size: 24px;
-            font-weight: 900;
-            color: #4f46e5;
-        }
-        .stat-card .value-cefr {
-            font-size: 24px;
-            font-weight: 900;
-            color: #059669;
-        }
-        .stat-card .value-date {
-            font-size: 15px;
-            font-weight: 800;
-            color: #334155;
-            padding-top: 6px;
-        }
-        .footer-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px;
-        }
-        .sig-line {
-            width: 150px;
-            border-bottom: 1px solid #94a3b8;
-            margin-bottom: 6px;
-        }
-        .sig-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: #475569;
-        }
-        .qr-wrapper {
-            text-align: center;
-        }
-        .qr-img {
-            width: 66px;
-            height: 66px;
-            border-radius: 6px;
-            border: 1px solid #e2e8f0;
-            background: #ffffff;
-            padding: 2px;
-            display: block;
-            margin: 0 auto;
-        }
-        .qr-hint {
-            font-size: 8px;
-            font-weight: 700;
-            color: #94a3b8;
-            text-transform: uppercase;
-            margin-top: 3px;
-            letter-spacing: 0.5px;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Sertifikat - {{ $certNumber ?? 'UzBMB' }}</title>
+<style>
+    @page {
+        size: A4 portrait;
+        margin: 7mm 9mm 7mm 9mm;
+    }
+    * {
+        box-sizing: border-box;
+    }
+    body {
+        font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif;
+        color: #111111;
+        margin: 0;
+        padding: 0;
+        font-size: 8pt;
+        line-height: 1.25;
+        background-color: #ffffff;
+    }
+    /* Official Certificate Security Frame */
+    .cert-frame-outer {
+        background-color: #fffdfa;
+        border: 4px double #d97706;
+        padding: 4px;
+    }
+    .cert-frame-middle {
+        border: 1px solid #b45309;
+        padding: 4px;
+    }
+    .cert-frame-inner {
+        border: 1px solid #111111;
+        padding: 18px 24px 18px 24px;
+    }
+
+    /* Agency Header */
+    .header-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .header-uz {
+        width: 42%;
+        text-align: center;
+        font-size: 7.2pt;
+        font-weight: bold;
+        line-height: 1.35;
+        text-transform: uppercase;
+        vertical-align: middle;
+        color: #111111;
+    }
+    .header-crest {
+        width: 16%;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .header-en {
+        width: 42%;
+        text-align: center;
+        font-size: 7.2pt;
+        font-weight: bold;
+        line-height: 1.35;
+        text-transform: uppercase;
+        vertical-align: middle;
+        color: #111111;
+    }
+    .crest-seal {
+        width: 62px;
+        height: 62px;
+        margin: 0 auto;
+        display: block;
+    }
+
+    .divider-line {
+        border-top: 1px solid #111111;
+        margin: 10px 0;
+    }
+
+    /* Titles */
+    .title-section {
+        text-align: center;
+        margin: 10px 0 12px 0;
+    }
+    .title-sub-top {
+        font-size: 8.5pt;
+        font-weight: bold;
+        color: #b45309;
+        letter-spacing: 1.5px;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+    }
+    .title-main {
+        font-size: 30pt;
+        font-weight: bold;
+        color: #b45309;
+        letter-spacing: 2.5px;
+        line-height: 1.1;
+        margin: 0;
+        font-family: 'DejaVu Serif', 'Times New Roman', serif;
+    }
+    .title-sub-bot {
+        font-size: 8.5pt;
+        font-weight: bold;
+        color: #b45309;
+        letter-spacing: 1.5px;
+        margin-top: 5px;
+        text-transform: uppercase;
+    }
+
+    /* Reference Number Row */
+    .ref-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 8px 0;
+    }
+    .ref-label {
+        font-size: 8.5pt;
+        font-weight: bold;
+        vertical-align: middle;
+        color: #111111;
+    }
+    .ref-box-wrap {
+        text-align: right;
+        vertical-align: middle;
+    }
+    .bordered-box {
+        display: inline-block;
+        border: 1px solid #111111;
+        padding: 4px 18px;
+        font-weight: bold;
+        font-size: 9.5pt;
+        background: #ffffff;
+        letter-spacing: 1px;
+    }
+
+    /* Candidate Details Section */
+    .section-title {
+        font-size: 8.5pt;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #111111;
+    }
+    .details-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .details-fields {
+        width: 76%;
+        vertical-align: top;
+    }
+    .field-row {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 8px;
+    }
+    .field-label {
+        width: 58%;
+        font-size: 8pt;
+        line-height: 1.25;
+        color: #222222;
+        padding-right: 8px;
+    }
+    .field-value {
+        width: 42%;
+        font-size: 9.5pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #000000;
+    }
+    .details-photo {
+        width: 24%;
+        text-align: right;
+        vertical-align: top;
+    }
+    .photo-box {
+        width: 95px;
+        height: 125px;
+        border: 1px solid #333333;
+        display: inline-block;
+        background: #f8fafc;
+        text-align: center;
+        vertical-align: middle;
+        overflow: hidden;
+    }
+
+    /* Language & Level Row */
+    .results-row1 {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 10px 0 14px 0;
+    }
+
+    /* Skills Grid */
+    .skills-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 6px;
+    }
+    .skill-td-left {
+        width: 40%;
+        vertical-align: middle;
+        padding: 5px 0;
+    }
+    .skill-td-mid {
+        width: 32%;
+        vertical-align: middle;
+        padding: 5px 0;
+    }
+    .skill-td-right {
+        width: 28%;
+        vertical-align: middle;
+        text-align: right;
+        padding: 5px 0;
+    }
+    .skill-label-text {
+        font-size: 8pt;
+        color: #222222;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 8px;
+    }
+    .score-box {
+        display: inline-block;
+        border: 1px solid #111111;
+        width: 48px;
+        height: 24px;
+        line-height: 24px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 9.5pt;
+        background: #ffffff;
+        vertical-align: middle;
+    }
+
+    /* Dates */
+    .dates-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0 14px 0;
+    }
+
+    /* Bottom Signatures & QR */
+    .bottom-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+    .director-label {
+        font-size: 8.5pt;
+        font-weight: bold;
+        line-height: 1.35;
+    }
+    .director-name {
+        font-size: 9.5pt;
+        font-weight: bold;
+        text-align: right;
+        text-transform: uppercase;
+    }
+    .qr-center {
+        text-align: center;
+    }
+    .qr-img {
+        width: 90px;
+        height: 90px;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .footer-note {
+        text-align: center;
+        font-size: 7.5pt;
+        color: #4b5563;
+        margin-top: 14px;
+    }
+</style>
 </head>
 <body>
-    <div class="cert-card">
-        <table class="top-table">
-            <tr>
-                <td align="left" style="vertical-align: middle;">
-                    <span class="brand-title">MULTITEST</span>
-                    <span class="brand-sub">ASSESSMENT SYSTEM</span>
-                </td>
-                <td align="right" style="vertical-align: middle;">
-                    <span class="cert-badge">{{ $certNumber ?? ('MT-' . str_pad($attempt->id, 6, '0', STR_PAD_LEFT)) }}</span>
-                </td>
-            </tr>
-        </table>
+<div class="cert-frame-outer">
+    <div class="cert-frame-middle">
+        <div class="cert-frame-inner">
+            <!-- Header -->
+            <table class="header-table">
+                <tr>
+                    <td class="header-uz">
+                        O'ZBEKISTON RESPUBLIKASI<br>
+                        OLIY TA'LIM, FAN VA INNOVATSIYALAR<br>
+                        VAZIRLIGI HUZURIDAGI<br>
+                        BILIM VA MALAKALARNI BAHOLASH<br>
+                        AGENTLIGI
+                    </td>
+                    <td class="header-crest">
+                        <img src="{{ public_path('images/logo/logo-no-bg.png') }}" class="crest-seal" alt="Seal">
+                    </td>
+                    <td class="header-en">
+                        AGENCY FOR ASSESSMENT OF<br>
+                        KNOWLEDGE AND COMPETENCES<br>
+                        UNDER THE MINISTRY OF HIGHER<br>
+                        EDUCATION, SCIENCE AND<br>
+                        INNOVATIONS OF THE REPUBLIC OF<br>
+                        UZBEKISTAN
+                    </td>
+                </tr>
+            </table>
 
-        <div class="main-header">
-            <h1>Certificate</h1>
-            <p>Of Achievement</p>
-        </div>
+            <div class="divider-line"></div>
 
-        <div class="presented-to">This certificate is proudly awarded to</div>
-        
-        <div class="candidate-name-box">
-            <span class="candidate-name">
-                {{ $attempt->mockStudent?->name ?? $attempt->user?->name ?? 'Candidate' }}
-            </span>
-        </div>
+            <!-- Title -->
+            <div class="title-section">
+                <div class="title-sub-top">CHET TILINI BILISH DARAJASI TO'G'RISIDA</div>
+                <div class="title-main">SERTIFIKAT</div>
+                <div class="title-main">CERTIFICATE</div>
+                <div class="title-sub-bot">OF FOREIGN LANGUAGE PROFICIENCY</div>
+            </div>
 
-        <div class="desc-text">
-            For successfully completing the <strong>{{ $attempt->mock?->name ?? $attempt->test?->name ?? 'Exam' }}</strong>
-            examination evaluated by MultiTest assessment system.
-        </div>
+            <!-- Ref Number -->
+            <table class="ref-table">
+                <tr>
+                    <td class="ref-label">Sertifikat № | Reference Number</td>
+                    <td class="ref-box-wrap">
+                        <span class="bordered-box">{{ $certNumber ?? '26BBA' . str_pad($attempt->id, 7, '0', STR_PAD_LEFT) . 'OB' }}</span>
+                    </td>
+                </tr>
+            </table>
 
-        <table class="stats-table">
-            <tr>
-                <td class="stat-card">
-                    <div class="label">Overall Score</div>
-                    <div class="value">{{ $attempt->final_score !== null ? number_format($attempt->final_score, 1) : '-' }}</div>
-                </td>
-                <td class="stat-card">
-                    <div class="label">CEFR / Band</div>
-                    <div class="value-cefr">{{ $attempt->cefr_level ?? '-' }}</div>
-                </td>
-                <td class="stat-card">
-                    <div class="label">Issue Date</div>
-                    <div class="value-date">
-                        {{ $attempt->evaluated_at?->format('Y-m-d H:i') ?? $attempt->finished_at?->format('Y-m-d H:i') ?? now()->format('Y-m-d H:i') }}
-                    </div>
-                </td>
-            </tr>
-        </table>
+            <div class="divider-line"></div>
 
-        <table class="footer-table">
-            <tr>
-                <td align="left" style="width: 33%; vertical-align: bottom;">
-                    <div class="sig-line"></div>
-                    <div class="sig-title">Platform Director</div>
-                </td>
-                <td align="center" style="width: 34%; vertical-align: middle;">
-                    <div class="qr-wrapper">
+            <!-- Candidate Details -->
+            <div class="section-title">Talabgor to'g'risidagi ma'lumot | Candidate Details</div>
+            <table class="details-table">
+                <tr>
+                    <td class="details-fields">
+                        <table class="field-row">
+                            <tr>
+                                <td class="field-label">Shaxsni tasdiqlovchi hujjat seriyasi va raqami | ID series and number:</td>
+                                <td class="field-value">{{ $idSeriesNumber ?? ('MT ' . str_pad($attempt->id, 7, '0', STR_PAD_LEFT)) }}</td>
+                            </tr>
+                        </table>
+                        <table class="field-row">
+                            <tr>
+                                <td class="field-label">Familiyasi | Surname:</td>
+                                <td class="field-value">{{ $surname ?? 'NOMZOD' }}</td>
+                            </tr>
+                        </table>
+                        <table class="field-row">
+                            <tr>
+                                <td class="field-label">Ismi | First Name:</td>
+                                <td class="field-value">{{ $firstName ?? '-' }}</td>
+                            </tr>
+                        </table>
+                        <table class="field-row">
+                            <tr>
+                                <td class="field-label">Otasining ismi | Patronymic Name:</td>
+                                <td class="field-value">{{ $patronymic ?? '-' }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="details-photo">
+                        <div class="photo-box">
+                            @if(isset($candidatePhoto) && !empty($candidatePhoto))
+                                <img src="{{ $candidatePhoto }}" style="width: 100%; height: 100%; object-fit: cover;" alt="Photo">
+                            @else
+                                <table style="width: 100%; height: 125px;">
+                                    <tr>
+                                        <td style="vertical-align: middle; text-align: center; color: #9ca3af; font-size: 7.5pt; font-weight: bold;">
+                                            3x4<br>SURAT
+                                        </td>
+                                    </tr>
+                                </table>
+                            @endif
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="divider-line"></div>
+
+            <!-- Language & Level -->
+            <table class="results-row1">
+                <tr>
+                    <td style="width: 58%; vertical-align: middle;">
+                        <span class="field-label" style="font-size: 8.5pt;">Chet tili | Foreign Language</span>
+                        <span class="bordered-box" style="margin-left: 8px; padding: 4px 18px;">{{ $languageName ?? 'INGLIZ TILI' }}</span>
+                    </td>
+                    <td style="width: 42%; text-align: right; vertical-align: middle;">
+                        <span class="field-label" style="font-size: 8.5pt;">Daraja | Level</span>
+                        <span class="bordered-box" style="margin-left: 8px; padding: 4px 24px; font-size: 10pt;">{{ $cefrLevel ?? ($attempt->cefr_level ?? 'B2') }}</span>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Test Results Breakdown -->
+            <div class="section-title" style="margin-bottom: 4px;">Test sinovi natijalari | Test Results</div>
+            <table class="skills-table">
+                <tr>
+                    <td class="skill-td-left">
+                        <table style="border-collapse: collapse;">
+                            <tr>
+                                <td><span class="skill-label-text">Tinglab tushunish |<br>Listening</span></td>
+                                <td><span class="score-box">{{ $scores['listening'] ?? '-' }}</span></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="skill-td-mid">
+                        <table style="border-collapse: collapse;">
+                            <tr>
+                                <td><span class="skill-label-text">O'qish |<br>Reading</span></td>
+                                <td><span class="score-box">{{ $scores['reading'] ?? '-' }}</span></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="skill-td-right">
+                        <table style="border-collapse: collapse; margin-left: auto;">
+                            <tr>
+                                <td><span class="skill-label-text">Umumiy ball |<br>Overall Score:</span></td>
+                                <td><span class="score-box">{{ $overallScore ?? ($attempt->final_score !== null ? round($attempt->final_score) : '-') }}</span></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="skill-td-left" style="padding-top: 8px;">
+                        <table style="border-collapse: collapse;">
+                            <tr>
+                                <td><span class="skill-label-text" style="width: 105px;">Yozish |<br>Writing</span></td>
+                                <td><span class="score-box">{{ $scores['writing'] ?? '-' }}</span></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="skill-td-mid" style="padding-top: 8px;">
+                        <table style="border-collapse: collapse;">
+                            <tr>
+                                <td><span class="skill-label-text">Gapirish |<br>Speaking</span></td>
+                                <td><span class="score-box">{{ $scores['speaking'] ?? ($attempt->final_score !== null ? round($attempt->final_score) : '-') }}</span></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="skill-td-right" style="padding-top: 8px;">
+                        <!-- intentionally empty to balance -->
+                    </td>
+                </tr>
+            </table>
+
+            <div class="divider-line" style="margin-top: 14px;"></div>
+
+            <!-- Dates -->
+            <table class="dates-table">
+                <tr>
+                    <td style="width: 50%;">
+                        <span class="field-label" style="font-size: 8.5pt;">Berilgan sanasi | Date of issue:</span>
+                        <strong style="font-size: 9pt; margin-left: 8px;">{{ $issueDate ?? now()->format('d.m.Y') }}</strong>
+                    </td>
+                    <td style="width: 50%; text-align: right;">
+                        <span class="field-label" style="font-size: 8.5pt;">Amal qilish muddati | Valid until:</span>
+                        <strong style="font-size: 9pt; margin-left: 8px;">{{ $validUntil ?? now()->addYears(2)->subDay()->format('d.m.Y') }}</strong>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Signatures & QR -->
+            <table class="bottom-table">
+                <tr>
+                    <td style="width: 28%; vertical-align: middle;">
+                        <div class="director-label">
+                            Direktor |<br>Director
+                        </div>
+                    </td>
+                    <td style="width: 44%;" class="qr-center">
                         @if(isset($qrCodeUrl) && !empty($qrCodeUrl))
-                            <img src="{{ $qrCodeUrl }}" alt="QR Code" class="qr-img">
+                            <img src="{{ $qrCodeUrl }}" class="qr-img" alt="QR Code">
                         @elseif(isset($verifyUrl) && !empty($verifyUrl))
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ urlencode($verifyUrl) }}" alt="QR Code" class="qr-img">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ urlencode($verifyUrl) }}" class="qr-img" alt="QR Code">
                         @endif
-                        <div class="qr-hint">Scan to verify</div>
-                    </div>
-                </td>
-                <td align="right" style="width: 33%; vertical-align: bottom;">
-                    <div class="sig-line" style="margin-left: auto;"></div>
-                    <div class="sig-title">AI Evaluation Board</div>
-                </td>
-            </tr>
-        </table>
+                    </td>
+                    <td style="width: 28%; vertical-align: middle;" class="director-name">
+                        M.KARIMOV
+                    </td>
+                </tr>
+            </table>
+
+            <div class="footer-note">
+                Sertifikatning haqiqiyligini multitest.uz sayti orqali tekshirish mumkin.
+            </div>
+        </div>
     </div>
+</div>
 </body>
 </html>

@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="skyGrad" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#bae6fd"/>
+      <stop offset="70%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </radialGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#ca8a04"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer security border rings -->
+  <circle cx="100" cy="100" r="96" fill="#ffffff" stroke="#15803d" stroke-width="4"/>
+  <circle cx="100" cy="100" r="91" fill="none" stroke="#ca8a04" stroke-width="2"/>
+  <circle cx="100" cy="100" r="88" fill="url(#skyGrad)"/>
+
+  <!-- Golden Sun and Rays -->
+  <circle cx="100" cy="95" r="28" fill="url(#goldGrad)"/>
+  <g stroke="url(#goldGrad)" stroke-width="2" stroke-linecap="round" opacity="0.9">
+    <line x1="100" y1="62" x2="100" y2="48"/>
+    <line x1="123" y1="72" x2="133" y2="62"/>
+    <line x1="133" y1="95" x2="147" y2="95"/>
+    <line x1="77" y1="72" x2="67" y2="62"/>
+    <line x1="67" y1="95" x2="53" y2="95"/>
+    <line x1="116" y1="66" x2="124" y2="54"/>
+    <line x1="84" y1="66" x2="76" y2="54"/>
+    <line x1="130" y1="83" x2="142" y2="77"/>
+    <line x1="70" y1="83" x2="58" y2="77"/>
+  </g>
+
+  <!-- Green mountains and valley landscape -->
+  <path d="M 25,128 Q 60,105 100,118 Q 140,105 175,128 L 175,170 L 25,170 Z" fill="#16a34a"/>
+  <path d="M 40,138 Q 75,122 100,132 Q 125,122 160,138 L 160,170 L 40,170 Z" fill="#15803d"/>
+  <!-- Two rivers (Amu Darya & Syr Darya) flowing down -->
+  <path d="M 85,130 Q 90,145 92,165" stroke="#bae6fd" stroke-width="3" fill="none"/>
+  <path d="M 115,130 Q 110,145 108,165" stroke="#bae6fd" stroke-width="3" fill="none"/>
+
+  <!-- Legendary Humo Bird (Wings outstretched, symbol of happiness and freedom) -->
+  <!-- Tail & Body -->
+  <path d="M 100,100 Q 104,115 100,126 Q 96,115 100,100 Z" fill="#ffffff" stroke="#ca8a04" stroke-width="1.2"/>
+  <!-- Bird Head -->
+  <circle cx="100" cy="94" r="5" fill="#ffffff" stroke="#ca8a04" stroke-width="1"/>
+  <path d="M 101,92 L 105,94 L 101,96 Z" fill="#ca8a04"/>
+  <!-- Left Wing -->
+  <path d="M 97,98 C 80,82 58,80 44,92 C 55,102 75,108 96,104 Z" fill="#ffffff" stroke="#ca8a04" stroke-width="1.4"/>
+  <path d="M 96,103 C 78,92 56,96 46,106 C 58,114 78,116 96,108 Z" fill="#ffffff" stroke="#ca8a04" stroke-width="1.4"/>
+  <path d="M 96,107 C 82,102 65,108 56,118 C 68,124 84,122 96,113 Z" fill="#ffffff" stroke="#ca8a04" stroke-width="1.4"/>
+  <!-- Right Wing -->
+  <path d="M 103,98 C 120,82 142,80 156,92 C 145,102 125,108 104,104 Z" fill="#ffffff" stroke="#ca8a04" stroke-width="1.4"/>
+  <path d="M 104,103 C 122,92 144,96 154,106 C 142,114 122,116 104,108 Z" fill="#ffffff" stroke="#ca8a04" stroke-width="1.4"/>
+  <path d="M 104,107 C 118,102 135,108 144,118 C 132,124 116,122 104,113 Z" fill="#ffffff" stroke="#ca8a04" stroke-width="1.4"/>
+
+  <!-- Left: Ears of Wheat (Garland) -->
+  <g fill="url(#goldGrad)" stroke="#b45309" stroke-width="0.8">
+    <ellipse cx="26" cy="115" rx="5" ry="9" transform="rotate(-25 26 115)"/>
+    <ellipse cx="30" cy="95" rx="5" ry="9" transform="rotate(-15 30 95)"/>
+    <ellipse cx="38" cy="76" rx="5" ry="9" transform="rotate(-5 38 76)"/>
+    <ellipse cx="50" cy="59" rx="5" ry="9" transform="rotate(10 50 59)"/>
+    <ellipse cx="66" cy="46" rx="5" ry="9" transform="rotate(25 66 46)"/>
+    <ellipse cx="84" cy="38" rx="5" ry="9" transform="rotate(40 84 38)"/>
+  </g>
+
+  <!-- Right: Cotton Bolls (Garland) -->
+  <g stroke="#15803d" stroke-width="1">
+    <!-- Leaves -->
+    <path d="M 170,115 Q 165,105 174,98 Q 178,108 170,115 Z" fill="#16a34a"/>
+    <path d="M 164,88 Q 155,80 162,72 Q 170,80 164,88 Z" fill="#16a34a"/>
+    <path d="M 152,65 Q 140,60 145,50 Q 155,56 152,65 Z" fill="#16a34a"/>
+    <path d="M 132,46 Q 120,44 122,34 Q 134,38 132,46 Z" fill="#16a34a"/>
+    <!-- Cotton Bolls (White fluffy cotton) -->
+    <circle cx="168" cy="108" r="7" fill="#ffffff" stroke="#ca8a04"/>
+    <circle cx="158" cy="80" r="7" fill="#ffffff" stroke="#ca8a04"/>
+    <circle cx="142" cy="58" r="7" fill="#ffffff" stroke="#ca8a04"/>
+    <circle cx="120" cy="42" r="7" fill="#ffffff" stroke="#ca8a04"/>
+  </g>
+
+  <!-- Top: Eight-pointed Blue Star (Rub El Hizb) with Crescent and Star -->
+  <g transform="translate(100, 24)">
+    <rect x="-12" y="-12" width="24" height="24" fill="#0284c7" stroke="url(#goldGrad)" stroke-width="1.2"/>
+    <rect x="-12" y="-12" width="24" height="24" fill="#0284c7" stroke="url(#goldGrad)" stroke-width="1.2" transform="rotate(45)"/>
+    <!-- Crescent -->
+    <path d="M -4,2 A 5,5 0 0,0 2,-4 A 4,4 0 1,1 -4,2 Z" fill="#ffffff"/>
+    <!-- Small star -->
+    <polygon points="3,-1 4,1 2,0 0,1 1,-1 0,-3 2,-2 4,-3" fill="#ffffff" transform="scale(0.8)"/>
+  </g>
+
+  <!-- Bottom: National Flag Ribbon with text "O'ZBEKISTON" -->
+  <!-- Blue band -->
+  <path d="M 45,160 Q 100,150 155,160 L 157,165 Q 100,155 43,165 Z" fill="#0284c7"/>
+  <!-- Red narrow margin -->
+  <path d="M 43,165 Q 100,155 157,165 L 158,167 Q 100,157 42,167 Z" fill="#dc2626"/>
+  <!-- White band -->
+  <path d="M 42,167 Q 100,157 158,167 L 160,174 Q 100,164 40,174 Z" fill="#ffffff"/>
+  <!-- Red narrow margin -->
+  <path d="M 40,174 Q 100,164 160,174 L 161,176 Q 100,166 39,176 Z" fill="#dc2626"/>
+  <!-- Green band -->
+  <path d="M 39,176 Q 100,166 161,176 L 163,182 Q 100,172 37,182 Z" fill="#16a34a"/>
+
+  <!-- Text inside ribbon -->
+  <text x="100" y="172" font-family="DejaVu Sans, Arial, sans-serif" font-size="7.5" font-weight="900" fill="#1e293b" text-anchor="middle" letter-spacing="1.5">O'ZBEKISTON</text>
+</svg>
