@@ -10,49 +10,43 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Send
-import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.FlashOn
-import androidx.compose.material.icons.rounded.GraphicEq
+import androidx.compose.material.icons.rounded.Key
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
-import androidx.credentials.exceptions.GetCredentialException
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import kotlinx.coroutines.launch
-import uz.multitest.app.BuildConfig
 import uz.multitest.app.MainActivity
 import uz.multitest.app.core.theme.*
 import uz.multitest.app.core.util.Constants
-import uz.multitest.app.presentation.components.PrimaryButton
 import uz.multitest.app.presentation.components.MultiTestCard
 import uz.multitest.app.presentation.components.OtpInputField
+import uz.multitest.app.presentation.components.PrimaryButton
 
 @Composable
 fun AuthScreen(
     onNavigateToMain: () -> Unit,
+    onNavigateToExam: (Long) -> Unit = {},
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     val activity = context as? MainActivity
 
     // Listen to deep links (both initial and onNewIntent)
@@ -71,6 +65,7 @@ fun AuthScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is AuthUiEvent.NavigateToMain -> onNavigateToMain()
+                is AuthUiEvent.NavigateToExam -> onNavigateToExam(event.attemptId)
                 is AuthUiEvent.ShowToast -> Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
             }
         }
@@ -78,50 +73,18 @@ fun AuthScreen(
 
     val openTelegramBot = {
         try {
-            // First attempt: direct telegram deep link protocol (opens Telegram app directly)
             val tgIntent = Intent(Intent.ACTION_VIEW, Uri.parse("tg://resolve?domain=${Constants.TELEGRAM_BOT_USERNAME}&start=code")).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
             context.startActivity(tgIntent)
         } catch (e: Exception) {
             try {
-                // Fallback: browser or other handlers
                 val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(Constants.TELEGRAM_BOT_URL)).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
                 context.startActivity(webIntent)
             } catch (e2: Exception) {
                 Toast.makeText(context, "Telegram ilovasi yoki brauzer topilmadi", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    val performGoogleSignIn = {
-        coroutineScope.launch {
-            try {
-                val credentialManager = CredentialManager.create(context)
-                val googleIdOption = GetGoogleIdOption.Builder()
-                    .setFilterByAuthorizedAccounts(false)
-                    .setServerClientId(BuildConfig.GOOGLE_WEB_CLIENT_ID)
-                    .setAutoSelectEnabled(true)
-                    .build()
-
-                val request = GetCredentialRequest.Builder()
-                    .addCredentialOption(googleIdOption)
-                    .build()
-
-                val result = credentialManager.getCredential(context = context, request = request)
-                val credential = result.credential
-                if (credential is androidx.credentials.CustomCredential &&
-                    credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-                ) {
-                    val googleIdToken = GoogleIdTokenCredential.createFrom(credential.data).idToken
-                    viewModel.loginWithGoogleToken(googleIdToken)
-                }
-            } catch (e: GetCredentialException) {
-                // If user cancelled or no google account configured
-            } catch (e: Exception) {
-                Toast.makeText(context, "Google login xatoligi: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -146,8 +109,7 @@ fun AuthScreen(
             Image(
                 painter = androidx.compose.ui.res.painterResource(id = uz.multitest.app.R.drawable.ic_logo),
                 contentDescription = "MultiTest Logo",
-                modifier = Modifier
-                    .size(80.dp)
+                modifier = Modifier.size(80.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -164,53 +126,64 @@ fun AuthScreen(
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = "Tizimga kirish uchun Telegram botdan 6 xonali tasdiqlash kodini oling",
+                text = when (uiState.selectedTab) {
+                    AuthTab.TELEGRAM_OTP -> "Telegram bot orqali 6 xonali tasdiqlash kodini oling"
+                    AuthTab.CANDIDATE_CODE -> "O'qituvchi bergan 8 xonali nomzod kodi orqali imtihonga ulaning"
+                },
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            // Telegram Bot Card
-            MultiTestCard(
-                onClick = openTelegramBot,
-                shape = RoundedCornerShape(16.dp)
+            // Segmented Tab Switcher
+            Card(
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
+                    val isOtpTab = uiState.selectedTab == AuthTab.TELEGRAM_OTP
                     Box(
                         modifier = Modifier
-                            .size(46.dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFF229ED9)), // Telegram Blue
+                            .weight(1f)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(if (isOtpTab) MaterialTheme.colorScheme.primary else Color.Transparent)
+                            .clickable { viewModel.onTabSelected(AuthTab.TELEGRAM_OTP) }
+                            .padding(vertical = 10.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.Send,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
+                        Text(
+                            text = "Telegram OTP",
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                fontWeight = if (isOtpTab) FontWeight.Bold else FontWeight.Medium,
+                                color = if (isOtpTab) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(14.dp))
-
-                    Column(modifier = Modifier.weight(1f)) {
+                    val isCandidateTab = uiState.selectedTab == AuthTab.CANDIDATE_CODE
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(if (isCandidateTab) MaterialTheme.colorScheme.primary else Color.Transparent)
+                            .clickable { viewModel.onTabSelected(AuthTab.CANDIDATE_CODE) }
+                            .padding(vertical = 10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text(
-                            text = "@MultitestUzBot",
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        )
-                        Text(
-                            text = "Kodni olish uchun bosing",
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                color = MaterialTheme.colorScheme.primary
+                            text = "Mock Kodi",
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                fontWeight = if (isCandidateTab) FontWeight.Bold else FontWeight.Medium,
+                                color = if (isCandidateTab) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         )
                     }
@@ -219,100 +192,192 @@ fun AuthScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // OTP Input
-            Text(
-                text = "6 xonali kodni kiriting",
-                style = MaterialTheme.typography.labelLarge.copy(
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            OtpInputField(
-                otpValue = uiState.otp,
-                onOtpChange = { viewModel.onOtpChanged(it) },
-                onComplete = { viewModel.loginWithOtp(it) }
-            )
-
-            if (uiState.errorMessage != null) {
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = uiState.errorMessage!!,
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        color = NightDestructive,
-                        fontWeight = FontWeight.Medium
-                    ),
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Login Button
-            PrimaryButton(
-                text = "Tasdiqlash va Kirish",
-                onClick = { viewModel.loginWithOtp() },
-                isLoading = uiState.isLoading,
-                enabled = uiState.otp.length == 6
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            if (BuildConfig.GOOGLE_WEB_CLIENT_ID.isNotBlank()) {
-                // Divider OR
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+            if (uiState.selectedTab == AuthTab.TELEGRAM_OTP) {
+                // Telegram Bot Card
+                MultiTestCard(
+                    onClick = openTelegramBot,
+                    shape = RoundedCornerShape(16.dp)
                 ) {
-                    HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outlineVariant)
-                    Text(
-                        text = "  YOKI  ",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(46.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFF229ED9)), // Telegram Blue
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.Send,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(14.dp))
+
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "@MultitestUzBot",
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            )
+                            Text(
+                                text = "Kodni olish uchun bosing",
+                                style = MaterialTheme.typography.bodySmall.copy(
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // OTP Input
+                Text(
+                    text = "6 xonali kodni kiriting",
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
-                    HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outlineVariant)
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OtpInputField(
+                    otpValue = uiState.otp,
+                    onOtpChange = { viewModel.onOtpChanged(it) },
+                    onComplete = { viewModel.loginWithOtp(it) }
+                )
+
+                if (uiState.errorMessage != null) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = uiState.errorMessage!!,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            color = NightDestructive,
+                            fontWeight = FontWeight.Medium
+                        ),
+                        textAlign = TextAlign.Center
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // Google Sign In
-                Card(
-                    onClick = { performGoogleSignIn() },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface
-                    ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                PrimaryButton(
+                    text = "Tasdiqlash va Kirish",
+                    onClick = { viewModel.loginWithOtp() },
+                    isLoading = uiState.isLoading,
+                    enabled = uiState.otp.length == 6
+                )
+            } else {
+                // Mock Candidate Code Entry
+                MultiTestCard(
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Box(
+                            modifier = Modifier
+                                .size(52.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Key,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
                         Text(
-                            text = "G",
-                            style = MaterialTheme.typography.titleLarge.copy(
+                            text = "Mock Imtihonga Ulanish",
+                            style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Text(
-                            text = "Google orqali kirish",
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.onSurface
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Text(
+                            text = "O'qituvchi bergan kodni kiriting",
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        OutlinedTextField(
+                            value = uiState.candidateCode,
+                            onValueChange = { viewModel.onCandidateCodeChanged(it) },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            placeholder = {
+                                Text(
+                                    text = "MS12345678",
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center
+                                )
+                            },
+                            textStyle = MaterialTheme.typography.titleLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                letterSpacing = 2.sp
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Characters,
+                                keyboardType = KeyboardType.Ascii,
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    if (uiState.candidateCode.length >= 8) {
+                                        viewModel.loginWithCandidateCode()
+                                    }
+                                }
+                            ),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+
+                        if (uiState.errorMessage != null) {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Text(
+                                text = uiState.errorMessage!!,
+                                style = MaterialTheme.typography.bodySmall.copy(
+                                    color = NightDestructive,
+                                    fontWeight = FontWeight.Medium
+                                ),
+                                textAlign = TextAlign.Center
                             )
+                        }
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        PrimaryButton(
+                            text = "Imtihonni Boshlash",
+                            onClick = { viewModel.loginWithCandidateCode() },
+                            isLoading = uiState.isLoading,
+                            enabled = uiState.candidateCode.length >= 8
                         )
                     }
                 }
-
             }
 
             Spacer(modifier = Modifier.height(28.dp))

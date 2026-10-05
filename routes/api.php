@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1/auth')->group(function () {
     Route::post('login', [LoginController::class, 'login'])->middleware('throttle:api-login');
     Route::post('login-otp', [LoginController::class, 'loginWithOtp'])->middleware('throttle:otp');
+    Route::post('candidate', [LoginController::class, 'loginWithCandidateCode'])->middleware('throttle:candidate-code');
     Route::post('google', [LoginController::class, 'loginWithGoogle'])->middleware('throttle:otp');
 });
 

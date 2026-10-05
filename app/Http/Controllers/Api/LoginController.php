@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\MockStudent;
 use App\Models\Otp;
 use App\Models\User\User;
+use App\Services\MockEntryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -69,6 +72,86 @@ class LoginController extends Controller
                 'token' => $token,
             ],
             'message' => 'OTP orqali muvaffaqiyatli login qilindi.',
+        ]);
+    }
+
+    /**
+     * Login using candidate PIN / code (MSXXXXXXXX) for mock exams
+     */
+    public function loginWithCandidateCode(Request $request, MockEntryService $entry)
+    {
+        $request->validate([
+            'code' => 'required|string|max:32',
+        ], [
+            'code.required' => 'Nomzod kodini kiriting',
+        ]);
+
+        $code = strtoupper(trim($request->code));
+        $student = MockStudent::where('code', $code)->first();
+
+        if (! $student) {
+            return response()->json([
+                'success' => false,
+                'message' => "Kiritilgan kod ({$code}) topilmadi!",
+            ], 422);
+        }
+
+        $user = null;
+        if (! empty($student->phone)) {
+            $user = User::where('phone', $student->phone)->first();
+        }
+
+        if (! $user) {
+            $candidateEmail = 'candidate_' . strtolower($code) . '@multitest.uz';
+            $user = User::firstOrCreate(
+                ['email' => $candidateEmail],
+                [
+                    'name' => $student->name,
+                    'phone' => $student->phone,
+                    'password' => Hash::make(Str::random(32)),
+                ]
+            );
+            if (class_exists(\Spatie\Permission\Models\Role::class)) {
+                $studentRole = \Spatie\Permission\Models\Role::where('name', 'Student')->first()
+                    ?? \Spatie\Permission\Models\Role::create(['name' => 'Student']);
+                if (! $user->hasRole($studentRole)) {
+                    $user->assignRole($studentRole);
+                }
+            }
+        }
+
+        try {
+            [, $attempt] = $entry->enter($code, $user);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->errors()['code'][0] ?? 'Kod noto‘g‘ri.',
+            ], 422);
+        }
+
+        if ($attempt->finished_at) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Siz ushbu imtihonni allaqachon topshirgansiz.',
+            ], 422);
+        }
+
+        $token = $user->createToken(Str::uuid()->toString())->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'username' => $user->username,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'avatar' => $user->avatar,
+                'roles' => $user->roles->pluck('name'),
+                'token' => $token,
+                'attempt_id' => $attempt->id,
+            ],
+            'message' => 'Mock imtihonga muvaffaqiyatli ulandingiz.',
         ]);
     }
 

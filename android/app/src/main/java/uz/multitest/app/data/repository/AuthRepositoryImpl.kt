@@ -10,6 +10,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import uz.multitest.app.core.datastore.SessionManager
 import uz.multitest.app.core.network.ApiService
 import uz.multitest.app.core.network.NetworkResult
+import uz.multitest.app.data.models.CandidateLoginRequest
 import uz.multitest.app.data.models.GoogleLoginRequest
 import uz.multitest.app.data.models.LoginOtpRequest
 import uz.multitest.app.data.models.UserDto
@@ -47,6 +48,27 @@ class AuthRepositoryImpl @Inject constructor(
             } else {
                 val serverMsg = extractErrorMessage(response.errorBody()?.string())
                 val errorMsg = serverMsg ?: response.body()?.message ?: "OTP noto'g'ri yoki muddati o'tgan."
+                emit(NetworkResult.Error(errorMsg, response.code()))
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.localizedMessage ?: "Internet bilan aloqa yo'q"))
+        }
+    }.flowOn(Dispatchers.IO)
+
+    override fun loginWithCandidateCode(code: String): Flow<NetworkResult<UserDto>> = flow {
+        emit(NetworkResult.Loading)
+        try {
+            val response = apiService.loginWithCandidateCode(CandidateLoginRequest(code = code.trim().uppercase()))
+            if (response.isSuccessful && response.body()?.data != null) {
+                val user = response.body()!!.data!!
+                user.token?.let { token ->
+                    sessionManager.saveAuthToken(token)
+                }
+                sessionManager.saveUser(user)
+                emit(NetworkResult.Success(user))
+            } else {
+                val serverMsg = extractErrorMessage(response.errorBody()?.string())
+                val errorMsg = serverMsg ?: response.body()?.message ?: "Nomzod kodi noto'g'ri yoki imtihon vaqti o'tgan."
                 emit(NetworkResult.Error(errorMsg, response.code()))
             }
         } catch (e: Exception) {

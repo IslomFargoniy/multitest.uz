@@ -6,6 +6,7 @@ import uz.multitest.app.data.models.UserDto
 
 interface AuthRepository {
     fun loginWithOtp(otp: String): Flow<NetworkResult<UserDto>>
+    fun loginWithCandidateCode(code: String): Flow<NetworkResult<UserDto>>
     fun loginWithGoogle(idToken: String): Flow<NetworkResult<UserDto>>
     fun getProfile(): Flow<NetworkResult<UserDto>>
     fun logout(): Flow<NetworkResult<Unit>>

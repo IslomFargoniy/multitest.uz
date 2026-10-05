@@ -49,6 +49,11 @@ fun MultiTestNavGraph(
                     navController.navigate(Screen.Main.route) {
                         popUpTo(Screen.Auth.route) { inclusive = true }
                     }
+                },
+                onNavigateToExam = { attemptId ->
+                    navController.navigate(Screen.SpeakingExam.createRoute(attemptId)) {
+                        popUpTo(Screen.Auth.route) { inclusive = true }
+                    }
                 }
             )
         }

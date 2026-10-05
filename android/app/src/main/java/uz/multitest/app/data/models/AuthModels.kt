@@ -11,6 +11,11 @@ data class LoginOtpRequest(
 )
 
 @Serializable
+data class CandidateLoginRequest(
+    @SerialName("code") val code: String
+)
+
+@Serializable
 data class GoogleLoginRequest(
     @SerialName("id_token") val idToken: String
 )
@@ -33,6 +38,7 @@ data class UserDto(
     @SerialName("avatar") val avatar: String? = null,
     @SerialName("roles") val roles: List<String> = emptyList(),
     @SerialName("token") val token: String? = null,
+    @SerialName("attempt_id") val attemptId: Long? = null,
     @SerialName("stats") val stats: UserStatsDto? = null
 )
 

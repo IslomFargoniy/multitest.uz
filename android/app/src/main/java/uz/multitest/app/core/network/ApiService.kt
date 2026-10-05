@@ -14,6 +14,11 @@ interface ApiService {
         @Body request: LoginOtpRequest
     ): Response<ApiResponse<UserDto>>
 
+    @POST("v1/auth/candidate")
+    suspend fun loginWithCandidateCode(
+        @Body request: CandidateLoginRequest
+    ): Response<ApiResponse<UserDto>>
+
     @POST("v1/auth/google")
     suspend fun loginWithGoogle(
         @Body request: GoogleLoginRequest

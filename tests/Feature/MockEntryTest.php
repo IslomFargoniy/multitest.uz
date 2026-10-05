@@ -82,4 +82,20 @@ class MockEntryTest extends TestCase
         Sanctum::actingAs($this->student());
         $this->postJson('/api/v1/mocks/join', ['pin' => $student->code])->assertStatus(422);
     }
+
+    public function test_api_candidate_login_authenticates_and_binds_mock(): void
+    {
+        $student = $this->candidate();
+
+        $response = $this->postJson('/api/v1/auth/candidate', ['code' => $student->code]);
+
+        $response->assertOk()
+            ->assertJsonPath('success', true)
+            ->assertJsonStructure(['data' => ['id', 'name', 'token', 'attempt_id']]);
+
+        $this->assertDatabaseHas('attempts', [
+            'mock_student_id' => $student->id,
+            'id' => $response->json('data.attempt_id'),
+        ]);
+    }
 }
