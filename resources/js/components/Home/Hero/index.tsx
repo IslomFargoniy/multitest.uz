@@ -186,34 +186,34 @@ const Hero = () => {
 
                     {/* Right Column: Interactive AI Speaking Simulation Card */}
                     <div className="col-span-1 lg:col-span-5">
-                        <div className="relative mx-auto w-full max-w-md">
+                        <div className="relative mx-auto w-full max-w-md pt-8 pb-8 px-2 sm:px-3">
                             {/* Decorative Floating Badges */}
-                            <div className="absolute -top-3 -left-3 z-20 flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2 shadow-lg">
-                                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-success-bg text-success">
+                            <div className="absolute top-0 left-1 sm:-left-3 z-20 flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2 shadow-md">
+                                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-success-bg text-success">
                                     <Icon icon="solar:cup-star-bold" className="text-sm" />
                                 </div>
                                 <div>
-                                    <p className="text-xs font-semibold text-muted-foreground uppercase">{t('hero.card_latest_result', 'So\'nggi Natija')}</p>
+                                    <p className="text-xs font-medium text-muted-foreground">{t('hero.card_latest_result', 'So\'nggi Natija')}</p>
                                     <p className="text-xs font-bold text-success-text">{t('hero.card_result_val', 'CEFR C1 (71 ball)')}</p>
                                 </div>
                             </div>
 
-                            <div className="absolute -right-3 bottom-8 z-20 flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2 shadow-lg">
-                                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary">
+                            <div className="absolute bottom-0 right-1 sm:-right-3 z-20 flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2 shadow-md">
+                                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
                                     <Icon icon="solar:microphone-3-bold" className="text-sm" />
                                 </div>
                                 <div>
-                                    <p className="text-xs font-semibold text-muted-foreground uppercase">{t('hero.card_ai_eval', 'AI Baholash')}</p>
+                                    <p className="text-xs font-medium text-muted-foreground">{t('hero.card_ai_eval', 'AI Baholash')}</p>
                                     <p className="text-xs font-bold text-foreground">{t('hero.card_ai_eval_sub', '98% Aniq Transkript')}</p>
                                 </div>
                             </div>
 
                             {/* Main Card UI Preview */}
-                            <div className="overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xl">
+                            <div className="overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm">
                                 {/* Simulated Mock Header */}
                                 <div className="flex items-center justify-between border-b border-border pb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold text-sm shadow-xs">
+                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold text-sm shadow-xs">
                                             DTM
                                         </div>
                                         <div>
@@ -221,14 +221,14 @@ const Hero = () => {
                                             <p className="text-xs text-primary font-medium">{t('hero.card_mock_part', 'Part 2: Comparison & Solution')}</p>
                                         </div>
                                     </div>
-                                    <span className="rounded-full bg-success-bg border border-success/20 px-2.5 py-1 text-xs font-semibold text-success-text">
+                                    <span className="shrink-0 rounded-full bg-success-bg border border-success/20 px-2.5 py-1 text-xs font-semibold text-success-text">
                                         {t('hero.card_live_badge', 'Jonli Sinov')}
                                     </span>
                                 </div>
 
                                 {/* Simulated Question Card */}
                                 <div className="mt-4 rounded-xl bg-surface-2 border border-border p-4">
-                                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+                                    <p className="text-xs font-semibold text-muted-foreground mb-1">
                                         {t('hero.card_task_title', 'Topshiriq 2')}
                                     </p>
                                     <p className="text-sm font-medium text-foreground">
