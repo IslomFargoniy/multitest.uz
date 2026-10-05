@@ -1,5 +1,12 @@
 <?php
 
+if (!function_exists('mb_split')) {
+    function mb_split(string $pattern, string $string, int $limit = -1): array|false {
+        $result = preg_split('/' . str_replace('/', '\/', $pattern) . '/u', $string, $limit);
+        return $result === false ? false : $result;
+    }
+}
+
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\SetLocale;
