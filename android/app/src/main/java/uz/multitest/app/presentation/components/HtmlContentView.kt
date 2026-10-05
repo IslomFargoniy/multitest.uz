@@ -30,7 +30,7 @@ fun HtmlContentView(
     html: String,
     modifier: Modifier = Modifier,
     textColor: Color = MaterialTheme.colorScheme.onSurface,
-    textAlign: TextAlign = TextAlign.Center
+    textAlign: TextAlign = TextAlign.Start
 ) {
     if (html.isBlank()) return
 
@@ -39,7 +39,7 @@ fun HtmlContentView(
 
     if (hasTable) {
         // Render rich table content using optimized transparent WebView with dark styling
-        RichHtmlWebView(html = html, textColor = textColor, modifier = modifier)
+        RichHtmlWebView(html = html, textColor = textColor, textAlign = textAlign, modifier = modifier)
     } else if (imgMatches.isNotEmpty()) {
         // Render images with AsyncImage and remaining text with clean Compose Text
         val cleanText = remember(html) {
@@ -124,14 +124,21 @@ private fun Color.toCssHex(): String = String.format("#%06X", 0xFFFFFF and this.
 private fun RichHtmlWebView(
     html: String,
     textColor: Color,
+    textAlign: TextAlign = TextAlign.Start,
     modifier: Modifier = Modifier
 ) {
     // Colors follow the app theme (Night Focus tokens in dark: text #E8ECF5, border #2A3557, header #172040).
     val text = textColor.toCssHex()
     val border = MaterialTheme.colorScheme.outline.toCssHex()
     val headerBg = MaterialTheme.colorScheme.surfaceVariant.toCssHex()
+    val cssTextAlign = when (textAlign) {
+        TextAlign.Center -> "center"
+        TextAlign.End, TextAlign.Right -> "right"
+        TextAlign.Justify -> "justify"
+        else -> "left"
+    }
 
-    val styledHtml = remember(html, text, border, headerBg) {
+    val styledHtml = remember(html, text, border, headerBg, cssTextAlign) {
         val fixedHtml = html.replace("src=\"/storage", "src=\"https://multitest.uz/storage")
             .replace("src='/storage", "src='https://multitest.uz/storage")
             // Wide tables scroll sideways instead of shrinking
@@ -151,7 +158,7 @@ private fun RichHtmlWebView(
                     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
                     font-size: 15px;
                     line-height: 1.5;
-                    text-align: center;
+                    text-align: $cssTextAlign;
                 }
                 p { margin: 8px 0; }
                 img {

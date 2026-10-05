@@ -146,7 +146,7 @@ export function QuestionResultRow({ index, question, answer, defaultExpanded = f
                     </div>
 
                     {/* Question 15/600 */}
-                    <div className="text-foreground line-clamp-2 min-w-0 flex-1 text-[15px] font-semibold break-words sm:truncate">
+                    <div className="text-foreground line-clamp-2 min-w-0 flex-1 text-[15px] font-semibold break-words sm:line-clamp-1">
                         {questionSnippet || `${t('question_result.question', 'Savol')} ${index}`}
                     </div>
                 </div>
