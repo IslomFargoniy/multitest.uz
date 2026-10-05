@@ -47,8 +47,8 @@ class CertificateController extends Controller
             ]);
             $qrCodeDataUri = (new QRCode($qrOptions))->render($verifyUrl);
         } catch (\Throwable $e) {
-            Log::warning('Local QR code generation failed, fallback to external API: ' . $e->getMessage());
-            $qrCodeDataUri = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode($verifyUrl);
+            Log::warning('Local QR code generation failed: ' . $e->getMessage());
+            $qrCodeDataUri = null;
         }
 
         $rawName = $attempt->mockStudent?->name ?? $attempt->user?->name ?? '';
@@ -104,7 +104,6 @@ class CertificateController extends Controller
 
         $issueDateObj = $attempt->evaluated_at ?? $attempt->finished_at ?? $attempt->created_at ?? now();
         $issueDate = $issueDateObj->format('d.m.Y');
-        $validUntil = $issueDateObj->copy()->addYears(2)->subDay()->format('d.m.Y');
 
         $certNumber = 'MT-' . str_pad($attempt->id, 6, '0', STR_PAD_LEFT);
         $candidateId = 'MT-' . $attempt->id;
@@ -114,10 +113,20 @@ class CertificateController extends Controller
 
         $avatarBase64 = null;
         if ($attempt->user?->avatar) {
-            $candidateAvatarPath = public_path(ltrim($attempt->user->avatar, '/'));
-            if (file_exists($candidateAvatarPath)) {
-                $mime = mime_content_type($candidateAvatarPath) ?: 'image/jpeg';
-                $avatarBase64 = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($candidateAvatarPath));
+            $candidateAvatarPath = realpath(public_path(ltrim($attempt->user->avatar, '/')));
+            $allowedRoots = array_filter([
+                realpath(public_path('storage')),
+                realpath(storage_path('app/public')),
+            ]);
+
+            if ($candidateAvatarPath && is_file($candidateAvatarPath)) {
+                foreach ($allowedRoots as $root) {
+                    if (str_starts_with($candidateAvatarPath, $root.DIRECTORY_SEPARATOR)) {
+                        $mime = mime_content_type($candidateAvatarPath) ?: 'image/jpeg';
+                        $avatarBase64 = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($candidateAvatarPath));
+                        break;
+                    }
+                }
             }
         }
 
@@ -136,7 +145,6 @@ class CertificateController extends Controller
             'overallScore' => $attempt->final_score !== null ? (floor($attempt->final_score) == $attempt->final_score ? (int) $attempt->final_score : number_format($attempt->final_score, 1)) : '-',
             'cefrLevel' => $attempt->cefr_level ?? ($attempt->final_score >= 65 ? 'C1' : ($attempt->final_score >= 51 ? 'B2' : ($attempt->final_score >= 38 ? 'B1' : 'Below B1'))),
             'issueDate' => $issueDate,
-            'validUntil' => $validUntil,
         ])
             ->name("certificate-{$attempt->id}.pdf")
             ->download();

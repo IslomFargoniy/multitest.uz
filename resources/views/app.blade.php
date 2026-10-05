@@ -59,12 +59,12 @@
             }
         </style>
 
-        <title inertia>{{ config('app.name', 'Multitest.uz') }} - CEFR va IELTS Speaking AI Simulyatori | UzBMB Mock Test</title>
+        <title inertia>{{ config('app.name', 'Multitest.uz') }} - CEFR va IELTS Speaking AI Simulyatori | Multilevel Mock Test</title>
 
         <!-- Primary Meta Tags -->
-        <meta name="title" content="Multitest.uz - CEFR va IELTS Speaking AI Simulyatori | UzBMB Mock Test">
-        <meta name="description" content="O'zbekistondagi 1-raqamli AI tizimli CEFR (Multilevel) va IELTS Speaking simulyatori. Haqiqiy UzBMB (DTM) imtihon muhiti, lahzali B1, B2, C1 baholash va to'liq tahlil.">
-        <meta name="keywords" content="multitest, cefr mock test, multilevel speaking, ielts speaking uzbekistan, uzbmb milliy sertifikat, dtm cefr test, speaking mock test online, ai speaking tester, ingliz tili cefr">
+        <meta name="title" content="Multitest.uz - CEFR va IELTS Speaking AI Simulyatori | Multilevel Mock Test">
+        <meta name="description" content="MultiTest — CEFR (Multilevel) va IELTS Speaking uchun AI mock test simulyatori. Imtihonga yaqin muhit, tezkor B1, B2, C1 baholash va batafsil tahlil.">
+        <meta name="keywords" content="multitest, cefr mock test, multilevel speaking, ielts speaking uzbekistan, speaking mock test online, ai speaking tester, ingliz tili cefr">
         <meta name="author" content="Multitest.uz">
         <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
         <link rel="canonical" href="https://multitest.uz">
@@ -78,7 +78,7 @@
         <meta property="og:site_name" content="Multitest.uz">
         <meta property="og:url" content="https://multitest.uz">
         <meta property="og:title" content="Multitest.uz - CEFR va IELTS Speaking AI Simulyatori">
-        <meta property="og:description" content="O'zbekistondagi birinchi sun'iy intellektli CEFR va IELTS Speaking simulyatori. Rasmiy UzBMB mezonlari asosida B1, B2, C1 darajalaringizni hoziroq aniqlang.">
+        <meta property="og:description" content="CEFR va IELTS Speaking uchun sun'iy intellektli mock test simulyatori. B1, B2, C1 darajangizni mashq qilib aniqlang.">
         <meta property="og:image" content="https://multitest.uz/images/logo/logo.png">
         <meta property="og:locale" content="uz_UZ">
 
@@ -155,7 +155,7 @@
                   "name": "AI baholash tizimi qanchalik aniq va ishonchli?",
                   "acceptedAnswer": {
                     "@@type": "Answer",
-                    "text": "Bizning AI baholash tizimimiz UzBMB (DTM) va CEFR rasmiy mezonlari (Fluency, Lexical Resource, Grammar, Pronunciation) asosida ishlaydi va 95%+ aniqlikda real imtihon ballini ko'rsatadi."
+                    "text": "AI baholash CEFR mezonlari (Fluency, Lexical Resource, Grammar, Pronunciation) asosida ishlaydi va taxminiy ball beradi. Natija mashq uchun mo'ljallangan, rasmiy imtihon natijasi emas."
                   }
                 },
                 {
@@ -163,7 +163,7 @@
                   "name": "Multilevel (Milliy sertifikat) Speaking imtihoni qanday qismlardan iborat?",
                   "acceptedAnswer": {
                     "@@type": "Answer",
-                    "text": "UzBMB Multilevel Speaking 3 ta asosiy qismdan iborat: Part 1 (Suhbat va umumiy savollar), Part 2 (Rasm va vaziyat solishtirish), Part 3 (Mavzu bo'yicha chuqur munozara)."
+                    "text": "Multilevel Speaking 3 ta asosiy qismdan iborat: Part 1 (Suhbat va umumiy savollar), Part 2 (Rasm va vaziyat solishtirish), Part 3 (Mavzu bo'yicha chuqur munozara)."
                   }
                 },
                 {
