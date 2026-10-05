@@ -109,10 +109,24 @@ class CertificateController extends Controller
         $certNumber = '26BBA' . str_pad($attempt->id, 7, '0', STR_PAD_LEFT) . 'OB';
         $idSeriesNumber = $attempt->mockStudent?->code ?? ('MT ' . str_pad($attempt->id, 7, '0', STR_PAD_LEFT));
 
+        $logoPath = public_path('images/logo/logo-no-bg.png');
+        $logoBase64 = file_exists($logoPath) ? ('data:image/png;base64,' . base64_encode(file_get_contents($logoPath))) : null;
+
+        $avatarBase64 = null;
+        if ($attempt->user?->avatar) {
+            $candidateAvatarPath = public_path(ltrim($attempt->user->avatar, '/'));
+            if (file_exists($candidateAvatarPath)) {
+                $mime = mime_content_type($candidateAvatarPath) ?: 'image/jpeg';
+                $avatarBase64 = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($candidateAvatarPath));
+            }
+        }
+
         return Pdf::view('pdf.certificate', [
             'attempt' => $attempt,
             'qrCodeUrl' => $qrCodeDataUri,
             'verifyUrl' => $verifyUrl,
+            'logoBase64' => $logoBase64,
+            'candidatePhoto' => $avatarBase64,
             'certNumber' => $certNumber,
             'idSeriesNumber' => $idSeriesNumber,
             'surname' => $surname,

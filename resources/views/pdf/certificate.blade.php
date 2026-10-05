@@ -290,7 +290,11 @@
                         AGENTLIGI
                     </td>
                     <td class="header-crest">
-                        <img src="{{ public_path('images/logo/logo-no-bg.png') }}" class="crest-seal" alt="Seal">
+                        @if(isset($logoBase64) && !empty($logoBase64))
+                            <img src="{{ $logoBase64 }}" class="crest-seal" alt="Seal">
+                        @else
+                            <img src="{{ public_path('images/logo/logo-no-bg.png') }}" class="crest-seal" alt="Seal">
+                        @endif
                     </td>
                     <td class="header-en">
                         AGENCY FOR ASSESSMENT OF<br>
