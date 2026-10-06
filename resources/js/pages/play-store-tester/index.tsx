@@ -82,7 +82,7 @@ export default function PlayStoreTesterIndex() {
         stats, 
         filters, 
         allGmailAddresses = [], 
-        defaultTestingUrl = 'https://play.google.com/apps/testing/uz.multitest.app',
+        defaultTestingUrl = 'https://play.google.com/apps/internaltest/4701630368097844711',
         auth 
     } = usePage<PageProps>().props;
 
@@ -410,15 +410,36 @@ export default function PlayStoreTesterIndex() {
                                     </div>
 
                                     {/* Testing URL */}
-                                    <div className="space-y-1">
-                                        <label className="text-xs font-semibold text-muted-foreground">
-                                            Google Play Sinov havolasi (Join URL):
-                                        </label>
+                                    <div className="space-y-1.5">
+                                        <div className="flex items-center justify-between">
+                                            <label className="text-xs font-semibold text-muted-foreground">
+                                                Google Play Sinov havolasi (Join URL):
+                                            </label>
+                                            <div className="flex items-center gap-1.5">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setForm('testing_url', 'https://play.google.com/apps/internaltest/4701630368097844711')}
+                                                    className="text-[11px] font-semibold text-indigo-500 hover:underline"
+                                                >
+                                                    [Internal test]
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setForm('testing_url', 'https://play.google.com/apps/testing/uz.multitest.app')}
+                                                    className="text-[11px] font-semibold text-sky-500 hover:underline"
+                                                >
+                                                    [Closed test]
+                                                </button>
+                                            </div>
+                                        </div>
                                         <Input
                                             value={form.testing_url}
                                             onChange={e => setForm('testing_url', e.target.value)}
                                             required
                                         />
+                                        <p className="text-[11px] text-muted-foreground">
+                                            Hozirgi havola: <strong>Internal testing</strong> (https://play.google.com/apps/internaltest/4701630368097844711)
+                                        </p>
                                     </div>
 
                                     {/* Message preview / custom note */}

@@ -80,7 +80,8 @@ class PlayStoreTesterController extends Controller
                 'search' => $search,
             ],
             'allGmailAddresses' => $allGmailAddresses,
-            'defaultTestingUrl' => 'https://play.google.com/apps/testing/uz.multitest.app',
+            'defaultTestingUrl' => 'https://play.google.com/apps/internaltest/4701630368097844711',
+            'closedTestingUrl' => 'https://play.google.com/apps/testing/uz.multitest.app',
         ]);
     }
 
@@ -139,7 +140,7 @@ class PlayStoreTesterController extends Controller
             'testing_url' => 'nullable|url',
         ]);
 
-        $testingUrl = $validated['testing_url'] ?: 'https://play.google.com/apps/testing/uz.multitest.app';
+        $testingUrl = $validated['testing_url'] ?: 'https://play.google.com/apps/internaltest/4701630368097844711';
         $subject = $validated['subject'] ?: null;
         $message = $validated['message'] ?: null;
 
