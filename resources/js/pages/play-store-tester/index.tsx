@@ -3,6 +3,7 @@ import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { 
+    Archive,
     Check, 
     Copy, 
     Download, 
@@ -239,6 +240,16 @@ export default function PlayStoreTesterIndex() {
 
                     {/* Action Buttons */}
                     <div className="flex flex-wrap items-center gap-2.5">
+                        {/* Download 100-batch ZIP */}
+                        <a
+                            href={route('play-store-testers.export_zip')}
+                            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-bold rounded-xl border border-indigo-500/40 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-sky-500/10 text-indigo-700 dark:text-indigo-300 hover:from-indigo-500/20 hover:to-sky-500/20 shadow-xs transition-all"
+                            title="Barcha Gmail foydalanuvchilarini 100 talik alohida CSV guruhlarga bo'lib bitta ZIP arxivda yuklaydi"
+                        >
+                            <Archive className="h-4 w-4 text-indigo-500" />
+                            100 talik ZIP yuklab olish ({Math.ceil(allGmailAddresses.length / 100)} ta fayl)
+                        </a>
+
                         {/* Download CSV - Internal Testing (100 limit) */}
                         <a
                             href={route('play-store-testers.export', { scope: 'internal', limit: 100 })}

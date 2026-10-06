@@ -55,6 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('user', UserController::class)->only(['index', 'show', 'update', 'destroy']);
     Route::get('play-store-testers', [PlayStoreTesterController::class, 'index'])->name('play-store-testers.index');
     Route::get('play-store-testers/export', [PlayStoreTesterController::class, 'exportCsv'])->name('play-store-testers.export');
+    Route::get('play-store-testers/export-zip', [PlayStoreTesterController::class, 'exportZip'])->name('play-store-testers.export_zip');
     Route::post('play-store-testers/send-email', [PlayStoreTesterController::class, 'sendEmail'])->name('play-store-testers.send_email');
     Route::resource('test', TestController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
     Route::resource('language', LanguageController::class)->only(['show']);

@@ -130,6 +130,59 @@ class PlayStoreTesterController extends Controller
     }
 
     /**
+     * Export all Gmail addresses split into 100-tester CSV batches bundled in a ZIP archive.
+     */
+    public function exportZip(Request $request)
+    {
+        abort_unless($request->user()?->hasRole('Admin'), 403);
+
+        $query = User::query()
+            ->whereNotNull('email')
+            ->where('email', '!=', '')
+            ->where('email', 'like', '%@gmail.com');
+
+        $emails = $query->pluck('email')
+            ->unique()
+            ->filter(fn($e) => filter_var(trim($e), FILTER_VALIDATE_EMAIL))
+            ->values();
+
+        $chunks = $emails->chunk(100);
+        $totalChunks = $chunks->count();
+
+        $zipFileName = 'multitest_testers_100_batches_' . date('Y-m-d') . '.zip';
+        $tempDir = storage_path('app/temp');
+        if (!is_dir($tempDir)) {
+            mkdir($tempDir, 0755, true);
+        }
+        $zipFilePath = $tempDir . '/' . uniqid('testers_zip_', true) . '.zip';
+
+        $zip = new \ZipArchive();
+        if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            abort(500, 'ZIP faylini yaratib bo‘lmadi.');
+        }
+
+        foreach ($chunks as $index => $chunk) {
+            $partNum = $index + 1;
+            $count = $chunk->count();
+            $csvName = "multitest_testers_group_{$partNum}_of_{$totalChunks}_({$count}).csv";
+
+            $csvLines = [];
+            foreach ($chunk as $email) {
+                $csvLines[] = trim($email);
+            }
+            $csvContent = implode("\r\n", $csvLines) . "\r\n";
+
+            $zip->addFromString($csvName, $csvContent);
+        }
+
+        $zip->close();
+
+        return response()->download($zipFilePath, $zipFileName, [
+            'Content-Type' => 'application/zip',
+        ])->deleteFileAfterSend(true);
+    }
+
+    /**
      * Send email invitations to testers.
      */
     public function sendEmail(Request $request)
