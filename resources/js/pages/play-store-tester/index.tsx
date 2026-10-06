@@ -239,28 +239,56 @@ export default function PlayStoreTesterIndex() {
 
                     {/* Action Buttons */}
                     <div className="flex flex-wrap items-center gap-2.5">
-                        {/* Download CSV */}
+                        {/* Download CSV - Internal Testing (100 limit) */}
+                        <a
+                            href={route('play-store-testers.export', { scope: 'internal', limit: 100 })}
+                            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-indigo-500/30 bg-indigo-500/5 hover:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 shadow-xs transition-all"
+                            title="Google Play Internal Testing maksimal 100 ta tester qabul qiladi"
+                        >
+                            <Download className="h-4 w-4" />
+                            Internal CSV (100 ta)
+                        </a>
+
+                        {/* Download CSV - Full List */}
                         <a
                             href={route('play-store-testers.export', { scope: 'gmail' })}
-                            className="inline-flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-border bg-card hover:bg-accent hover:text-accent-foreground shadow-xs transition-all"
+                            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-border bg-card hover:bg-accent shadow-xs transition-all"
+                            title="Closed testing uchun barcha 494 ta Gmail"
                         >
                             <Download className="h-4 w-4 text-emerald-500" />
-                            Google Play CSV yuklab olish
+                            Barcha CSV ({stats.total_gmail})
                         </a>
+
+                        {/* Copy 100 Gmails (For Internal Testing) */}
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => {
+                                const first100 = allGmailAddresses.slice(0, 100);
+                                navigator.clipboard.writeText(first100.join(', '));
+                                toast.success(`100 ta Gmail manzili nusxalandi!`, {
+                                    description: "Internal testing (100 ta cheklov) uchun to'g'ri keladi.",
+                                });
+                            }}
+                            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold rounded-xl border-border bg-card shadow-xs"
+                        >
+                            <Copy className="h-4 w-4 text-indigo-500" />
+                            100 ta nusxalash
+                        </Button>
 
                         {/* Copy All Gmails */}
                         <Button
                             type="button"
                             variant="outline"
                             onClick={handleCopyAllGmails}
-                            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold rounded-xl border-border bg-card shadow-xs"
+                            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold rounded-xl border-border bg-card shadow-xs"
                         >
                             {copiedAll ? (
                                 <Check className="h-4 w-4 text-emerald-500" />
                             ) : (
                                 <Copy className="h-4 w-4 text-sky-500" />
                             )}
-                            {copiedAll ? 'Nusxalandi!' : `Barcha Gmail'larni nusxalash (${allGmailAddresses.length})`}
+                            Barchasini nusxalash ({allGmailAddresses.length})
                         </Button>
 
                         {/* Send Invites Modal Trigger */}

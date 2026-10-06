@@ -94,26 +94,32 @@ class PlayStoreTesterController extends Controller
         abort_unless($request->user()?->hasRole('Admin'), 403);
 
         $scope = $request->input('scope', 'gmail');
+        $limit = $request->input('limit');
 
         $query = User::query()
             ->whereNotNull('email')
-            ->where('email', '!=', '');
+            ->where('email', '!=', '')
+            ->where('email', 'like', '%@gmail.com');
 
-        if ($scope === 'gmail') {
-            $query->where('email', 'like', '%@gmail.com');
+        if ($scope === 'internal' || $limit == 100) {
+            $query->limit(100);
+            $filename = 'multitest_internal_testers_100_' . date('Y-m-d') . '.csv';
+        } else {
+            $filename = 'multitest_google_play_testers_' . date('Y-m-d') . '.csv';
         }
 
         $emails = $query->pluck('email')->unique()->filter()->values();
-        $filename = 'multitest_google_play_testers_' . date('Y-m-d') . '.csv';
 
         return response()->streamDownload(function () use ($emails) {
             $handle = fopen('php://output', 'w');
             
-            // Standard CSV header for email lists
-            fputcsv($handle, ['email']);
-            
+            // IMPORTANT: Google Play Console does NOT accept column headers ('email').
+            // Every row must be a raw, valid email address.
             foreach ($emails as $email) {
-                fputcsv($handle, [trim($email)]);
+                $clean = trim($email);
+                if (filter_var($clean, FILTER_VALIDATE_EMAIL)) {
+                    fputcsv($handle, [$clean]);
+                }
             }
             
             fclose($handle);
