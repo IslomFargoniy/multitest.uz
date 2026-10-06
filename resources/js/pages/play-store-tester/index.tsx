@@ -334,7 +334,13 @@ export default function PlayStoreTesterIndex() {
                                                     name="target"
                                                     value="uninvited_gmail"
                                                     checked={form.target === 'uninvited_gmail'}
-                                                    onChange={e => setForm('target', e.target.value)}
+                                                    onChange={() => {
+                                                        setForm(prev => ({
+                                                            ...prev,
+                                                            target: 'uninvited_gmail',
+                                                            limit: stats.total_uninvited_gmail || 50,
+                                                        }));
+                                                    }}
                                                     className="mt-1"
                                                 />
                                                 <div>
@@ -351,7 +357,13 @@ export default function PlayStoreTesterIndex() {
                                                     name="target"
                                                     value="all_gmail"
                                                     checked={form.target === 'all_gmail'}
-                                                    onChange={e => setForm('target', e.target.value)}
+                                                    onChange={() => {
+                                                        setForm(prev => ({
+                                                            ...prev,
+                                                            target: 'all_gmail',
+                                                            limit: stats.total_gmail || 496,
+                                                        }));
+                                                    }}
                                                     className="mt-1"
                                                 />
                                                 <div>
