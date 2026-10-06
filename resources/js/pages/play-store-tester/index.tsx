@@ -377,21 +377,53 @@ export default function PlayStoreTesterIndex() {
 
                                     {/* Batch Limit */}
                                     {form.target !== 'test_single' && form.target !== 'selected' && (
-                                        <div className="space-y-1">
-                                            <label className="text-xs font-semibold text-muted-foreground">
-                                                Bir martada yuborish chegarasi (Limit):
-                                            </label>
+                                        <div className="space-y-1.5">
+                                            <div className="flex items-center justify-between">
+                                                <label className="text-xs font-semibold text-muted-foreground">
+                                                    Yuborish soni (Limit):
+                                                </label>
+                                                <div className="flex items-center gap-1.5">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setForm('limit', 20)}
+                                                        className="text-[11px] font-semibold text-muted-foreground hover:text-foreground"
+                                                    >
+                                                        [20 ta]
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setForm('limit', 50)}
+                                                        className="text-[11px] font-semibold text-muted-foreground hover:text-foreground"
+                                                    >
+                                                        [50 ta]
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setForm('limit', 100)}
+                                                        className="text-[11px] font-semibold text-muted-foreground hover:text-foreground"
+                                                    >
+                                                        [100 ta]
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setForm('limit', stats.total_gmail || 500)}
+                                                        className="text-[11px] font-semibold text-primary hover:underline"
+                                                    >
+                                                        [Barchasiga ({stats.total_gmail})]
+                                                    </button>
+                                                </div>
+                                            </div>
                                             <div className="flex items-center gap-3">
                                                 <Input
                                                     type="number"
                                                     min={1}
-                                                    max={500}
+                                                    max={1000}
                                                     value={form.limit}
                                                     onChange={e => setForm('limit', Number(e.target.value))}
                                                     className="w-32"
                                                 />
                                                 <span className="text-xs text-muted-foreground">
-                                                    Gmail serveriga ortiqcha yuk tushmasligi uchun 30-50 tadan yuborish tavsiya etiladi.
+                                                    ⚡ <strong>Queue Job</strong>: Xatlar orqa fonda avtomatik navbat bilan jo'natiladi.
                                                 </span>
                                             </div>
                                         </div>

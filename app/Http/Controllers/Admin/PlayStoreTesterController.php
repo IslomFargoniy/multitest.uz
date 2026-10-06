@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendPlayStoreTesterInviteJob;
 use App\Mail\PlayStoreTesterInviteMail;
 use App\Models\User\User;
 use Illuminate\Http\Request;
@@ -185,38 +186,17 @@ class PlayStoreTesterController extends Controller
             return back()->withErrors(['error' => "Yuborish uchun hech qanday foydalanuvchi topilmadi."]);
         }
 
-        // Increase execution time for batch sending
-        @set_time_limit(300);
-
-        $sentCount = 0;
-        $failedCount = 0;
-
-        foreach ($recipients as $recipient) {
-            try {
-                Mail::to($recipient->email)->send(
-                    new PlayStoreTesterInviteMail($recipient, $testingUrl, $subject, $message)
-                );
-
-                $recipient->update([
-                    'tester_invited_at' => now(),
-                    'tester_invite_count' => ($recipient->tester_invite_count ?? 0) + 1,
-                ]);
-
-                $sentCount++;
-                
-                // Small sleep to be polite to Gmail SMTP
-                usleep(50000); // 50ms
-            } catch (\Throwable $e) {
-                $failedCount++;
-                Log::error("Failed to send tester invite to {$recipient->email}: " . $e->getMessage());
-            }
+        // Dispatch background jobs with 1-second delay increments to respect Gmail SMTP limits
+        foreach ($recipients as $index => $recipient) {
+            SendPlayStoreTesterInviteJob::dispatch(
+                $recipient,
+                $testingUrl,
+                $subject,
+                $message
+            )->delay(now()->addSeconds($index));
         }
 
-        $resultMsg = "{$sentCount} ta foydalanuvchiga taklifnoma xati yuborildi!";
-        if ($failedCount > 0) {
-            $resultMsg .= " ({$failedCount} ta xatda xatolik yuz berdi).";
-        }
-
-        return back()->with('success', $resultMsg);
+        $count = $recipients->count();
+        return back()->with('success', "Jami {$count} ta foydalanuvchiga xat yuborish navbatga (Queue Job) qo'yildi! Xatlar orqa fonda birin-ketin yuborilmoqda.");
     }
 }
