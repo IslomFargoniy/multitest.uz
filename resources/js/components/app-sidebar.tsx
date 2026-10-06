@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Auth, Language, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { ClipboardList, FileText, Folder, Github, Globe, GraduationCap, History, Languages, LayoutDashboard, Send, Users } from 'lucide-react';
+import { ClipboardList, FileText, Folder, Github, Globe, GraduationCap, History, Languages, LayoutDashboard, Send, Smartphone, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AppLogo from './app-logo';
@@ -60,6 +60,7 @@ export function AppSidebar() {
         const baseItems: NavItem[] = [
             { title: t('sidebar.dashboard'), href: '/dashboard', icon: LayoutDashboard },
             { title: t('sidebar.user'), href: '/user', icon: Users },
+            { title: t('sidebar.play_store_testers', 'Play Store Testerlar'), href: '/play-store-testers', icon: Smartphone },
             { title: t('sidebar.test'), href: '/test', icon: FileText },
             { title: t('sidebar.mock'), href: '/mock', icon: GraduationCap },
             { title: t('sidebar.attempt'), href: '/attempt', icon: History },
@@ -73,6 +74,7 @@ export function AppSidebar() {
 
         return [...baseItems, ...languageItems].filter((item) => {
             if (item.href === '/user' && !isAdmin) return false;
+            if (item.href === '/play-store-testers' && !isAdmin) return false;
             if (item.href === '/mock' && !isAdmin && !isTeacher) return false;
             return true;
         });

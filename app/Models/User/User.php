@@ -40,6 +40,8 @@ class User extends Authenticatable
         'telegram_id',
         'ref_telegram_id',
         'create_test_limit',
+        'tester_invited_at',
+        'tester_invite_count',
     ];
 
     protected $with = [
@@ -65,6 +67,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'tester_invited_at' => 'datetime',
+            'tester_invite_count' => 'integer',
             'password' => 'hashed',
         ];
     }

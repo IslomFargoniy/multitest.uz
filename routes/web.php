@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PlayStoreTesterController;
 use App\Http\Controllers\AttemptController;
 use App\Http\Controllers\AttemptPartController;
 use App\Http\Controllers\Auth\GoogleAuthController;
@@ -52,6 +53,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('role-all-json', [RoleController::class, 'allJson'])->name('role.all.json');
 
     Route::resource('user', UserController::class)->only(['index', 'show', 'update', 'destroy']);
+    Route::get('play-store-testers', [PlayStoreTesterController::class, 'index'])->name('play-store-testers.index');
+    Route::get('play-store-testers/export', [PlayStoreTesterController::class, 'exportCsv'])->name('play-store-testers.export');
+    Route::post('play-store-testers/send-email', [PlayStoreTesterController::class, 'sendEmail'])->name('play-store-testers.send_email');
     Route::resource('test', TestController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
     Route::resource('language', LanguageController::class)->only(['show']);
     Route::get('test-all-json', [TestController::class, 'allJson'])->name('test.all.json');
