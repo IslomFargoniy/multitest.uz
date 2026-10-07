@@ -83,7 +83,7 @@ export default function PlayStoreTesterIndex() {
         stats, 
         filters, 
         allGmailAddresses = [], 
-        defaultTestingUrl = 'https://play.google.com/apps/internaltest/4701630368097844711',
+        defaultTestingUrl = 'https://play.google.com/apps/testing/uz.multitest.app',
         auth 
     } = usePage<PageProps>().props;
 

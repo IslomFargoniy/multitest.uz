@@ -31,7 +31,7 @@ class SendPlayStoreTesterInviteJob implements ShouldQueue
      */
     public function __construct(
         User $user,
-        string $testingUrl = 'https://play.google.com/apps/internaltest/4701630368097844711',
+        string $testingUrl = 'https://play.google.com/apps/testing/uz.multitest.app',
         ?string $customSubject = null,
         ?string $customMessage = null
     ) {
